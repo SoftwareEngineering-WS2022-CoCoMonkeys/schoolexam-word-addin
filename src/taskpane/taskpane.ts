@@ -3,14 +3,25 @@
  * See LICENSE in the project root for license information.
  */
 
+import { Task } from "../model/Task";
+import { TaskList } from "../model/TaskList";
+
 /* global document, Office, Word */
+
+const runBtn = document.getElementById("run") as HTMLButtonElement;
+const createTaskBtn = document.getElementById("create-task-btn") as HTMLButtonElement;
+const maxPointsInput = document.getElementById("points-input") as HTMLInputElement;
+
+let taskList: TaskList = undefined;
 
 Office.onReady((info) => {
   if (info.host === Office.HostType.Word) {
-    document.getElementById("sideload-msg").style.display = "none";
     document.getElementById("app-body").style.display = "flex";
-    document.getElementById("run").onclick = run;
-    document.getElementById("create-task-btn").onclick = createTask;
+    runBtn.onclick = run;
+    createTaskBtn.onclick = createTask;
+    Word.run(async (context) => {
+      taskList = await TaskList.load(context);
+    });
   }
 });
 
@@ -32,24 +43,41 @@ export async function run() {
 
 export async function createTask() {
   return Word.run(async (context) => {
+    // Check for points
+
+    let maxPoints = maxPointsInput.value;
+
+    if (!maxPoints || isNaN(parseInt(maxPoints))) {
+      shake(document.getElementById("points-input-error"));
+      return;
+    }
+
     // Get the current selection
     const range = context.document.getSelection();
 
     // Create a content control
     const cc = range.insertContentControl();
-
     // Visually signal content control creation
     cc.appearance = Word.ContentControlAppearance.boundingBox;
-    cc.title = "DummyTask";
-    cc.tag = "Task";
 
     // Associate ID with content control
-    context.document.properties.customProperties.add(cc.title + "_ID", 12345);
-    // Set points for task
-    const input = (document.getElementById("points-input") as HTMLInputElement).value;
-    // ... and save persistently in custom properties
-    context.document.properties.customProperties.add(cc.title + "_MaxPoints", input);
+    const taskId = 1234;
+    cc.title = "Task " + taskId;
+    cc.tag = "Task";
+
+    const newTask = new Task(taskId, parseInt(maxPointsInput.value), cc);
+    maxPointsInput.value = "";
+
+    taskList.addTask(newTask);
+    taskList.save(context);
 
     await context.sync();
   });
+}
+
+function shake(element: HTMLElement) {
+  element.classList.add("shake-anim");
+  setTimeout(() => {
+    element.classList.remove("shake-anim");
+  }, 300);
 }
