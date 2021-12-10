@@ -6,12 +6,13 @@ import { TaskList } from "../model/TaskList";
 const runBtn = document.getElementById("run") as HTMLButtonElement;
 const createTaskBtn = document.getElementById("create-task-btn") as HTMLButtonElement;
 const maxPointsInput = document.getElementById("points-input") as HTMLInputElement;
+const appBody = document.getElementById("app-body");
 
 let taskList: TaskList = undefined;
 
 Office.onReady((info) => {
   if (info.host === Office.HostType.Word) {
-    document.getElementById("app-body").style.display = "flex";
+    appBody.style.display = "flex";
     runBtn.onclick = run;
     createTaskBtn.onclick = createTask;
     Word.run(async (context) => {
@@ -35,13 +36,14 @@ export async function run() {
 
 export async function createTask() {
   return Word.run(async (context) => {
-    // Check for points
-
+    // Validate points input
     let maxPoints = maxPointsInput.value;
-
     if (!maxPoints || isNaN(parseInt(maxPoints))) {
       shake(document.getElementById("points-input-error"));
       return;
+    } else {
+      //Reset input field
+      maxPointsInput.value = "";
     }
 
     // Get the current selection
@@ -49,29 +51,21 @@ export async function createTask() {
 
     // Create a content control
     const cc = range.insertContentControl();
+
     // Visually signal content control creation
     cc.appearance = Word.ContentControlAppearance.boundingBox;
 
     // Associate ID with content control
-    const taskId = new Date().getMilliseconds() % 123523;
-    cc.title = "Task " + taskId;
+    const globalTaskId = new Date().getMilliseconds() % 123523;
+    cc.title = "Task " + globalTaskId;
     cc.tag = "Task";
 
-    const newTask = new Task(taskId, parseInt(maxPointsInput.value), cc);
-    maxPointsInput.value = "";
+    const newTask = new Task(globalTaskId, globalTaskId, parseInt(maxPoints), cc);
 
     taskList.addTask(newTask);
 
     // No need to wait for saving
     taskList.save(context);
-
-    //Set on delete handler
-    // @ts-ignore
-    cc.onDeleted.add((event) => {
-      // Also delete from task list
-      taskList.removeTask(newTask);
-      console.log("attempting to remove" + newTask);
-    });
 
     await context.sync();
   });
@@ -84,4 +78,5 @@ function shake(element: HTMLElement) {
   }, 300);
 }
 
+/* Log Task list for debugging purposes */
 setInterval(() => console.log(taskList), 2000);
