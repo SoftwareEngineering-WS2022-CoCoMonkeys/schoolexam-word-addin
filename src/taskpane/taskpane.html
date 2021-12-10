@@ -1,6 +1,3 @@
-<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
-<!-- This file shows how to design a first-run page that provides a welcome screen to the user about the features of the add-in. -->
-
 <!DOCTYPE html>
 <html>
 
@@ -16,7 +13,7 @@
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
     <!-- Office JavaScript API -->
-    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/beta/hosted/office.js"></script>
 
     <!-- Template styles -->
     <link href="taskpane.css" rel="stylesheet" type="text/css" />
@@ -28,14 +25,35 @@
             Run
         </button>
 
-        <div class="mdl-textfield mdl-js-textfield">
-            <input id="points-input" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
-            <label class="mdl-textfield__label" for="sample2">Max. Points</label>
-            <span id="points-input-error" class="mdl-textfield__error">Input is not a number!</span>
+        <div id="points-container">
+            <h3 id="points-container-heading">Task Overview</h3>
+            <div id="points-table-container">
+                <table id="points-table" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+                    <thead>
+                    <tr>
+                        <th class="mdl-data-table__cell--non-numeric">Task</th>
+                        <th>Points</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="mdl-data-table__cell--non-numeric">Aufgabe 1</td>
+                        <td>12</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="create-task-container">
+                <div id="points-input-container" class="mdl-textfield mdl-js-textfield">
+                    <input id="points-input" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                    <label class="mdl-textfield__label" for="sample2">Max. Points</label>
+                    <span id="points-input-error" class="mdl-textfield__error">Input is not a number!</span>
+                </div>
+                <button id="create-task-btn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                    Create Task
+                </button>
+            </div>
         </div>
-        <button id="create-task-btn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-            Create Task
-        </button>
     </main>
 </body>
 

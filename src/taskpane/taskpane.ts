@@ -1,8 +1,3 @@
-/*
- * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
- * See LICENSE in the project root for license information.
- */
-
 import { Task } from "../model/Task";
 import { TaskList } from "../model/TaskList";
 
@@ -20,6 +15,7 @@ Office.onReady((info) => {
     runBtn.onclick = run;
     createTaskBtn.onclick = createTask;
     Word.run(async (context) => {
+      // Initialize task list
       taskList = await TaskList.load(context);
     });
   }
@@ -27,10 +23,6 @@ Office.onReady((info) => {
 
 export async function run() {
   return Word.run(async (context) => {
-    /**
-     * Insert your Word code here
-     */
-
     // insert a paragraph at the end of the document.
     const paragraph = context.document.body.insertParagraph("Hello World modified", Word.InsertLocation.end);
 
@@ -61,7 +53,7 @@ export async function createTask() {
     cc.appearance = Word.ContentControlAppearance.boundingBox;
 
     // Associate ID with content control
-    const taskId = 1234;
+    const taskId = new Date().getMilliseconds() % 123523;
     cc.title = "Task " + taskId;
     cc.tag = "Task";
 
@@ -69,7 +61,17 @@ export async function createTask() {
     maxPointsInput.value = "";
 
     taskList.addTask(newTask);
+
+    // No need to wait for saving
     taskList.save(context);
+
+    //Set on delete handler
+    // @ts-ignore
+    cc.onDeleted.add((event) => {
+      // Also delete from task list
+      taskList.removeTask(newTask);
+      console.log("attempting to remove" + newTask);
+    });
 
     await context.sync();
   });
@@ -81,3 +83,5 @@ function shake(element: HTMLElement) {
     element.classList.remove("shake-anim");
   }, 300);
 }
+
+setInterval(() => console.log(taskList), 2000);

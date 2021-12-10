@@ -1,7 +1,7 @@
 import { Task } from "./Task";
 
 export class TaskList {
-  readonly tasks: Task[];
+  tasks: Task[];
 
   static propertyKey = "task-data";
 
@@ -10,7 +10,21 @@ export class TaskList {
   }
 
   addTask(task: Task) {
+    // Remove task first
+    if (this.removeTask(task)) {
+      console.warn("Overwriting existing task");
+    }
     this.tasks.push(task);
+  }
+
+  removeTask(task: Task): boolean {
+    const index = this.tasks.findIndex((t) => t.taskId == task.taskId);
+    if (index != -1) {
+      this.tasks.splice(index, 1);
+      return true;
+    } else {
+      return false;
+    }
   }
 
   async save(context) {

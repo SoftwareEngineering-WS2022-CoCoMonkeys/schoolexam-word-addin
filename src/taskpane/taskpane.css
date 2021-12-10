@@ -26,3 +26,33 @@
     font-weight: bold;
     transition: font-weight 0.2s;
 }
+
+#points-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#create-task-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#create-task-btn {
+    margin: 1rem;
+}
+
+#points-input-container {
+    margin-top: 2rem;
+    width: fit-content;
+}
+
+#points-table-container {
+    width: 100%;
+}
+
+#points-table {
+    width: 100%;
+}
+
