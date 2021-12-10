@@ -8,3 +8,7 @@ dist/
 # VSCode
 
 .vscode/
+
+# Jetbrains
+
+.idea/
