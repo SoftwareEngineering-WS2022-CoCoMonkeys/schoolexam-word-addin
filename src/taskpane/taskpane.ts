@@ -7,6 +7,7 @@ const runBtn = document.getElementById("run") as HTMLButtonElement;
 const createTaskBtn = document.getElementById("create-task-btn") as HTMLButtonElement;
 const maxPointsInput = document.getElementById("points-input") as HTMLInputElement;
 const appBody = document.getElementById("app-body");
+const resetTasksBtn = document.getElementById("reset-tasks-btn") as HTMLButtonElement;
 
 let taskList: TaskList = undefined;
 
@@ -15,6 +16,7 @@ Office.onReady((info) => {
     appBody.style.display = "flex";
     runBtn.onclick = run;
     createTaskBtn.onclick = createTask;
+    resetTasksBtn.onclick = resetTasks;
     Word.run(async (context) => {
       // Initialize task list
       taskList = await TaskList.load(context);
@@ -65,6 +67,15 @@ export async function createTask() {
     taskList.addTask(newTask);
 
     // No need to wait for saving
+    await taskList.save(context);
+
+    await context.sync();
+  });
+}
+
+export async function resetTasks() {
+  return Word.run(async (context) => {
+    taskList.clear(context);
     taskList.save(context);
 
     await context.sync();

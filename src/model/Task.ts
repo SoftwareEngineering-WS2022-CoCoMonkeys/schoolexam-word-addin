@@ -1,20 +1,16 @@
 export class Task {
 
-  constructor(globaltaskId, localTaskId, maxPoints, contentControl) {
+  constructor(globaltaskId, localTaskId, maxPoints, ccId) {
     this.globalTaskId = globaltaskId;
     this.localTaskId = localTaskId;
     this.maxPoints = maxPoints;
-    this.cc = contentControl;
+    this.ccId = ccId;
   }
 
   localTaskId: string;
   readonly globalTaskId: string;
   readonly maxPoints: number;
-  cc: Word.ContentControl;
-
-  bindContentControl(contentControl: Word.ContentControl) {
-    this.cc = contentControl;
-  }
+  ccId: number;
 
   toHtmlTableRow(): HTMLTableRowElement {
     let html = `<tr id="task-${this.localTaskId}">

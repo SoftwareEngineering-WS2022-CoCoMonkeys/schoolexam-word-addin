@@ -34,6 +34,17 @@ export class TaskList {
     }
   }
 
+  clear(context: Word.RequestContext) {
+    const ccs = context.document.contentControls;
+    for (const task of this.tasks) {
+      const cc = ccs.getById(task.ccId);
+      // keep the content
+      cc.delete(true);
+    }
+    this.tasks = [];
+    this.syncWithTable();
+  }
+
   syncWithTable() {
     // Remove all siblings
     taskTableBody.innerHTML = "";
@@ -44,7 +55,7 @@ export class TaskList {
     }
   }
 
-  async save(context) {
+  async save(context: Word.RequestContext) {
     // Overwrite task data
     context.document.properties.customProperties.add(TaskList.propertyKey, JSON.stringify(this));
     // Force subsequent saving
@@ -91,7 +102,12 @@ export class TaskList {
     const ccs = context.document.contentControls;
     for (const task of taskList.tasks) {
       const cc = ccs.getByTitle("Task " + task.localTaskId).getFirst();
-      task.cc = cc;
+
+      cc.load("id");
+
+      await context.sync();
+
+      task.ccId = cc.id;
     }
 
     taskList.syncWithTable();
