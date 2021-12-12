@@ -30,9 +30,25 @@
 #app-body {
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
-#tasks-container {
+h3 {
+    text-align: center;
+    font-weight: bold;
+}
+
+#hf-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+#hf-container button {
+    margin: 10px;
+}
+
+#task-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -70,5 +86,6 @@
 
 #reset-tasks-btn {
     background: indianred;
+    margin: 5%;
 }
 

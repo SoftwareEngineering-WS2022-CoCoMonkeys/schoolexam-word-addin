@@ -5,8 +5,8 @@
 <html>
 
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Contoso Task Pane Add-in</title>
 
@@ -19,88 +19,63 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/beta/hosted/office.js"></script>
 
     <!-- Template styles -->
-    <link href="taskpane.css" rel="stylesheet" type="text/css" />
+    <link href="taskpane.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <body>
-    <main id="app-body" style="display: none;">
-        <button role="button" id="run">
-            Run
-        </button>
-
-        <div id="task-container">
-            <h3 id="task-container-heading">Task Overview</h3>
-            <div id="task-table-container">
-                <table id="task-table" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-                    <thead id ="task-table-header">
-                    <tr>
-                        <th class="mdl-data-table__cell--non-numeric">Task (local)</th>
-                        <th class="mdl-data-table__cell--non-numeric">Task (global)</th>
-                        <th>Points</th>
-                    </tr>
-                    </thead>
-                    <tbody id="task-table-body">
-                    <tr>
-                        <td class="mdl-data-table__cell--non-numeric">Aufgabe 1</td>
-                        <td class="mdl-data-table__cell--non-numeric">Task ABC</td>
-                        <td>12</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="create-task-container">
-                <div id="points-input-container" class="mdl-textfield mdl-js-textfield">
-                    <input id="points-input" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
-                    <label class="mdl-textfield__label" for="sample2">Max. Points</label>
-                    <span id="points-input-error" class="mdl-textfield__error">Input is not a number!</span>
-                </div>
-                <button id="create-task-btn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-                    Create Task
-                </button>
-            </div>
-            <button id="reset-tasks-btn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-                Reset Tasks
-            </button>
-<body class="ms-font-m ms-welcome ms-Fabric">
-    <header class="ms-welcome__header ms-bgColor-neutralLighter">
-        <img width="90" height="90" src="../../assets/logo-filled.png" alt="School Exam Logo" title="School Exam Logo" />
-        <h1 class="ms-font-su">School Exam</h1>
-    </header>
-    <section id="sideload-msg" class="ms-welcome__main">
-        <h2 class="ms-font-xl">Please sideload your add-in to see app body.</h2>
-    </section>
-    <main id="app-body" class="ms-welcome__main" style="display: none;">
-
-        <!--<ul class="ms-List ms-welcome__features">
-            <li class="ms-ListItem">
-                <i class="ms-Icon ms-Icon--Ribbon ms-font-xl"></i>
-                <span class="ms-font-m">Achieve more with Office integration</span>
-            </li>
-            <li class="ms-ListItem">
-                <i class="ms-Icon ms-Icon--Unlock ms-font-xl"></i>
-                <span class="ms-font-m">Unlock features and functionality</span>
-            </li>
-            <li class="ms-ListItem">
-                <i class="ms-Icon ms-Icon--Design ms-font-xl"></i>
-                <span class="ms-font-m">Create and visualize like a pro</span>
-            </li>
-        </ul>-->
-        <!--<p class="ms-font-l">Modify the source files, then click <b>Run</b>.</p>-->
-
-        <h1 class="ms-font-xl"> Digitalize your exams today! </h1>
-        <div role="button" id="frontPageCreate" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
+<main id="app-body">
+    <h3 class="ms-font-xl">Digitalize your exams today! </h3>
+    <div id="hf-container">
+        <button role="button" id="frontPageCreate"
+                class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
             <span class="ms-Button-label">Create front page</span>
-        </div>
-        <div role="button" id="headerCreate" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
+        </button>
+        <button id="headerCreate" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
             <span class="ms-Button-label">Create header</span>
-        </div>
-        <div role="button" id="footerCreate" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
+        </button>
+        <button id="footerCreate" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
             <span class="ms-Button-label">Create footer</span>
-        </div>
-        <div role="button" id="run" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
-            <span class="ms-Button-label">Run</span>
-        </div>
-    </main>
-</body>
+        </button>
+        <button role="button" id="run">
+            Add Demo Content
+        </button>
+    </div>
 
+    <div id="task-container">
+        <h3 id="task-container-heading">Task Overview</h3>
+        <div id="task-table-container">
+            <table id="task-table" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+                <thead id="task-table-header">
+                <tr>
+                    <th class="mdl-data-table__cell--non-numeric">Task (local)</th>
+                    <th class="mdl-data-table__cell--non-numeric">Task (global)</th>
+                    <th>Points</th>
+                </tr>
+                </thead>
+                <tbody id="task-table-body">
+                <tr>
+                    <td class="mdl-data-table__cell--non-numeric">Aufgabe 1</td>
+                    <td class="mdl-data-table__cell--non-numeric">Task ABC</td>
+                    <td>12</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="create-task-container">
+            <div id="points-input-container" class="mdl-textfield mdl-js-textfield">
+                <input id="points-input" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?"
+                       id="sample2">
+                <label class="mdl-textfield__label" for="sample2">Max. Points</label>
+                <span id="points-input-error" class="mdl-textfield__error">Input is not a number!</span>
+            </div>
+            <button id="create-task-btn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                Create Task
+            </button>
+        </div>
+        <button id="reset-tasks-btn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+            Reset Tasks
+        </button>
+    </div>
+</main>
+</body>
 </html>
