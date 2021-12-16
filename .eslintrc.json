@@ -3,6 +3,6 @@
     "office-addins"
   ],
   "extends": [
-    "plugin:office-addins/recommended"
+    "plugin:office-addins/react"
   ]
 }
