@@ -1,13 +1,15 @@
 import * as React from "react";
 import {BaseButton, CommandBarButton, IIconProps, PrimaryButton, Stack, TextField, Text, List} from "@fluentui/react";
+import TaskList from "../../../model/TaskList";
 
 
 export interface NewTaskFormProps {
-
+    addTask: (maxPoints: number) => void;
 }
 
 export interface NewTaskFormState {
     expanded: boolean;
+    pointsInput: number | null;
 }
 
 export default class NewTaskForm extends React.Component<NewTaskFormProps, NewTaskFormState> {
@@ -15,17 +17,20 @@ export default class NewTaskForm extends React.Component<NewTaskFormProps, NewTa
     constructor(props) {
         super(props);
         this.state = {
-            expanded: false
+            expanded   : false,
+            pointsInput: null
         }
     }
 
-    onTaskAdded(event) { //TODO type
-        event.preventDefault();
-    }
 
     // Handler functions
     private expand = () => this.setState({expanded: true});
     private collapse = () => this.setState({expanded: false});
+    private onPointsInputChanged = (event) => this.setState({pointsInput: parseInt(event.target.value)});
+    private onTaskAdded = () => {
+        this.props.addTask(this.state.pointsInput);
+        this.collapse()
+    };
 
 
     // Render-only attributes
@@ -33,7 +38,6 @@ export default class NewTaskForm extends React.Component<NewTaskFormProps, NewTa
     private readonly backIcon: IIconProps = {iconName: 'Back'};
 
     render() {
-
         return (
             <div>
                 {this.state.expanded ?
@@ -52,7 +56,9 @@ export default class NewTaskForm extends React.Component<NewTaskFormProps, NewTa
                      </ul>
                      <Stack>
                          <TextField
-                             label="Punkte"/>
+                             label="Punkte"
+                             type="number"
+                             onChange={this.onPointsInputChanged}/>
                          <PrimaryButton
                              onClick={this.onTaskAdded}>
                              Aufgabe hinzufügen

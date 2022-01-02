@@ -24,14 +24,20 @@ export default class TaskView
     }
 
     componentDidMount() {
-        this.state.taskList.load().then(taskList => this.setState({taskList: taskList}))
+        this.state.taskList.load().then(taskList => {
+            this.setState({taskList: taskList})
+        })
+    }
+
+    private addTaskFromSelection = (maxPoints: number) => {
+        this.state.taskList.addTaskFromSelection(maxPoints, (taskList) => this.setState({taskList: taskList}));
     }
 
     render() {
         return (
             <div id="task-view">
                 <TaskTable taskList={this.state.taskList}/>
-                <NewTaskForm></NewTaskForm>
+                <NewTaskForm addTask={this.addTaskFromSelection}></NewTaskForm>
             </div>)
     }
 }

@@ -5,18 +5,16 @@ import {Task} from "./Task";
 export default abstract class WordPersistable<Type> {
     protected abstract propertyKey: string;
 
-    save(): void {
-        Word.run(async context => {
-            // Overwrite task data
-            context.document.properties.customProperties.add(this.propertyKey,
-                JSON.stringify(this));
-            // Force subsequent saving
-            context.document.save();
+    async save(context: Word.RequestContext): Promise<void> {
+        // Overwrite custom data
+        context.document.properties.customProperties.add(this.propertyKey,
+            JSON.stringify(this));
+        // Force saving of document
+        context.document.save();
 
-            await context.sync()
+        await context.sync()
 
-            console.log("Saved " + this.propertyKey);
-        });
+        console.log("Saved " + this.propertyKey + " as ", JSON.stringify(this));
     }
 
     async load(): Promise<Type> {
@@ -31,20 +29,22 @@ export default abstract class WordPersistable<Type> {
             await context.sync();
 
             const json = customProp.value;
-
             if (json == null) {
                 return this.newEmpty();
             }
 
             // Use custom reviver for parsing
             const obj = JSON.parse(json, this.reviver) as Type;
-
             this.init(obj, context);
+
+            console.log("Loaded", obj);
             return obj;
         });
     }
 
-    abstract init(obj, context: Word.RequestContext) : void;
-    abstract reviver(key, value) : any;
-    abstract newEmpty() : Type;
+    abstract init(obj, context: Word.RequestContext): void;
+
+    abstract reviver(key, value): any;
+
+    abstract newEmpty(): Type;
 }

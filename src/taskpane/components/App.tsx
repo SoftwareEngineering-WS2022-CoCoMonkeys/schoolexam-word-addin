@@ -2,6 +2,7 @@ import * as React from "react";
 import Progress from "./Progress";
 import TaskView from "./task/TaskView";
 import Header from "./Header";
+import './App.scss'
 
 /* global Word, require */
 
