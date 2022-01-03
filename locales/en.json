@@ -1,0 +1,13 @@
+{
+    "@metadata": {
+        "authors": [
+            "Marius Funk"
+        ],
+        "last-updated": "2021-12-14",
+        "locale": "en",
+        "message-documentation": ""
+    },
+    "appname-title": "School Exam",
+    "appname-sub-title": "Digitalize your exams today!",
+    "createFooterBtnText": "Create footer"
+}
