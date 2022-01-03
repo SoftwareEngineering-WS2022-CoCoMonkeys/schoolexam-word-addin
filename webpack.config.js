@@ -3,6 +3,9 @@
 const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const WebpackShellPluginNext = require("webpack-shell-plugin-next");
+
+const LocalizeAssetsPlugin = require("webpack-localize-assets-plugin");
 
 const urlDev = "https://localhost:3000/";
 const urlProd = "https://www.contoso.com/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
@@ -23,6 +26,7 @@ module.exports = async (env, options) => {
       commands: "./src/commands/commands.ts",
     },
     output: {
+      filename: "[name].[locale].js",
       devtoolModuleFilenameTemplate: "webpack:///[resource-path]?[loaders]",
       clean: true,
     },
@@ -90,6 +94,9 @@ module.exports = async (env, options) => {
         template: "./src/commands/commands.html",
         chunks: ["polyfill", "commands"],
       }),
+      //new LocalizeAssetsPlugin({
+      //  locales,
+      //}),
     ],
     devServer: {
       headers: {
