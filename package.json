@@ -29,6 +29,7 @@
     "@fluentui/react": "^8.34.0",
     "core-js": "^3.9.1",
     "es6-promise": "^4.2.8",
+    "graceful-fs": "^4.2.8",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
     "regenerator-runtime": "^0.13.7"

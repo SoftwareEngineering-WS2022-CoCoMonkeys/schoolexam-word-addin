@@ -1,3 +1,4 @@
+// @ts-ignore
 import * as React from "react";
 import { Spinner, SpinnerSize } from "@fluentui/react";
 

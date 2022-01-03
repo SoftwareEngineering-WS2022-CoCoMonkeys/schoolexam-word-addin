@@ -1,7 +1,9 @@
 import App from "./components/App";
 import { AppContainer } from "react-hot-loader";
+// @ts-ignore
 import { initializeIcons } from "@fluentui/font-icons-mdl2";
 import { ThemeProvider } from "@fluentui/react";
+// @ts-ignore
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
