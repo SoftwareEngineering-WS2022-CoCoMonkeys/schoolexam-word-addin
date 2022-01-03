@@ -12,3 +12,7 @@ dist/
 # Jetbrains
 
 .idea/
+
+# Other
+
+TODO.md

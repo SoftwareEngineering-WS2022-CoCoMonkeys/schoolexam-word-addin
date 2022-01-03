@@ -3,9 +3,7 @@
 const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const WebpackShellPluginNext = require("webpack-shell-plugin-next");
-
-const LocalizeAssetsPlugin = require("webpack-localize-assets-plugin");
+const webpack = require("webpack");
 
 const urlDev = "https://localhost:3000/";
 const urlProd = "https://www.contoso.com/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
@@ -22,11 +20,11 @@ module.exports = async (env, options) => {
     devtool: "source-map",
     entry: {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
-      taskpane: "./src/taskpane/taskpane.ts",
+      vendor: ["react", "react-dom", "core-js", "@fluentui/react"],
+      taskpane: ["react-hot-loader/patch", "./src/taskpane/index.tsx"],
       commands: "./src/commands/commands.ts",
     },
     output: {
-      filename: "[name].[locale].js",
       devtoolModuleFilenameTemplate: "webpack:///[resource-path]?[loaders]",
       clean: true,
     },
@@ -47,8 +45,8 @@ module.exports = async (env, options) => {
         },
         {
           test: /\.tsx?$/,
+          use: ["react-hot-loader/webpack", "ts-loader"],
           exclude: /node_modules/,
-          use: "ts-loader",
         },
         {
           test: /\.html$/,
@@ -62,14 +60,20 @@ module.exports = async (env, options) => {
             filename: "assets/[name][ext][query]",
           },
         },
+        {
+          test: /\.s[ac]ss$/i,
+          use: [
+            // Creates `style` nodes from JS strings
+            "style-loader",
+            // Translates CSS into CommonJS
+            "css-loader",
+            // Compiles Sass to CSS
+            "sass-loader",
+          ],
+        },
       ],
     },
     plugins: [
-      new HtmlWebpackPlugin({
-        filename: "taskpane.html",
-        template: "./src/taskpane/taskpane.html",
-        chunks: ["polyfill", "taskpane"],
-      }),
       new CopyWebpackPlugin({
         patterns: [
           {
@@ -90,15 +94,21 @@ module.exports = async (env, options) => {
         ],
       }),
       new HtmlWebpackPlugin({
+        filename: "taskpane.html",
+        template: "./src/taskpane/taskpane.html",
+        chunks: ["taskpane", "vendor", "polyfills"],
+      }),
+      new HtmlWebpackPlugin({
         filename: "commands.html",
         template: "./src/commands/commands.html",
-        chunks: ["polyfill", "commands"],
+        chunks: ["commands"],
       }),
-      //new LocalizeAssetsPlugin({
-      //  locales,
-      //}),
+      new webpack.ProvidePlugin({
+        Promise: ["es6-promise", "Promise"],
+      }),
     ],
     devServer: {
+      hot: true,
       headers: {
         "Access-Control-Allow-Origin": "*",
       },

@@ -1,85 +1,19 @@
-<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
-<!-- This file shows how to design a first-run page that provides a welcome screen to the user about the features of the add-in. -->
-
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html data-framework="typescript" lang="en">
 
 <head>
-    <meta charset="UTF-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Contoso Task Pane Add-in</title>
+  <meta charset="utf-8" />
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Contoso Task Pane Add-in</title>
 
-    <!-- MDL -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <!-- Office JavaScript API -->
+  <script src="https://appsforoffice.microsoft.com/lib/beta/hosted/office.js" type="text/javascript"></script>
 
-    <!-- Office JavaScript API -->
-    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/beta/hosted/office.js"></script>
-
-    <!-- Template styles -->
-    <link href="taskpane.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <body>
-<main id="app-body">
-    <h3 class="ms-font-xl">Digitalize your exams today!</h3>
-    <div id="hf-container">
-        <button role="button" id="frontPageCreate"
-                class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-            <span class="ms-Button-label">Create front page</span>
-        </button>
-        <button id="headerCreate" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-            <span class="ms-Button-label">Create header</span>
-        </button>
-        <button id="footerCreate" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-            <span class="ms-Button-label">Create footer</script></span>
-        </button>
-        <button role="button" id="run">
-            Add Demo Content
-        </button>
-        <br>
-        <button role="exportExam" id="run">
-            Export finished exam to server
-        </button>
-    </div>
-
-    <div id="task-container">
-        <h3 id="task-container-heading">Task Overview</h3>
-        <div id="task-table-container">
-            <table id="task-table" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-                <thead id="task-table-header">
-                <tr>
-                    <th class="mdl-data-table__cell--non-numeric">Task (local)</th>
-                    <th class="mdl-data-table__cell--non-numeric">Task (global)</th>
-                    <th>Points</th>
-                </tr>
-                </thead>
-                <tbody id="task-table-body">
-                <tr>
-                    <td class="mdl-data-table__cell--non-numeric">Aufgabe 1</td>
-                    <td class="mdl-data-table__cell--non-numeric">Task ABC</td>
-                    <td>12</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div id="create-task-container">
-            <div id="points-input-container" class="mdl-textfield mdl-js-textfield">
-                <input id="points-input" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?"
-                       id="sample2">
-                <label class="mdl-textfield__label" for="sample2">Max. Points</label>
-                <span id="points-input-error" class="mdl-textfield__error">Input is not a number!</span>
-            </div>
-            <button id="create-task-btn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-                Create Task
-            </button>
-        </div>
-        <button id="reset-tasks-btn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-            Reset Tasks
-        </button>
-    </div>
-</main>
+<div id="container"></div>
 </body>
+
 </html>
