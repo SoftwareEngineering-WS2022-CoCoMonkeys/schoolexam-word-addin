@@ -8,9 +8,7 @@ export interface TaskTableProps {
   taskList: TaskList;
 }
 
-export interface TaskTableState {}
-
-export default class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
+export default class TaskTable extends React.Component<TaskTableProps, any> {
   constructor(props) {
     super(props);
   }

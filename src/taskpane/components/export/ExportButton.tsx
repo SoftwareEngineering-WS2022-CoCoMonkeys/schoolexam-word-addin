@@ -3,9 +3,7 @@ import { DefaultButton } from "@fluentui/react";
 import * as React from "react";
 import "./ExportButton.scss";
 
-export interface ExportButtonProps {}
-
-export default class ExportButton extends React.Component<ExportButtonProps, any> {
+export default class ExportButton extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }

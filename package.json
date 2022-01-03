@@ -49,7 +49,7 @@
     "babel-loader": "^8.2.2",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.5.1",
-    "eslint": "^7.20.0",
+    "eslint": "^7.32.0",
     "eslint-plugin-office-addins": "^1.1.0",
     "eslint-plugin-react": "^7.16.0",
     "file-loader": "^6.2.0",

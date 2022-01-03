@@ -6,6 +6,7 @@ import "./App.scss";
 
 import { Navbar } from "./taskpaneDesign/Navbar";
 
+// eslint-disable-next-line no-unused-vars
 /* global Word, require */
 
 export interface AppProps {
@@ -13,9 +14,7 @@ export interface AppProps {
   isOfficeInitialized: boolean;
 }
 
-export interface AppState {}
-
-export default class App extends React.Component<AppProps, AppState> {
+export default class App extends React.Component<AppProps, any> {
   constructor(props, context) {
     super(props, context);
     this.state = {

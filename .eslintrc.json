@@ -3,6 +3,14 @@
     "office-addins"
   ],
   "extends": [
-    "plugin:office-addins/react"
-  ]
+    "plugin:office-addins/react",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "indent": [
+      "error",
+      2
+    ]
+  }
 }

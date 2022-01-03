@@ -1,12 +1,11 @@
 /* eslint-disable no-undef */
 import { DefaultButton } from "@fluentui/react";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import * as React from "react";
 import "./PageHeader.scss";
 
-export interface PageHeaderProps {}
-
-export default class PageHeader extends React.Component<PageHeaderProps, any> {
+export default class PageHeader extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }
@@ -22,7 +21,7 @@ function _createPageHeader(): void {
     const header = sections.getFirst().getHeader(Word.HeaderFooterType.primary);
     header.clear();
     // eslint-disable-next-line prettier/prettier
-          const paragraph = header.insertParagraph(
+    const paragraph = header.insertParagraph(
       "Name: _______________________     Datum: _______________________",
       Word.InsertLocation.end
     );

@@ -4,9 +4,7 @@ import { DefaultButton } from "@fluentui/react";
 import * as React from "react";
 import "./PageFooter.scss";
 
-export interface PageFooterProps {}
-
-export default class PageFooter extends React.Component<PageFooterProps, any> {
+export default class PageFooter extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }
@@ -31,9 +29,9 @@ function _createFooter(): void {
     const footer = sections.getFirst().getFooter(Word.HeaderFooterType.primary);
     footer.clear();
     const paragraph = footer.insertParagraph("      " + String(Date()), Word.InsertLocation.end);
-    var qrCode = getQrCodeBase64();
+    const qrCode = getQrCodeBase64();
     footer.insertInlinePictureFromBase64(qrCode, Word.InsertLocation.start);
-    var firstPicture = footer.inlinePictures.getFirstOrNullObject();
+    const firstPicture = footer.inlinePictures.getFirstOrNullObject();
     firstPicture.height = 30;
     paragraph.font.bold = true;
     paragraph.alignment = Word.Alignment.left;

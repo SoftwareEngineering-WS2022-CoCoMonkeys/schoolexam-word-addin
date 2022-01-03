@@ -2,9 +2,7 @@
 import * as React from "react";
 import "./Header.scss";
 
-export interface HeaderProps {}
-
-export default class Header extends React.Component<HeaderProps, any> {
+export default class Header extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }

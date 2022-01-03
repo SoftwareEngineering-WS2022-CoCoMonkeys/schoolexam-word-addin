@@ -5,13 +5,11 @@ import TaskList from "../../../model/TaskList";
 import NewTaskForm from "./NewTaskForm";
 import "./TaskView.scss";
 
-export interface TaskViewProps {}
-
 export interface TaskViewState {
   taskList: TaskList;
 }
 
-export default class TaskView extends React.Component<TaskViewProps, TaskViewState> {
+export default class TaskView extends React.Component<any, TaskViewState> {
   constructor(props) {
     super(props);
 
@@ -27,10 +25,6 @@ export default class TaskView extends React.Component<TaskViewProps, TaskViewSta
     });
   }
 
-  private addTaskFromSelection = (maxPoints: number) => {
-    this.state.taskList.addTaskFromSelection(maxPoints, (taskList) => this.setState({ taskList: taskList }));
-  };
-
   render() {
     return (
       <div id="task-view">
@@ -39,4 +33,8 @@ export default class TaskView extends React.Component<TaskViewProps, TaskViewSta
       </div>
     );
   }
+
+  private addTaskFromSelection = (maxPoints: number) => {
+    this.state.taskList.addTaskFromSelection(maxPoints, (taskList) => this.setState({ taskList: taskList }));
+  };
 }

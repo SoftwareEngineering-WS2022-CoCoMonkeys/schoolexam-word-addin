@@ -4,9 +4,7 @@ import { DefaultButton } from "@fluentui/react";
 import * as React from "react";
 import "./DocumentTitlePage.scss";
 
-export interface DocumentTitlePageProps {}
-
-export default class DocumentTitlePage extends React.Component<DocumentTitlePageProps, any> {
+export default class DocumentTitlePage extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }
@@ -18,7 +16,7 @@ export default class DocumentTitlePage extends React.Component<DocumentTitlePage
 
 function _createFrontPage(): void {
   Word.run(async (context) => {
-    var firstParagraph = context.document.body.paragraphs.getFirst();
+    const firstParagraph = context.document.body.paragraphs.getFirst();
 
     firstParagraph.font.set({
       bold: true,
