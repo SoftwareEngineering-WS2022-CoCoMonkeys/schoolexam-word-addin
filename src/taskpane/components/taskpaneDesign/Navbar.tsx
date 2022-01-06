@@ -3,11 +3,9 @@ import * as React from "react";
 // eslint-disable-next-line no-unused-vars
 import { ILabelStyles, IStyleSet, Pivot, PivotItem, Stack } from "@fluentui/react";
 import TaskView from "../task/TaskView";
-import DocumentTitlePage from "../structural/DocumentTitlePage";
-import PageHeader from "../structural/PageHeader";
-import PageFooter from "../structural/PageFooter";
 import ExportButton from "../export/exportButton";
 import "./Navbar.scss";
+import { StructureNavbar } from "../structural/StructureNavbar";
 
 export const Navbar: React.FunctionComponent = () => {
   return (
@@ -18,16 +16,14 @@ export const Navbar: React.FunctionComponent = () => {
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Struktur" itemIcon="BulletedTreeList">
           <Stack horizontal>
-            <DocumentTitlePage />
-            <PageHeader />
-            <PageFooter />
+            <StructureNavbar />
           </Stack>
         </PivotItem>
-        <PivotItem className="pivot-item" headerText="Einstellungen" itemIcon="Settings">
+        <PivotItem className="pivot-item" headerText="Extras" itemIcon="Star">
           //TODO
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Exportieren" itemIcon="Share">
-          <ExportButton></ExportButton>
+          <ExportButton />
         </PivotItem>
       </Pivot>
     </div>
