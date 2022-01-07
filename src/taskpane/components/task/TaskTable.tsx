@@ -1,4 +1,3 @@
-// @ts-ignore
 import * as React from "react";
 import { DetailsList, IColumn } from "@fluentui/react";
 import TaskList from "../../../model/TaskList";

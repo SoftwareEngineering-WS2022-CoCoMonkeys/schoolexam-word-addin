@@ -1,40 +1,27 @@
-// @ts-ignore
 import * as React from "react";
 import TaskTable from "./TaskTable";
 import TaskList from "../../../model/TaskList";
 import NewTaskForm from "./NewTaskForm";
 import "./TaskView.scss";
+import { useEffect, useState } from "react";
 
-export interface TaskViewState {
-  taskList: TaskList;
-}
+export default function TaskView(_props: any) {
+  const [taskList, setTaskList] = useState(new TaskList());
 
-export default class TaskView extends React.Component<any, TaskViewState> {
-  constructor(props) {
-    super(props);
-
-    // Initialize state
-    this.state = {
-      taskList: new TaskList(),
-    };
-  }
-
-  componentDidMount() {
-    this.state.taskList.load().then((taskList) => {
-      this.setState({ taskList: taskList });
+  useEffect(() => {
+    taskList.load().then((taskList) => {
+      setTaskList(taskList);
     });
-  }
+  }, []);
 
-  render() {
-    return (
-      <div id="task-view">
-        <TaskTable taskList={this.state.taskList} />
-        <NewTaskForm addTask={this.addTaskFromSelection}></NewTaskForm>
-      </div>
-    );
-  }
-
-  private addTaskFromSelection = (maxPoints: number) => {
-    this.state.taskList.addTaskFromSelection(maxPoints, (taskList) => this.setState({ taskList: taskList }));
+  const addTaskFromSelection = (maxPoints: number) => {
+    this.state.taskList.addTaskFromSelection(maxPoints, (taskList) => setTaskList(taskList));
   };
+
+  return (
+    <div id="task-view">
+      <TaskTable taskList={taskList} />
+      <NewTaskForm addTask={addTaskFromSelection}></NewTaskForm>
+    </div>
+  );
 }

@@ -1,7 +1,5 @@
-/* eslint-disable no-undef */
 import { DefaultButton } from "@fluentui/react";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+
 import * as React from "react";
 import "./PageHeader.scss";
 

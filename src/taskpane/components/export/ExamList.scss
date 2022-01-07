@@ -1,0 +1,20 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.exam-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  width: 100%;
+}
+
+.exam-cell:hover {
+  background-color: lightgray;
+  cursor: pointer;
+
+  @include ms-depth-8;
+}
+
+#exam-list {
+  width: 100%;
+}

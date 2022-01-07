@@ -5,8 +5,8 @@ import Header from "./taskpaneDesign/Header";
 import "./App.scss";
 
 import { Navbar } from "./taskpaneDesign/Navbar";
+import LoginForm from "./login/LoginForm";
 
-// eslint-disable-next-line no-unused-vars
 /* global Word, require */
 
 export interface AppProps {
@@ -14,13 +14,24 @@ export interface AppProps {
   isOfficeInitialized: boolean;
 }
 
-export default class App extends React.Component<AppProps, any> {
-  constructor(props, context) {
-    super(props, context);
+export interface AppState {
+  displayLogin: boolean;
+}
+
+export default class App extends React.Component<AppProps, AppState> {
+  constructor(props) {
+    super(props);
     this.state = {
-      listItems: [],
+      displayLogin: false,
     };
   }
+
+  private readonly onLoginClick = () => {
+    this.setState((prevState) => ({
+      displayLogin: !prevState.displayLogin,
+    }));
+    console.log(this.state.displayLogin);
+  };
 
   render() {
     const { title, isOfficeInitialized } = this.props;
@@ -37,8 +48,12 @@ export default class App extends React.Component<AppProps, any> {
 
     return (
       <div id="app-main">
-        <Header></Header>
-        <Navbar></Navbar>
+        <Header
+          onExpandLogin={() => this.setState({ displayLogin: true })}
+          onCollapseLogin={() => this.setState({ displayLogin: false })}
+          loginPageDisplayed={this.state.displayLogin}
+        />
+        {this.state.displayLogin ? <LoginForm /> : <Navbar />}
       </div>
     );
   }

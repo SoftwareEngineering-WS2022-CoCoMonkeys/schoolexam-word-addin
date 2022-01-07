@@ -1,6 +1,5 @@
-/* eslint-disable no-undef */
 import { DefaultButton } from "@fluentui/react";
-// @ts-ignore
+
 import * as React from "react";
 import "./PageFooter.scss";
 import { getQrCodeBase64 } from "./structuralUtil";

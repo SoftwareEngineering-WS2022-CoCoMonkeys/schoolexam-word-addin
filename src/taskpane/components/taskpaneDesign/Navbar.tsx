@@ -1,13 +1,11 @@
-// @ts-ignore
 import * as React from "react";
-// eslint-disable-next-line no-unused-vars
-import { ILabelStyles, IStyleSet, Pivot, PivotItem, Stack } from "@fluentui/react";
+import { Pivot, PivotItem, Stack } from "@fluentui/react";
 import TaskView from "../task/TaskView";
-import ExportButton from "../export/exportButton";
+import ExportView from "../export/ExportView";
 import "./Navbar.scss";
 import { StructureNavbar } from "../structural/StructureNavbar";
 
-export const Navbar: React.FunctionComponent = () => {
+export default function Navbar(props) {
   return (
     <div>
       <Pivot aria-label="NavigationBar">
@@ -23,12 +21,12 @@ export const Navbar: React.FunctionComponent = () => {
           //TODO
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Exportieren" itemIcon="Share">
-          <ExportButton />
+          <ExportView></ExportView>
         </PivotItem>
       </Pivot>
     </div>
   );
-};
+}
 // </Pivot>onRenderItemLink={_customRenderer}>
 /*
  function _customRenderer(

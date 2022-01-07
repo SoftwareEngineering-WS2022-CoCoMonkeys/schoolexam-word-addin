@@ -1,5 +1,4 @@
 import { DefaultButton, Calendar, defaultCalendarStrings } from "@fluentui/react";
-// @ts-ignore
 import * as React from "react";
 import "./DocumentTitlePage.scss";
 import { getQrCodeBase64 } from "./structuralUtil";
@@ -27,33 +26,27 @@ function _createFrontPage(): void {
       bold: true,
     });
 
-
     const tableParagraph = context.document.body.paragraphs.getFirst();
 
-    var tableData = [
-      ["Name", "ID"]
-    ];
-    var table = tableParagraph.insertTable(1, 2, Word.InsertLocation.after, null);
+    const tableData = [["Name", "ID"]];
+    const table = tableParagraph.insertTable(1, 2, Word.InsertLocation.after, null);
     table.getBorder(Word.BorderLocation.all).type = "None";
 
-    var leftSide = table.getCell(0,0);
+    const leftSide = table.getCell(0, 0);
     leftSide.columnWidth = 30;
     leftSide.setCellPadding(Word.CellPaddingLocation.bottom, 1);
     leftSide.body.insertInlinePictureFromBase64(getQrCodeBase64(), Word.InsertLocation.start);
-    
-    var rightSide = table.getCell(0,1);
+
+    const rightSide = table.getCell(0, 1);
     rightSide.columnWidth = 400;
     rightSide.body.insertHtml(
       "<br>  <div style='text-align:center'>1. Schulaufgabe <br>  <br> " + String(Date() + "</div><br> <br>"),
       Word.InsertLocation.start
-      );
-
+    );
 
     await context.sync();
   });
 }
-
-
 
 function _createFrontPageOld(): void {
   Word.run(async (context) => {
@@ -67,11 +60,10 @@ function _createFrontPageOld(): void {
     const paragraph = context.document.body.insertHtml(
       "<br>  <div style='text-align:center'>FRONT PAGE</div> <br>  <br> " + String(Date() + "<br> <br>"),
       Word.InsertLocation.start
-      );
+    );
     // change the paragraph color to blue.
     paragraph.font.color = "black";
-    context.document.body.insertInlinePictureFromBase64(getQrCodeBase64(), Word.InsertLocation.start)
-    
+    context.document.body.insertInlinePictureFromBase64(getQrCodeBase64(), Word.InsertLocation.start);
 
     await context.sync();
   });
