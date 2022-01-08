@@ -1,59 +1,44 @@
 import * as React from "react";
-import axios from "axios";
 import { PrimaryButton, SpinnerSize, Stack, TextField, Spinner, MessageBar, MessageBarType } from "@fluentui/react";
 import "./LoginForm.scss";
 import AuthService from "./AuthService";
+import { useState } from "react";
 
-export interface LoginFormState {
-  username: string | null;
-  password: string | null;
-  waitingForResponse: boolean;
-  loginSuccessful: boolean | null;
-}
+export default function LoginForm(_props: any) {
+  const [username, setUsername] = useState(null as string);
+  const [password, setPassword] = useState(null as string);
+  const [waiting, setWaiting] = useState(false);
+  const [loginSuccessful, setLoginSuccessful] = useState(null as boolean);
 
-export default class LoginForm extends React.Component<any, LoginFormState> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: null,
-      password: null,
-      waitingForResponse: false,
-      loginSuccessful: null,
-    };
+  function onLoginSubmit() {
+    setWaiting(true);
+    AuthService.login(username, password).then((loginSuccessful) => {
+      setLoginSuccessful(loginSuccessful);
+      setWaiting(false);
+    });
   }
 
-  private readonly onLoginSubmit = () => {
-    this.setState({
-      waitingForResponse: true,
-    });
-    AuthService.login(this.state.username, this.state.password).then((loginSuccessful) => {
-      this.setState({ loginSuccessful: loginSuccessful, waitingForResponse: false });
-    });
-  };
-
-  render() {
-    return (
-      <div id="login-form">
-        {this.state.loginSuccessful != null && !this.state.loginSuccessful ? (
-          <MessageBar
-            messageBarType={MessageBarType.error}
-            isMultiline={true}
-            onDismiss={() => this.setState({ loginSuccessful: null })}
-            dismissButtonAriaLabel="Close"
-          >
-            Ungültige Kombination aus Nutzername und Passwort
-          </MessageBar>
-        ) : (
-          ""
-        )}
-        <Stack>
-          <TextField label="Nutzername" onChange={(event) => this.setState({ username: event.currentTarget.value })} />
-          <TextField label="Passwort" onChange={(event) => this.setState({ password: event.currentTarget.value })} />
-          <PrimaryButton id="submit-login-btn" className="margin-btn" onClick={this.onLoginSubmit}>
-            {this.state.waitingForResponse ? <Spinner size={SpinnerSize.small} /> : "Einloggen"}
-          </PrimaryButton>
-        </Stack>
-      </div>
-    );
-  }
+  return (
+    <div id="login-form">
+      {loginSuccessful != null && !loginSuccessful ? (
+        <MessageBar
+          messageBarType={MessageBarType.error}
+          isMultiline={true}
+          onDismiss={() => setLoginSuccessful(null)}
+          dismissButtonAriaLabel="Close"
+        >
+          Ungültige Kombination aus Nutzername und Passwort
+        </MessageBar>
+      ) : (
+        ""
+      )}
+      <Stack>
+        <TextField label="Nutzername" onChange={(event) => setUsername(event.currentTarget.value)} />
+        <TextField label="Passwort" onChange={(event) => setPassword(event.currentTarget.value)} />
+        <PrimaryButton id="submit-login-btn" className="margin-btn" onClick={this.onLoginSubmit}>
+          {waiting ? <Spinner size={SpinnerSize.small} /> : "Einloggen"}
+        </PrimaryButton>
+      </Stack>
+    </div>
+  );
 }

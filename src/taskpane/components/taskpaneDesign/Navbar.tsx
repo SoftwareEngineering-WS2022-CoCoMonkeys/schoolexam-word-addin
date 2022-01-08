@@ -5,7 +5,7 @@ import ExportView from "../export/ExportView";
 import "./Navbar.scss";
 import { StructureNavbar } from "../structural/StructureNavbar";
 
-export default function Navbar(props) {
+export default function Navbar(_props) {
   return (
     <div>
       <Pivot aria-label="NavigationBar">

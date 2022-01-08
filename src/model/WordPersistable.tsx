@@ -31,15 +31,15 @@ export default abstract class WordPersistable<Type> {
       }
 
       // Use custom reviver for parsing
-      const obj = JSON.parse(json, this.reviver) as Type;
-      this.init(obj, context);
+      const loadedObject = JSON.parse(json, this.reviver) as Type;
+      this.init(loadedObject, context);
 
-      console.log("Loaded", obj);
-      return obj;
+      console.log("Loaded", loadedObject);
+      return loadedObject;
     });
   }
 
-  abstract init(obj, context: Word.RequestContext): void;
+  abstract init(loadedObject: Type, context: Word.RequestContext): void;
 
   abstract reviver(key, value): any;
 

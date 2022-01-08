@@ -15,13 +15,13 @@ export default function TaskView(_props: any) {
   }, []);
 
   const addTaskFromSelection = (maxPoints: number) => {
-    this.state.taskList.addTaskFromSelection(maxPoints, (taskList) => setTaskList(taskList));
+    taskList.addTaskFromSelection(maxPoints).then((taskList) => setTaskList(taskList));
   };
 
   return (
     <div id="task-view">
       <TaskTable taskList={taskList} />
-      <NewTaskForm addTask={addTaskFromSelection}></NewTaskForm>
+      <NewTaskForm onTaskAdded={addTaskFromSelection}></NewTaskForm>
     </div>
   );
 }

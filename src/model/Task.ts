@@ -1,12 +1,12 @@
 export class Task {
   taskId: string;
-  parentTaskId: string | null;
+  title: string;
   maxPoints: number;
   ccId: number;
 
-  constructor(taskId: string, parentTaskId: string, maxPoints: number, ccId: number) {
+  constructor(taskId: string, title: string, maxPoints: number, ccId: number) {
     this.taskId = taskId;
-    this.parentTaskId = parentTaskId;
+    this.title = title;
     this.maxPoints = maxPoints;
     this.ccId = ccId;
   }

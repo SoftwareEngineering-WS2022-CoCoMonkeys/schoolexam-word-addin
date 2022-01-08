@@ -15,8 +15,8 @@ export default class TaskList extends WordPersistable<TaskList> {
     return this.tasks;
   }
 
-  addTaskFromSelection(maxPoints: number, callback: (taskList: TaskList) => void): void {
-    Word.run(async (context) => {
+  addTaskFromSelection(maxPoints: number): Promise<TaskList> {
+    return Word.run<TaskList>(async (context) => {
       // Get the current selection
       const range = context.document.getSelection();
 
@@ -38,7 +38,7 @@ export default class TaskList extends WordPersistable<TaskList> {
 
       await context.sync();
 
-      const newTask = new Task(globalTaskId, globalTaskId, maxPoints, cc.id);
+      const newTask = new Task(globalTaskId, "Task " + globalTaskId, maxPoints, cc.id);
 
       this.addTask(newTask);
 
@@ -46,8 +46,7 @@ export default class TaskList extends WordPersistable<TaskList> {
 
       await context.sync();
 
-      // Execute caller-supplied functions
-      callback(this);
+      return this;
     });
   }
 
@@ -107,7 +106,7 @@ export default class TaskList extends WordPersistable<TaskList> {
 
   newEmpty(): TaskList {
     const t = new TaskList();
-    t.tasks = [new Task("123", "123", 3, 0)];
+    t.tasks = [new Task("123", "Aufgabe 3", 3, 0)];
     return t;
   }
 }

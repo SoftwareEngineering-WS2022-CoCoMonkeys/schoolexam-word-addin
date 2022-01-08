@@ -1,4 +1,3 @@
-// @ts-ignore
 import * as React from "react";
 import { Spinner, SpinnerSize } from "@fluentui/react";
 
@@ -8,8 +7,6 @@ export interface ProgressProps {
   title: string;
 }
 
-export default class Progress extends React.Component<ProgressProps> {
-  render() {
-    return <Spinner size={SpinnerSize.large} label={this.props.message} />;
-  }
+export default function Progress(props: ProgressProps) {
+  return <Spinner size={SpinnerSize.large} label={props.message} />;
 }

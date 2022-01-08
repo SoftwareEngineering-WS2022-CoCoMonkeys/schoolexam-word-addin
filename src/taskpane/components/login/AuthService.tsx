@@ -1,7 +1,7 @@
 import axios from "axios";
 
 class AuthService {
-  private readonly AUTH_URL = "localhost";
+  private readonly AUTH_URL = "10.33.196.27:55011/Authenticate";
 
   login(username: string, password: string): Promise<boolean> {
     return axios.post(this.AUTH_URL, { username, password }).then((response) => {

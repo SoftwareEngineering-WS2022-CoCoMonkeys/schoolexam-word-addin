@@ -5,16 +5,7 @@ export interface BackButtonProps {
   onBack: (event) => void;
 }
 
-export default class BackButton extends React.Component<BackButtonProps, any> {
-  constructor(props) {
-    super(props);
-  }
-
-  private readonly backIcon: IIconProps = { iconName: "Back" };
-
-  render() {
-    return (
-      <CommandBarButton iconProps={this.backIcon} className="margin-btn" text="Zurück" onClick={this.props.onBack} />
-    );
-  }
+export default function BackButton(props: BackButtonProps) {
+  const backIcon: IIconProps = { iconName: "Back" };
+  return <CommandBarButton iconProps={backIcon} className="margin-btn" text="Zurück" onClick={props.onBack} />;
 }
