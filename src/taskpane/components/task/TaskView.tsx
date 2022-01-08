@@ -7,15 +7,14 @@ import { useEffect, useState } from "react";
 
 export interface TaskViewProps {
   taskList: TaskList;
-  editTask: (taskId: string, fieldName: string, newValue: any) => void;
-  addTask: (maxPoints: number) => void;
+  setTaskList: (taskList: TaskList) => void;
 }
 
 export default function TaskView(props: TaskViewProps) {
   return (
     <div id="task-view">
-      <TaskTable editTask={props.editTask} taskList={props.taskList} />
-      <NewTaskForm addTask={props.addTask} />
+      <TaskTable taskList={props.taskList} setTaskList={props.setTaskList} />
+      <NewTaskForm taskList={props.taskList} setTaskList={props.setTaskList} />
     </div>
   );
 }

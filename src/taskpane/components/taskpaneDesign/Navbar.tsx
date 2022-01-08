@@ -23,22 +23,11 @@ export default function Navbar(_props) {
     console.log(taskList.getLength());
   });
 
-  function addTaskFromSelection(maxPoints: number): void {
-    taskList.addTaskFromSelection(maxPoints).then((taskList) => {
-      setTaskList(taskList);
-    });
-  }
-
-  function editTask(taskId: string, fieldName: string, newValue: any): void {
-    taskList.editTask(taskId, fieldName, newValue);
-    setTaskList(taskList);
-  }
-
   return (
     <div>
       <Pivot aria-label="NavigationBar">
         <PivotItem className="pivot-item" headerText="Aufgaben" itemCount={taskList.getLength()} itemIcon="Dictionary">
-          <TaskView taskList={taskList} addTask={addTaskFromSelection} editTask={editTask} />
+          <TaskView taskList={taskList} setTaskList={setTaskList} />
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Struktur" itemIcon="BulletedTreeList">
           <Stack horizontal>
