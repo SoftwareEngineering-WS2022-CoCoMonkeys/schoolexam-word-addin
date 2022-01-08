@@ -35,7 +35,7 @@ export default function LoginForm(_props: any) {
       <Stack>
         <TextField label="Nutzername" onChange={(event) => setUsername(event.currentTarget.value)} />
         <TextField label="Passwort" onChange={(event) => setPassword(event.currentTarget.value)} />
-        <PrimaryButton id="submit-login-btn" className="margin-btn" onClick={this.onLoginSubmit}>
+        <PrimaryButton id="submit-login-btn" className="margin-btn" onClick={onLoginSubmit}>
           {waiting ? <Spinner size={SpinnerSize.small} /> : "Einloggen"}
         </PrimaryButton>
       </Stack>

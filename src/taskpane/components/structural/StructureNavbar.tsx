@@ -5,8 +5,6 @@ import PageFooter from "./PageFooter";
 import "./StructureNavbar.scss";
 import DocumentTitlePage from "./DocumentTitlePage";
 
-const labelStyles: Partial<IStyleSet<ILabelStyles>> = {
-};
 export const StructureNavbar: React.FunctionComponent = () => (
   <div>
     <Pivot aria-label="StructureNavigationBar">

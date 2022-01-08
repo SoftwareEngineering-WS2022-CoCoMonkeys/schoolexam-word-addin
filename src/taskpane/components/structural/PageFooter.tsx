@@ -26,6 +26,9 @@ function _createFooter(footerText): void {
   Word.run(async (context) => {
     const footer = context.document.sections.getFirst().getFooter(Word.HeaderFooterType.primary);
     footer.clear();
+
+    //context.document.sections.getFirst().getHeader().
+
     const paragraph = footer.insertParagraph(footerText, Word.InsertLocation.end);
     const qrCode = getQrCodeBase64();
     footer.insertInlinePictureFromBase64(qrCode, Word.InsertLocation.start);

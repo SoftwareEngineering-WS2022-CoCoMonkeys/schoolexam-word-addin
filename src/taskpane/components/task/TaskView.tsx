@@ -5,23 +5,17 @@ import NewTaskForm from "./NewTaskForm";
 import "./TaskView.scss";
 import { useEffect, useState } from "react";
 
-export default function TaskView(_props: any) {
-  const [taskList, setTaskList] = useState(new TaskList());
+export interface TaskViewProps {
+  taskList: TaskList;
+  editTask: (taskId: string, fieldName: string, newValue: any) => void;
+  addTask: (maxPoints: number) => void;
+}
 
-  useEffect(() => {
-    taskList.load().then((taskList) => {
-      setTaskList(taskList);
-    });
-  }, []);
-
-  const addTaskFromSelection = (maxPoints: number) => {
-    taskList.addTaskFromSelection(maxPoints).then((taskList) => setTaskList(taskList));
-  };
-
+export default function TaskView(props: TaskViewProps) {
   return (
     <div id="task-view">
-      <TaskTable taskList={taskList} />
-      <NewTaskForm onTaskAdded={addTaskFromSelection}></NewTaskForm>
+      <TaskTable editTask={props.editTask} taskList={props.taskList} />
+      <NewTaskForm addTask={props.addTask}></NewTaskForm>
     </div>
   );
 }

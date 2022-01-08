@@ -1,21 +1,30 @@
 import * as React from "react";
-import ExportButton from "./ExportButton";
 import "./ExportView.scss";
 import ExamList from "./ExamList";
+import { DefaultButton } from "@fluentui/react";
+import PdfService from "./PdfService";
+import Exam from "../../../model/Exam";
 import PrepareExportButton from "./PrepareExportButton";
+import ExportButton from "./ExportButton";
 
-export default function ExportView(_props: any) {
+export interface ExportViewProps {
+  selectedExam: Exam;
+  setSelectedexam: (exam: Exam) => void;
+}
+
+export default function ExportView(props: ExportViewProps) {
   const [exportButtonDisabled, setExportButtonDisabled] = React.useState(true);
 
 
   return (
     <div id="export-view">
-      <ExamList></ExamList>
+      <ExamList selectedExam={props.selectedExam} setSelectedExam={props.setSelectedexam} />
       <PrepareExportButton 
         exportButtonDisabled={exportButtonDisabled}
         setExportButtonDisabled={setExportButtonDisabled}/>
       <ExportButton 
-        exportButtonDisabled={exportButtonDisabled}/>
+        exportButtonDisabled={exportButtonDisabled}
+        selectedExam={props.selectedExam}/>
     </div>
   );
 }
