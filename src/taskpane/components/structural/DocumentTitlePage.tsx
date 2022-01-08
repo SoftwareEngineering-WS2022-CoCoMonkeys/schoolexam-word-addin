@@ -1,9 +1,8 @@
 import { DefaultButton, Calendar, defaultCalendarStrings, ICalendarStrings, PrimaryButton, TextField } from "@fluentui/react";
 import * as React from "react";
 import "./DocumentTitlePage.scss";
-import "./calendar.tsx"
 import { getQrCodeBase64 } from "./structuralUtil";
-import CalendarInlineOverlaidMonth from "./calendar";
+import CalendarInlineOverlaidMonth from "./Calendar";
 
 
 
@@ -29,8 +28,8 @@ export default function DocumentTitlePage() {
 
   return(
     <div className="centerTopPadding">
-      <TextField label="Titel des Tests" placeholder="z.B.: 1. Schulaufgabe" onChange={onChangeExamNameTextFieldValue} />
-      <TextField label="Kurs" placeholder="z.B.: Mathematik Klasse 8a" onChange={onChangeCourseNameTextFieldValue} />
+      <TextField label="Name des Leistungsnachweises" placeholder="z.B.: 1. Schulaufgabe" onChange={onChangeExamNameTextFieldValue} />
+      <TextField label="Kursname" placeholder="z.B.: Mathematik Klasse 8a" onChange={onChangeCourseNameTextFieldValue} />
       <br></br>
       <CalendarInlineOverlaidMonth 
         examDate={examDate} 
