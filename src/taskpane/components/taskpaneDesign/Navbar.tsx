@@ -4,8 +4,18 @@ import TaskView from "../task/TaskView";
 import ExportView from "../export/ExportView";
 import "./Navbar.scss";
 import { StructureNavbar } from "../structural/StructureNavbar";
+import { useState } from "react";
+import TaskList from "../../../model/TaskList";
 
 export default function Navbar(_props) {
+  const [taskList, setTaskList] = useState(new TaskList());
+
+  React.useEffect(() => {
+    taskList.load().then((taskList) => {
+      setTaskList(taskList);
+    });
+  }, []);
+
   return (
     <div>
       <Pivot aria-label="NavigationBar">
