@@ -15,7 +15,7 @@ export default function LoginForm(props: LoginFormProps) {
   const [waiting, setWaiting] = useState(false);
   const [loginSuccessful, setLoginSuccessful] = useState(null as boolean);
 
-  function onLoginSubmit() {
+  function submitLogin() {
     setWaiting(true);
     AuthService.login(username, password)
       .then((loginSuccessful) => {
@@ -60,7 +60,7 @@ export default function LoginForm(props: LoginFormProps) {
       <Stack>
         <TextField label="Nutzername" onChange={(event) => setUsername(event.currentTarget.value)} />
         <TextField label="Passwort" onChange={(event) => setPassword(event.currentTarget.value)} />
-        <PrimaryButton id="submit-login-btn" className="margin-btn" onClick={onLoginSubmit}>
+        <PrimaryButton id="submit-login-btn" className="margin-btn" onClick={submitLogin}>
           {waiting ? <Spinner size={SpinnerSize.small} /> : "Einloggen"}
         </PrimaryButton>
       </Stack>

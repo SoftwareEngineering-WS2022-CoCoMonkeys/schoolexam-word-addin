@@ -24,8 +24,8 @@ export default class TaskList extends WordPersistable<TaskList> {
     return Object.assign(new TaskList(), this) as TaskList;
   }
 
-  udpateTaskTitles(): Promise<void> {
-    return Word.run(async (context) => {
+  udpateTaskTitles(): Promise<TaskList> {
+    return Word.run<TaskList>(async (context) => {
       const ccIdMap = new Map();
       for (const task of this.tasks) {
         ccIdMap.set(task.ccId, task);
@@ -38,14 +38,17 @@ export default class TaskList extends WordPersistable<TaskList> {
         }
       }
       await context.sync();
+
+      return this.copy();
     });
   }
 
-  editTask(taskId: string, fieldName: string, newValue: any): void {
-    const taskToEdit = this.getTaskById(taskId);
-    taskToEdit[fieldName] = newValue;
-    Word.run(async (context) => {
+  editTask(taskId: string, fieldName: string, newValue: any): Promise<TaskList> {
+    return Word.run<TaskList>(async (context) => {
+      const taskToEdit = this.getTaskById(taskId);
+      taskToEdit[fieldName] = newValue;
       await this.save(context);
+      return this.copy();
     });
   }
 

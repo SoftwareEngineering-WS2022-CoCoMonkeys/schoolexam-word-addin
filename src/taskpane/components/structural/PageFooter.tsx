@@ -1,4 +1,3 @@
-
 import { DefaultButton, PrimaryButton, TextField } from "@fluentui/react";
 import * as React from "react";
 import "./PageFooter.scss";
@@ -6,12 +5,12 @@ import { getQrCodeBase64 } from "./structuralUtil";
 
 export default function PageFooter() {
   const [footerText, setFooterText] = React.useState("      ");
-  
+
   const onChangeFooterTextFieldValue = React.useCallback(
     (_event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-      setFooterText("      " + newValue || '');
+      setFooterText("      " + newValue || "");
     },
-    [],
+    []
   );
 
   return (
@@ -19,8 +18,9 @@ export default function PageFooter() {
       <TextField label="Fußzeilentext" placeholder="z.B. das Thema des Tests" onChange={onChangeFooterTextFieldValue} />
       <br></br>
       <PrimaryButton text="Fußzeile erstellen" id="footerCreate" onClick={() => _createFooter(footerText)} />
-    </div>);
-};
+    </div>
+  );
+}
 
 function _createFooter(footerText): void {
   Word.run(async (context) => {

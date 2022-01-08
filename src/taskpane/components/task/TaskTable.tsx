@@ -7,7 +7,7 @@ import { Task } from "../../../model/Task";
 
 export interface TaskTableProps {
   taskList: TaskList;
-  editTask: (taskid: string, fieldName: string, newValue: any) => void;
+  setTaskList: (taskList: TaskList) => void;
 }
 
 export interface ActiveEdit {
@@ -27,7 +27,7 @@ export default function TaskTable(props: TaskTableProps) {
             onKeyPress={(event) => {
               if (event.key == "Enter") {
                 event.preventDefault();
-                props.editTask(task.taskId, fieldName, event.currentTarget.value);
+                editTask(task.taskId, fieldName, event.currentTarget.value);
                 setActiveEdit(null);
               }
             }}
@@ -80,9 +80,26 @@ export default function TaskTable(props: TaskTableProps) {
     },
   ];
 
+  function editTask(taskId: string, fieldName: string, newValue: any): void {
+    props.taskList.editTask(taskId, fieldName, newValue).then((taskList) => {
+      props.setTaskList(taskList);
+    });
+  }
+
+  function updateTasks() {
+    props.taskList.udpateTaskTitles().then((taskList) => props.setTaskList(taskList));
+  }
+
+  const updateIcon: IIconProps = {
+    iconName: "Refresh",
+  };
+
   return (
     <div>
       <DetailsList selectionMode={SelectionMode.none} columns={columns} items={props.taskList.tasks} />
+      <ActionButton iconProps={updateIcon} onClick={updateTasks}>
+        Reihenfolge zurücksetzen
+      </ActionButton>
     </div>
   );
 }
