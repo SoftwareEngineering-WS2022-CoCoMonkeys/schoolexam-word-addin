@@ -8,35 +8,24 @@ export interface IPrepareExportButtonProps {
   taskList?: TaskList;
 }
 
-export default function PrepareExportButton(_props: IPrepareExportButtonProps) {
+export default function PrepareExportButton(props: IPrepareExportButtonProps) {
   function prepareDocumentForExport() {
     Word.run(async (context) => {
-      for (const task of _props.taskList.tasks) {
+      for (const task of props.taskList.tasks) {
         const contentControl = context.document.body.contentControls.getByIdOrNullObject(task.ccId);
         contentControl.load("text");
         await context.sync();
-        if (!contentControl.isNullObject) {
-          const uidString = "#" + task.taskId + "#";
-          contentControl.text.indexOf(uidString);
-          contentControl.text.lastIndexOf(uidString);
-          contentControl.insertText(uidString, Word.InsertLocation.start);
-          contentControl.insertText(uidString, Word.InsertLocation.end);
-        }
+        contentControl
+          .getRange()
+          .insertHtml(
+            `<a style="text-decoration: none" href="task-${task.taskId}">&nbsp;</a>`,
+            Word.InsertLocation.start
+          );
+        await context.sync();
       }
       await context.sync();
     });
-    Office.context.ui.displayDialogAsync(
-      "https://localhost:3000/exportPreparedDialog.html",
-      { height: 35, width: 20, displayInIframe: true },
-      function (result) {
-        if (result.status === Office.AsyncResultStatus.Succeeded) {
-        } else {
-          const err = result.error;
-          console.log(err.name + ": " + err.message);
-        }
-      }
-    );
-    _props.setExportButtonDisabled(false);
+    props.setExportButtonDisabled(false);
   }
 
   return (
