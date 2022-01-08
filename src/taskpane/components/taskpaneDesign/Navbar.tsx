@@ -9,6 +9,7 @@ import TaskList from "../../../model/TaskList";
 import Exam from "../../../model/Exam";
 
 export default function Navbar(_props) {
+  const [exportButtonDisabled, setExportButtonDisabled] = React.useState(true);
   const [taskList, setTaskList] = useState(new TaskList());
   const [selectedExam, setSelectedExam] = useState(null as Exam);
 
@@ -17,7 +18,7 @@ export default function Navbar(_props) {
       setTaskList(taskList);
     });
   }, []);
-
+  
   function addTaskFromSelection(maxPoints: number): void {
     taskList.addTaskFromSelection(maxPoints);
     setTaskList(taskList);
@@ -27,11 +28,11 @@ export default function Navbar(_props) {
     taskList.editTask(taskId, fieldName, newValue);
     setTaskList(taskList);
   }
-
+  
   return (
     <div>
       <Pivot aria-label="NavigationBar">
-        <PivotItem className="pivot-item" headerText="Aufgaben" itemCount={42} itemIcon="Dictionary">
+        <PivotItem className="pivot-item" headerText="Aufgaben" itemCount={taskList.tasks.length} itemIcon="Dictionary">
           <TaskView taskList={taskList} addTask={addTaskFromSelection} editTask={editTask} />
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Struktur" itemIcon="BulletedTreeList">
@@ -43,7 +44,13 @@ export default function Navbar(_props) {
           //TODO
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Exportieren" itemIcon="Share">
-          <ExportView selectedExam={selectedExam} setSelectedexam={setSelectedExam}></ExportView>
+          <ExportView 
+            selectedExam={selectedExam} 
+            setSelectedExam={setSelectedExam}
+            taskList={taskList}
+            setTaskList={setTaskList}
+            exportButtonDisabled={exportButtonDisabled}
+            setExportButtonDisabled={setExportButtonDisabled} />
         </PivotItem>
       </Pivot>
     </div>

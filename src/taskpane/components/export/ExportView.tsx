@@ -1,29 +1,33 @@
 import * as React from "react";
 import "./ExportView.scss";
 import ExamList from "./ExamList";
-import { DefaultButton } from "@fluentui/react";
-import PdfService from "./PdfService";
 import Exam from "../../../model/Exam";
 import PrepareExportButton from "./PrepareExportButton";
 import ExportButton from "./ExportButton";
+import TaskList from "../../../model/TaskList";
 
 export interface ExportViewProps {
   selectedExam: Exam;
-  setSelectedexam: (exam: Exam) => void;
+  setSelectedExam: (exam: Exam) => void;
+  taskList: TaskList;
+  setTaskList: (taskList: TaskList) => void;
+  exportButtonDisabled: boolean;
+  setExportButtonDisabled: (exportButtonDisabled: boolean) => void;
 }
 
 export default function ExportView(props: ExportViewProps) {
-  const [exportButtonDisabled, setExportButtonDisabled] = React.useState(true);
 
+  
 
   return (
     <div id="export-view">
-      <ExamList selectedExam={props.selectedExam} setSelectedExam={props.setSelectedexam} />
+      <ExamList selectedExam={props.selectedExam} setSelectedExam={props.setSelectedExam} />
       <PrepareExportButton 
-        exportButtonDisabled={exportButtonDisabled}
-        setExportButtonDisabled={setExportButtonDisabled}/>
+        taskList={props.taskList}
+        exportButtonDisabled={props.exportButtonDisabled}
+        setExportButtonDisabled={props.setExportButtonDisabled}/>
       <ExportButton 
-        exportButtonDisabled={exportButtonDisabled}
+        exportButtonDisabled={props.exportButtonDisabled}
         selectedExam={props.selectedExam}/>
     </div>
   );
