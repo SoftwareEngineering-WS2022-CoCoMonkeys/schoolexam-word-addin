@@ -15,6 +15,7 @@ export interface AppProps {
 
 export default function App(props: AppProps) {
   const [displayLogin, setDisplayLogin] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const { title, isOfficeInitialized } = props;
 
@@ -22,7 +23,7 @@ export default function App(props: AppProps) {
     return (
       <Progress
         title={title}
-        logo={require("./../../../assets/logo-filled.png")}
+        logo={require("../../../assets/logo-filled.png")}
         message="Please sideload your addin to see app body."
       />
     );
@@ -31,11 +32,12 @@ export default function App(props: AppProps) {
   return (
     <div id="app-main">
       <Header
-        onExpandLogin={() => setDisplayLogin(true)}
-        onCollapseLogin={() => setDisplayLogin(false)}
-        loginPageDisplayed={displayLogin}
+        loggedIn={loggedIn}
+        setLoggedIn={setLoggedIn}
+        setDisplayLogin={setDisplayLogin}
+        displayLogin={displayLogin}
       />
-      {displayLogin ? <LoginForm /> : <Navbar />}
+      {displayLogin ? <LoginForm setLoggedIn={setLoggedIn} setDisplayLogin={setDisplayLogin} /> : <Navbar />}
     </div>
   );
 }

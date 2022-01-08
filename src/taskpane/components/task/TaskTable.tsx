@@ -1,16 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import {
-  CommandBarButton,
-  DetailsList,
-  IColumn,
-  IDetailsCheckboxProps,
-  IDetailsRowProps,
-  IIconProps,
-  IRenderFunction,
-  SelectionMode,
-  TextField,
-} from "@fluentui/react";
+import { ActionButton, DetailsList, IColumn, IIconProps, SelectionMode, TextField } from "@fluentui/react";
 import TaskList from "../../../model/TaskList";
 import "./TaskTable.scss";
 import { Task } from "../../../model/Task";
@@ -55,8 +45,8 @@ export default function TaskTable(props: TaskTableProps) {
     const deleteIcon: IIconProps = { iconName: "Delete" };
     return (
       <div className="detail-hover-container">
-        <CommandBarButton className="detail-edit-btn row-btn" iconProps={editIcon}></CommandBarButton>
-        <CommandBarButton className="detail-delete-btn row-btn" iconProps={deleteIcon}></CommandBarButton>
+        <ActionButton className="detail-edit-btn row-btn" iconProps={editIcon}></ActionButton>
+        <ActionButton className="detail-delete-btn row-btn" iconProps={deleteIcon}></ActionButton>
       </div>
     );
   }
@@ -69,7 +59,6 @@ export default function TaskTable(props: TaskTableProps) {
       minWidth: 100,
       maxWidth: 200,
       isResizable: true,
-      onRender: editableColumnRenderer("taskId"),
     },
     {
       key: "titleColumn",

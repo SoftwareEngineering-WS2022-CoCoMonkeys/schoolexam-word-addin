@@ -1,6 +1,6 @@
 import axios from "axios";
-import AuthService from "./login/AuthService";
-import Exam from "../../model/Exam";
+import AuthService from "./AuthService";
+import Exam from "../../../model/Exam";
 
 class ApiService {
   private readonly API_URL = "33.196.27:55011"; //TODO

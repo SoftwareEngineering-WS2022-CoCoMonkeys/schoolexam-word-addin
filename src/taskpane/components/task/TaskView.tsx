@@ -15,7 +15,7 @@ export default function TaskView(props: TaskViewProps) {
   return (
     <div id="task-view">
       <TaskTable editTask={props.editTask} taskList={props.taskList} />
-      <NewTaskForm addTask={props.addTask}></NewTaskForm>
+      <NewTaskForm addTask={props.addTask} />
     </div>
   );
 }

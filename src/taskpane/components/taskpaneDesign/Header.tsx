@@ -1,30 +1,38 @@
 import * as React from "react";
 import "./Header.scss";
-import { CommandBarButton, IIconProps } from "@fluentui/react";
+import { ActionButton, CommandBarButton, IIconProps } from "@fluentui/react";
 import BackButton from "../util/BackButton";
 
 export interface HeaderProps {
-  onExpandLogin: () => void;
-  onCollapseLogin: () => void;
-  loginPageDisplayed: boolean;
+  loggedIn: boolean;
+  setLoggedIn: (loggedIn: boolean) => void;
+  setDisplayLogin: (displayLogin: boolean) => void;
+  displayLogin: boolean;
 }
 
 export default function Header(props: HeaderProps) {
   const userIcon: IIconProps = { iconName: "Contact" };
+  const userIconChecked: IIconProps = {
+    iconName: "ReminderPerson",
+    style: {
+      color: "green",
+    },
+  };
 
+  const loginButton = props.loggedIn ? (
+    <ActionButton id="login-btn-checked" className="margin-btn" iconProps={userIconChecked} />
+  ) : (
+    <ActionButton
+      id="login-btn"
+      className="margin-btn"
+      iconProps={userIcon}
+      text="Login"
+      onClick={() => props.setDisplayLogin(true)}
+    />
+  );
   return (
     <div id="header">
-      {props.loginPageDisplayed ? (
-        <BackButton onBack={props.onCollapseLogin} />
-      ) : (
-        <CommandBarButton
-          id="login-btn"
-          className="margin-btn"
-          iconProps={userIcon}
-          text="Login"
-          onClick={props.onExpandLogin}
-        />
-      )}
+      {props.displayLogin ? <BackButton onBack={() => props.setDisplayLogin(false)} /> : loginButton}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CommandBarButton, IIconProps, PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
+import { ActionButton, CommandBarButton, IIconProps, PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
 import BackButton from "../util/BackButton";
 import { useState } from "react";
 
@@ -37,7 +37,7 @@ export default function NewTaskForm(props: NewTaskFormProps) {
           </Stack>
         </div>
       ) : (
-        <CommandBarButton
+        <ActionButton
           iconProps={addIcon}
           text="Neue Aufgabe"
           className="margin-btn"

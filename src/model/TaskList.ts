@@ -1,5 +1,6 @@
 import { Task } from "./Task";
 import WordPersistable from "./WordPersistable";
+import { v4 as uuidv4 } from "uuid";
 
 export default class TaskList extends WordPersistable<TaskList> {
   tasks: Task[];
@@ -13,6 +14,31 @@ export default class TaskList extends WordPersistable<TaskList> {
 
   getTaskById(taskId: string) {
     return this.tasks.find((task) => task.taskId === taskId);
+  }
+
+  getLength() {
+    return this.tasks.length;
+  }
+
+  copy() {
+    return Object.assign(new TaskList(), this) as TaskList;
+  }
+
+  udpateTaskTitles(): Promise<void> {
+    return Word.run(async (context) => {
+      const ccIdMap = new Map();
+      for (const task of this.tasks) {
+        ccIdMap.set(task.ccId, task);
+      }
+      const contentControls = context.document.contentControls.items;
+      for (const cc of contentControls) {
+        console.log(cc.id);
+        if (ccIdMap.has(cc.id)) {
+          console.log(ccIdMap.get(cc.id));
+        }
+      }
+      await context.sync();
+    });
   }
 
   editTask(taskId: string, fieldName: string, newValue: any): void {
@@ -35,8 +61,7 @@ export default class TaskList extends WordPersistable<TaskList> {
       cc.appearance = Word.ContentControlAppearance.boundingBox;
 
       // Associate ID with content control
-      //TODO get proper ID
-      const globalTaskId = (new Date().getMilliseconds() % 123523).toString(10);
+      const globalTaskId = uuidv4();
 
       cc.title = "Task " + globalTaskId;
       cc.tag = "Task";
@@ -46,13 +71,16 @@ export default class TaskList extends WordPersistable<TaskList> {
 
       await context.sync();
 
-      const newTask = new Task(globalTaskId, "Task " + globalTaskId, maxPoints, cc.id);
+      // title will be updated later anyways
+      const newTask = new Task(globalTaskId, "Aufgabe " + (this.tasks.length + 1), maxPoints, cc.id);
 
       this.addTask(newTask);
 
       await this.save(context);
 
       await context.sync();
+
+      await this.udpateTaskTitles();
 
       return this;
     });
@@ -91,6 +119,10 @@ export default class TaskList extends WordPersistable<TaskList> {
     const ccs = context.document.contentControls;
     for (const task of obj.tasks) {
       const cc = ccs.getById(task.ccId);
+
+      if (cc == null) {
+        console.error(`Missing content control for ${task.taskId}`);
+      }
 
       cc.load("id");
 

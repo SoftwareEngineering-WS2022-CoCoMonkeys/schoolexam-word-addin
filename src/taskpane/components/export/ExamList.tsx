@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as React from "react";
-import ApiService from "../ApiService";
+import ApiService from "../services/ApiService";
 import { List } from "@fluentui/react";
 import Exam from "../../../model/Exam";
 import "./ExamList.scss";
