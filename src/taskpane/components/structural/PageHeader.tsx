@@ -2,16 +2,16 @@ import { DefaultButton, PrimaryButton, TextField } from "@fluentui/react";
 import * as React from "react";
 import "./PageHeader.scss";
 
-
-
 export default function PageHeader() {
-  const [headerText, setFooterText] = React.useState("Name: _______________________     Datum: _______________________");
-  
+  const [headerText, setFooterText] = React.useState(
+    "Name: _______________________     Datum: _______________________"
+  );
+
   const onChangeFooterTextFieldValue = React.useCallback(
     (_event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-      setFooterText("      " + newValue || '');
+      setFooterText("      " + newValue || "");
     },
-    [],
+    []
   );
 
   return (
@@ -19,8 +19,9 @@ export default function PageHeader() {
       <TextField label="Kopfzeilentext" placeholder="z.B. Name und Datum" onChange={onChangeFooterTextFieldValue} />
       <br></br>
       <PrimaryButton text="Kopfzeile erstellen" id="headerCreate" onClick={() => _createPageHeader(headerText)} />
-    </div>);
-};
+    </div>
+  );
+}
 
 function _createPageHeader(headerText): void {
   Word.run(async (context) => {
