@@ -15,6 +15,14 @@ export default class TaskList extends WordPersistable<TaskList> {
     return this.tasks.find((task) => task.taskId === taskId);
   }
 
+  editTask(taskId: string, fieldName: string, newValue: any): void {
+    const taskToEdit = this.getTaskById(taskId);
+    taskToEdit[fieldName] = newValue;
+    Word.run(async (context) => {
+      await this.save(context);
+    });
+  }
+
   addTaskFromSelection(maxPoints: number): Promise<TaskList> {
     return Word.run<TaskList>(async (context) => {
       // Get the current selection

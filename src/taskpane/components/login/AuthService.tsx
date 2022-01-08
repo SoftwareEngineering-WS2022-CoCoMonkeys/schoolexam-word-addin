@@ -1,12 +1,12 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "http://10.33.196.27:55011";
+axios.defaults.baseURL = "https://cocomonkeys-schoolexam.herokuapp.com/";
 
 class AuthService {
   private readonly AUTH_URL = "Authentication/Authenticate";
 
   login(username: string, password: string): Promise<boolean> {
-    return fetch("https://10.33.196.27:55012/" + this.AUTH_URL, {
+    return fetch("https://cocomonkeys-schoolexam.herokuapp.com/" + this.AUTH_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

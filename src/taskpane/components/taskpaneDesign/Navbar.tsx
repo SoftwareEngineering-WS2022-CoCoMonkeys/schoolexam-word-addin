@@ -4,13 +4,29 @@ import TaskView from "../task/TaskView";
 import ExportView from "../export/ExportView";
 import "./Navbar.scss";
 import { StructureNavbar } from "../structural/StructureNavbar";
+import { useState } from "react";
+import TaskList from "../../../model/TaskList";
+import Exam from "../../../model/Exam";
 
 export default function Navbar(_props) {
+  const [taskList, setTaskList] = useState(new TaskList());
+  const [selectedExam, setSelectedExam] = useState(null as Exam);
+
+  function addTaskFromSelection(maxPoints: number): void {
+    taskList.addTaskFromSelection(maxPoints);
+    setTaskList(taskList);
+  }
+
+  function editTask(taskId: string, fieldName: string, newValue: any): void {
+    taskList.editTask(taskId, fieldName, newValue);
+    setTaskList(taskList);
+  }
+
   return (
     <div>
       <Pivot aria-label="NavigationBar">
         <PivotItem className="pivot-item" headerText="Aufgaben" itemCount={42} itemIcon="Dictionary">
-          <TaskView />
+          <TaskView taskList={taskList} addTask={addTaskFromSelection} editTask={editTask} />
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Struktur" itemIcon="BulletedTreeList">
           <Stack horizontal>
@@ -21,26 +37,9 @@ export default function Navbar(_props) {
           //TODO
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Exportieren" itemIcon="Share">
-          <ExportView></ExportView>
+          <ExportView selectedExam={selectedExam} setSelectedexam={setSelectedExam}></ExportView>
         </PivotItem>
       </Pivot>
     </div>
   );
 }
-// </Pivot>onRenderItemLink={_customRenderer}>
-/*
- function _customRenderer(
- link?: IPivotItemProps,
- defaultRenderer?: (link?: IPivotItemProps) => JSX.Element | null
- ): JSX.Element | null {
- if (!link || !defaultRenderer) {
- return null;
- }
-
- return (
- <span style={{ flex: "0 1 100%" }}>
- {defaultRenderer({ ...link, itemIcon: undefined })}
- <Icon iconName={link.itemIcon} style={{ color: "red" }} />
- </span>
- );
- }*/

@@ -20,25 +20,31 @@ export interface TaskTableProps {
   editTask: (taskid: string, fieldName: string, newValue: any) => void;
 }
 
+export interface ActiveEdit {
+  taskId: string;
+  fieldName: string;
+}
+
 export default function TaskTable(props: TaskTableProps) {
-  const [activeEdit, setActiveEdit] = useState(null as string);
+  const [activeEdit, setActiveEdit] = useState(null as ActiveEdit);
 
   function editableColumnRenderer(fieldName: string) {
     const editableColumnTextField = (task: Task) => {
-      if (activeEdit === task.taskId) {
+      if (activeEdit && activeEdit.taskId === task.taskId && fieldName === activeEdit.fieldName) {
         return (
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              props.editTask(task.taskId, fieldName, event.currentTarget.value);
-              setActiveEdit(null);
+          <TextField
+            defaultValue={task[fieldName]}
+            onKeyPress={(event) => {
+              if (event.key == "Enter") {
+                event.preventDefault();
+                props.editTask(task.taskId, fieldName, event.currentTarget.value);
+                setActiveEdit(null);
+              }
             }}
-          >
-            <TextField defaultValue={task[fieldName]} />
-          </form>
+          />
         );
       } else {
-        return <div onDoubleClick={() => setActiveEdit(task.taskId)}>{task[fieldName]}</div>;
+        return <div onDoubleClick={() => setActiveEdit({ taskId: task.taskId, fieldName })}>{task[fieldName]}</div>;
       }
     };
     return editableColumnTextField;
