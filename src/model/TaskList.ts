@@ -80,9 +80,7 @@ export default class TaskList extends WordPersistable<TaskList> {
 
       await context.sync();
 
-      await this.udpateTaskTitles();
-
-      return this;
+      return this.copy();
     });
   }
 

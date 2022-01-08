@@ -20,14 +20,13 @@ export default function Navbar(_props) {
   }, []);
 
   useEffect(() => {
-    console.log(taskList.tasks.length);
+    console.log(taskList.getLength());
   });
 
   function addTaskFromSelection(maxPoints: number): void {
-    taskList.addTaskFromSelection(maxPoints);
-
-    // Force refresh
-    setTaskList(taskList.copy());
+    taskList.addTaskFromSelection(maxPoints).then((taskList) => {
+      setTaskList(taskList);
+    });
   }
 
   function editTask(taskId: string, fieldName: string, newValue: any): void {
@@ -56,7 +55,8 @@ export default function Navbar(_props) {
             taskList={taskList}
             setTaskList={setTaskList}
             exportButtonDisabled={exportButtonDisabled}
-            setExportButtonDisabled={setExportButtonDisabled} />
+            setExportButtonDisabled={setExportButtonDisabled}
+          />
         </PivotItem>
       </Pivot>
     </div>
