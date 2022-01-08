@@ -1,23 +1,23 @@
 import * as React from "react";
 import { Icon, IStyleSet, Label, ILabelStyles, Pivot, IPivotItemProps, PivotItem } from "@fluentui/react";
-import DocumentTitlePage from "./DocumentTitlePage";
 import PageHeader from "./PageHeader";
 import PageFooter from "./PageFooter";
+import "./StructureNavbar.scss";
+import DocumentTitlePage from "./DocumentTitlePage";
 
 const labelStyles: Partial<IStyleSet<ILabelStyles>> = {
-  root: { marginTop: 10 },
 };
 export const StructureNavbar: React.FunctionComponent = () => (
   <div>
     <Pivot aria-label="StructureNavigationBar">
       <PivotItem headerText="Fußzeile (Benötigt)">
-        <PageFooter></PageFooter>
+        <PageFooter />
       </PivotItem>
       <PivotItem headerText="Titelseite (Benötigt)">
-        <DocumentTitlePage></DocumentTitlePage>
+        <DocumentTitlePage />
       </PivotItem>
       <PivotItem headerText="Kopfzeile">
-        <PageHeader></PageHeader>
+        <PageHeader />
       </PivotItem>
     </Pivot>
   </div>
