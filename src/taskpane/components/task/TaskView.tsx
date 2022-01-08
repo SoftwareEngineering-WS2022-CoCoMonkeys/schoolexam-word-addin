@@ -14,14 +14,21 @@ export default function TaskView(_props: any) {
     });
   }, []);
 
-  const addTaskFromSelection = (maxPoints: number) => {
+  function addTaskFromSelection(maxPoints: number) {
     taskList.addTaskFromSelection(maxPoints).then((taskList) => setTaskList(taskList));
-  };
+  }
+
+  function editTask(taskId: string, fieldName: string, newValue: any): void {
+    const taskToEdit = taskList.getTaskById(taskId);
+    taskToEdit[fieldName] = newValue;
+    // Force refresh
+    setTaskList(taskList);
+  }
 
   return (
     <div id="task-view">
-      <TaskTable taskList={taskList} />
-      <NewTaskForm onTaskAdded={addTaskFromSelection}></NewTaskForm>
+      <TaskTable editTask={editTask} taskList={taskList} />
+      <NewTaskForm addTask={addTaskFromSelection}></NewTaskForm>
     </div>
   );
 }

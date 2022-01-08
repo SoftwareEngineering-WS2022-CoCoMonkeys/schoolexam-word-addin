@@ -4,7 +4,7 @@ import BackButton from "../util/BackButton";
 import { useState } from "react";
 
 export interface NewTaskFormProps {
-  onTaskAdded: (maxPoints: number) => void;
+  addTask: (maxPoints: number) => void;
 }
 
 export default function NewTaskForm(props: NewTaskFormProps) {
@@ -31,7 +31,7 @@ export default function NewTaskForm(props: NewTaskFormProps) {
               type="number"
               onChange={(event) => setPointsInput(parseInt(event.currentTarget.value))}
             />
-            <PrimaryButton className="margin-btn" onClick={() => props.onTaskAdded(pointsInput)}>
+            <PrimaryButton className="margin-btn" onClick={() => props.addTask(pointsInput)}>
               Aufgabe hinzufügen
             </PrimaryButton>
           </Stack>
