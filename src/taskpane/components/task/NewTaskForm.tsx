@@ -25,7 +25,7 @@ export default function NewTaskForm(props: NewTaskFormProps) {
   return (
     <div>
       {expanded ? (
-        <div>
+        <div id="newTaskForm">
           <BackButton onBack={() => setExpanded(false)} />
           <InstrutctionList />
           <Stack>

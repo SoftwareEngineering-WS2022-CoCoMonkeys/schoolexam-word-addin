@@ -1,15 +1,8 @@
 import * as React from 'react';
-import { Announced } from '@fluentui/react/lib/Announced';
 import { TextField, ITextFieldStyles } from '@fluentui/react/lib/TextField';
 import { DetailsList, DetailsListLayoutMode, Selection, IColumn, SelectionMode } from '@fluentui/react/lib/DetailsList';
-import { MarqueeSelection } from '@fluentui/react/lib/MarqueeSelection';
-import { mergeStyles } from '@fluentui/react/lib/Styling';
-import { Text } from '@fluentui/react/lib/Text';
 
-const exampleChildClass = mergeStyles({
-  display: 'block',
-  marginBottom: '10px',
-});
+
 
 const textFieldStyles: Partial<ITextFieldStyles> = { root: { maxWidth: '300px' } };
 
@@ -29,8 +22,6 @@ export class InstrutctionList extends React.Component<{}, IInstrutctionListState
   constructor(props: {}) {
     super(props);
 
-
-    // Populate with items for demos.
     this._allItems = [];
     const instructions = [
         "1. Erstelle die Aufgabe",
@@ -58,7 +49,7 @@ export class InstrutctionList extends React.Component<{}, IInstrutctionListState
     const { items} = this.state;
 
     return (
-      <div>
+      <div id="newTaskInstructionList">
         <DetailsList
             items={items}
             columns={this._columns}
