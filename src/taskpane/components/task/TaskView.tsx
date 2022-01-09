@@ -13,8 +13,8 @@ export interface TaskViewProps {
 export default function TaskView(props: TaskViewProps) {
   return (
     <div id="task-view">
-      <TaskTable taskList={props.taskList} setTaskList={props.setTaskList} />
       <NewTaskForm taskList={props.taskList} setTaskList={props.setTaskList} />
+      <TaskTable taskList={props.taskList} setTaskList={props.setTaskList} />
     </div>
   );
 }

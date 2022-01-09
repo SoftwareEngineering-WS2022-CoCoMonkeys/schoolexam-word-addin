@@ -34,9 +34,6 @@ export default function Navbar(_props) {
             <StructureNavbar />
           </Stack>
         </PivotItem>
-        <PivotItem className="pivot-item" headerText="Extras" itemIcon="Star">
-          //TODO
-        </PivotItem>
         <PivotItem className="pivot-item" headerText="Exportieren" itemIcon="Share">
           <ExportView
             selectedExam={selectedExam}

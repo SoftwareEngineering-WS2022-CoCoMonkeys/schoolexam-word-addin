@@ -71,7 +71,7 @@ export default function TaskTable(props: TaskTableProps) {
     },
     {
       key: "maxPointsColumn",
-      name: "Maximalpunktzahl",
+      name: "Max. Punktzahl",
       fieldName: "maxPoints",
       minWidth: 100,
       maxWidth: 200,

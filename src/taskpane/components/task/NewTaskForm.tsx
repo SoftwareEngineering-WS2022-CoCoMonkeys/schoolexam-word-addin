@@ -1,8 +1,9 @@
 import * as React from "react";
-import { ActionButton, CommandBarButton, IIconProps, PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
+import { ActionButton, CommandBarButton, DetailsList, DetailsListLayoutMode, IIconProps, PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
 import BackButton from "../util/BackButton";
 import { useState } from "react";
 import TaskList from "../../../model/TaskList";
+import { InstrutctionList } from "./NewTaskFromInstructionList";
 
 export interface NewTaskFormProps {
   taskList: TaskList;
@@ -20,19 +21,13 @@ export default function NewTaskForm(props: NewTaskFormProps) {
       props.setTaskList(taskList);
     });
   }
-
+  
   return (
     <div>
       {expanded ? (
         <div>
           <BackButton onBack={() => setExpanded(false)} />
-          <Text block>Vorgehen:</Text>
-          <ul>
-            <li>Erstelle die Aufgabe</li>
-            <li>Markiere den (Teil-)Aufgabenbereich</li>
-            <li>Lege die Maximalpunktzahl für die Aufgabe fest</li>
-            <li>Fertig!</li>
-          </ul>
+          <InstrutctionList />
           <Stack>
             <TextField
               label="Punkte"
