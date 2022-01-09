@@ -31,6 +31,7 @@ function _createFooter(footerText): void {
     const qrCode = getQrCodeBase64();
     footer.insertInlinePictureFromBase64(qrCode, Word.InsertLocation.start);
     const firstPicture = footer.inlinePictures.getFirstOrNullObject();
+    firstPicture.hyperlink ="http://pageQrCode";
     firstPicture.height = 30;
     paragraph.font.bold = true;
     paragraph.alignment = Word.Alignment.left;
@@ -41,8 +42,6 @@ function _createFooter(footerText): void {
         .getFooter("Primary"); //returns Word.Body type
     var pageNumber = hdr.insertOoxml(sXml, Word.InsertLocation.end);
 
-    //console.log("XML: " + sXml);
-    //pageNumber.
     await context.sync();
   });
 }

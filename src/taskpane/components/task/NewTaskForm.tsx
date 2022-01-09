@@ -3,7 +3,7 @@ import { ActionButton, IIconProps, PrimaryButton, Stack, Text, TextField } from 
 import BackButton from "../util/BackButton";
 import { useState } from "react";
 import TaskList from "../../../model/TaskList";
-import { InstrutctionList } from "./NewTaskFromInstructionList";
+import InstrutctionList from "./NewTaskFromInstructionList";
 
 export interface NewTaskFormProps {
   taskList: TaskList;
@@ -15,6 +15,7 @@ export default function NewTaskForm(props: NewTaskFormProps) {
   const [pointsInput, setPointsInput] = useState(null);
 
   const addIcon: IIconProps = { iconName: "Add" };
+  const backIcon: IIconProps = { iconName: "Back" };
 
   function addTask(): void {
     props.taskList.addTaskFromSelection(pointsInput).then((taskList) => {
@@ -23,7 +24,7 @@ export default function NewTaskForm(props: NewTaskFormProps) {
   }
 
   return (
-    <div id="">
+    <div >
       {expanded ? (
         <div id="newTaskForm">
           <BackButton onBack={() => setExpanded(false)} />

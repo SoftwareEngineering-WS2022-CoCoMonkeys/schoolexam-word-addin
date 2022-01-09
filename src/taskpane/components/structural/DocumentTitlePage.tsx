@@ -79,6 +79,7 @@ function _createFrontPage(_examDate: Date, _courseName, _examName) {
       leftSide.columnWidth = 30;
       leftSide.setCellPadding(Word.CellPaddingLocation.bottom, 1);
       leftSide.body.insertInlinePictureFromBase64(getQrCodeBase64(), Word.InsertLocation.start);
+      leftSide.body.inlinePictures.getFirst().hyperlink ="http://studentQrCode";
 
       const rightSide = table.getCell(0, 1);
       rightSide.columnWidth = 400;

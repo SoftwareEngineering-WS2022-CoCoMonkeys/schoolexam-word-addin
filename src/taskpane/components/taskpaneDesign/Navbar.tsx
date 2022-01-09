@@ -23,7 +23,7 @@ export default function Navbar(_props) {
   });
 
   return (
-    <div>
+    <div id="topLevelNavbar">
       <Pivot aria-label="NavigationBar">
         <PivotItem className="pivot-item" headerText="Aufgaben" itemCount={taskList.getLength()} itemIcon="Dictionary">
           <TaskView taskList={taskList} setTaskList={setTaskList} />
