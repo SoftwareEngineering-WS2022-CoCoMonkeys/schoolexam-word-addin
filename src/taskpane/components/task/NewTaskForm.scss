@@ -1,6 +1,15 @@
-#newTaskForm {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-  }
+@import '~@fluentui/react/dist/sass/References';
+@import '~@fluentui/react/dist/sass/Color';
+
+#new-task-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#new-task-btn {
+  border-color: $ms-color-sharedCyanBlue10;
+  border-radius: 50px;
+  border-style: dot-dash;
+}

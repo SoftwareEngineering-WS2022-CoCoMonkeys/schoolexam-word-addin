@@ -11,13 +11,13 @@ export default class ExportModel {
 }
 
 export class ExportTask {
-  constructor(taskId: string, title: string, maxPoints: number) {
-    this.taskId = taskId;
+  constructor(id: string, title: string, maxPoints: number) {
+    this.id = id;
     this.title = title;
     this.maxPoints = maxPoints;
   }
 
-  taskId: string;
+  id: string;
   title: string;
   maxPoints: number;
 }

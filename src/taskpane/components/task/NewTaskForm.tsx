@@ -26,7 +26,13 @@ export default function NewTaskForm(props: NewTaskFormProps) {
   const expandCollapseBtn = expanded ? (
     <BackButton onBack={() => setExpanded(false)} />
   ) : (
-    <ActionButton iconProps={addIcon} text="Neue Aufgabe" className="margin-btn" onClick={() => setExpanded(true)} />
+    <ActionButton
+      iconProps={addIcon}
+      text="Neue Aufgabe"
+      id="new-task-btn"
+      className="margin-btn"
+      onClick={() => setExpanded(true)}
+    />
   );
 
   return (

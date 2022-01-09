@@ -18,10 +18,6 @@ export default function Navbar(_props) {
     });
   }, []);
 
-  useEffect(() => {
-    console.log(taskList.getLength());
-  });
-
   return (
     <div id="navbar">
       <Pivot aria-label="NavigationBar">

@@ -1,15 +1,26 @@
 @import '~@fluentui/react/dist/sass/References';
+@import '~@fluentui/react/dist/sass/Color';
 
 .exam-cell {
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: start;
   justify-content: start;
   width: 100%;
+  padding: 5px;
+}
+
+.exam-cell-date {
+  font-style: italic;
 }
 
 .selected-exam {
-  background-color: green;
+  color: white;
+  background-color: $ms-color-sharedCyanBlue10;
+}
+.selected-exam:hover {
+  background-color:  $ms-color-sharedCyanBlue10 !important;
 }
 
 .exam-cell:hover {
@@ -20,5 +31,8 @@
 }
 
 #exam-list {
+  margin-top: 1rem;
   width: 100%;
 }
+
+

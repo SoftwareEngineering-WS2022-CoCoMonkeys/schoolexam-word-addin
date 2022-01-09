@@ -1,5 +1,9 @@
 export default class Exam {
-  constructor(examId: string, title: string, status: string, dateOfExam: Date, subject: string) {
+  static fromImport(examObj: any) {
+    return new Exam(examObj.id, examObj.title, examObj.state, new Date(examObj.date), examObj.subject);
+  }
+
+  constructor(examId: string, title?: string, status?: string, dateOfExam?: Date, subject?: string) {
     this.examId = examId;
     this.title = title;
     this.status = status;
@@ -7,11 +11,11 @@ export default class Exam {
     this.subject = subject;
   }
 
-  examId!: string;
-  status!: string;
-  title!: string;
-  dateOfExam!: Date;
-  subject!: string;
+  examId: string;
+  status?: string;
+  title?: string;
+  dateOfExam?: Date;
+  subject?: string;
 
   equals(other: any) {
     if (other == null) {

@@ -19,7 +19,7 @@ export default function TaskTable(props: TaskTableProps) {
   const [activeEdit, setActiveEdit] = useState(null as ActiveEdit);
 
   function editableColumnRenderer(fieldName: string) {
-    const editableColumnTextField = (task: Task) => {
+    return (task: Task) => {
       if (activeEdit && activeEdit.taskId === task.taskId && fieldName === activeEdit.fieldName) {
         return (
           <TextField
@@ -34,10 +34,13 @@ export default function TaskTable(props: TaskTableProps) {
           />
         );
       } else {
-        return <div onDoubleClick={() => setActiveEdit({ taskId: task.taskId, fieldName })}>{task[fieldName]}</div>;
+        return (
+          <div onClick={() => task.jumpTo()} onDoubleClick={() => setActiveEdit({ taskId: task.taskId, fieldName })}>
+            {task[fieldName]}
+          </div>
+        );
       }
     };
-    return editableColumnTextField;
   }
 
   function renderCheckbox(_task: Task) {
@@ -52,14 +55,6 @@ export default function TaskTable(props: TaskTableProps) {
   }
 
   const columns: IColumn[] = [
-    {
-      key: "idColumn",
-      name: "Aufgaben-ID",
-      fieldName: "taskId",
-      minWidth: 100,
-      maxWidth: 200,
-      isResizable: true,
-    },
     {
       key: "titleColumn",
       name: "Titel",

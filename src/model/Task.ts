@@ -1,4 +1,6 @@
 import { ExportTask } from "./ExportModel";
+import RangeLocation = Word.RangeLocation;
+import SelectionMode = Word.SelectionMode;
 
 export class Task {
   taskId: string;
@@ -30,5 +32,13 @@ export class Task {
 
   toExportTask() {
     return new ExportTask(this.taskId, this.title, this.maxPoints);
+  }
+
+  jumpTo(): void {
+    Word.run(async (context) => {
+      const contentControl = context.document.contentControls.getByIdOrNullObject(this.ccId);
+      const range = contentControl.getRange(RangeLocation.whole);
+      range.select(SelectionMode.select);
+    });
   }
 }

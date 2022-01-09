@@ -1,26 +1,17 @@
 import * as React from "react";
-import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@fluentui/react/lib/DetailsList";
+import { Text, MessageBar, MessageBarType } from "@fluentui/react";
+import "./NewTaskFromInstructionList.scss";
 
 export default function InstrutctionList() {
-  const instructions = [
-    "1. Erstelle die Aufgabe",
-    "2. Markiere den (Teil-)Aufgabenbereich",
-    "3. Lege die Maximalpunktzahl für die Aufgabe fest",
-    "4. Fertig!",
-  ].map((instr) => ({ name: instr }));
-
-  const columns: IColumn[] = [
-    { key: "column1", name: "Vorgehen", fieldName: "name", minWidth: 300, maxWidth: 400, isResizable: true },
-  ];
-
   return (
-    <div id="newTaskInstructionList">
-      <DetailsList
-        items={instructions}
-        columns={columns}
-        selectionMode={SelectionMode.none}
-        layoutMode={DetailsListLayoutMode.justified}
-      />
-    </div>
+    <MessageBar messageBarType={MessageBarType.info} id="instruction-list">
+      <Text id="instruction-title">Vorgehen</Text>
+      <ul>
+        <li>Erstelle die Aufgabe</li>
+        <li>Markiere den (Teil-)Aufgabenbereich</li>
+        <li>Lege die Maximalpunktzahl für die Aufgabe fest</li>
+        <li>Fertig!</li>
+      </ul>
+    </MessageBar>
   );
 }

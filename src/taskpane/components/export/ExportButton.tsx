@@ -17,11 +17,9 @@ export interface ExportButtonProps {
 export default function ExportButton(props: ExportButtonProps) {
   function exportExam() {
     prepareDocumentForExport().then(() => {
-      console.log("prepared");
       PdfService.getDocument().then((pdf: string) => {
         const exportData = new ExportModel(pdf, props.taskList.toExportTaskList());
         ApiService.postExamPdf(props.selectedExam.examId, exportData);
-        console.log(exportData);
       });
 
       // reset async
