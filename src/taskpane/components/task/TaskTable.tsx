@@ -35,7 +35,10 @@ export default function TaskTable(props: TaskTableProps) {
         );
       } else {
         return (
-          <div onClick={() => task.jumpTo()} onDoubleClick={() => setActiveEdit({ taskId: task.taskId, fieldName })}>
+          <div
+            onClick={() => task.jumpToAsync()}
+            onDoubleClick={() => setActiveEdit({ taskId: task.taskId, fieldName })}
+          >
             {task[fieldName]}
           </div>
         );
@@ -76,7 +79,7 @@ export default function TaskTable(props: TaskTableProps) {
   ];
 
   function editTask(taskId: string, fieldName: string, newValue: any): void {
-    props.taskList.editTask(taskId, fieldName, newValue).then((taskList) => {
+    props.taskList.editTaskAsync(taskId, fieldName, newValue).then((taskList) => {
       props.setTaskList(taskList);
     });
   }

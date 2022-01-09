@@ -32,7 +32,7 @@ export default function ExportButton(props: ExportButtonProps) {
       for (const task of props.taskList.tasks) {
         // Delete existing link content control
         if (task.linkCcId != null) {
-          const linkContentControl = context.document.body.contentControls.getByIdOrNullObject(task.linkCcId);
+          const linkContentControl = task.getLinkContentControl(context);
           if (linkContentControl == null) {
             console.warn(`Link content control with id ${task.linkCcId} does not exist`);
             continue;
@@ -51,14 +51,12 @@ export default function ExportButton(props: ExportButtonProps) {
     return Word.run(async (context) => {
       await resetLinkContentControls();
       for (const task of props.taskList.tasks) {
-        const contentControl = context.document.body.contentControls.getByIdOrNullObject(task.ccId);
+        const contentControl = task.getAssociatedContentControl(context);
 
         if (contentControl == null) {
           console.error(`Task content control with id ${task.ccId} does not exist`);
           continue;
         }
-
-        await context.sync();
 
         const linkContentControl = contentControl.getRange(RangeLocation.start).insertContentControl();
 

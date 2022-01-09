@@ -30,24 +30,35 @@ export default class TaskList extends WordPersistable<TaskList> {
       for (const task of this.tasks) {
         ccIdMap.set(task.ccId, task);
       }
-      const contentControls = context.document.contentControls.items;
-      for (const cc of contentControls) {
+      const contentControls = context.document.contentControls;
+
+      contentControls.load("items");
+      await context.sync();
+
+      let counter = 1;
+      const orderedTasks = [];
+      for (const cc of contentControls.items) {
         console.log(cc.id);
         if (ccIdMap.has(cc.id)) {
-          console.log(ccIdMap.get(cc.id));
+          const task = ccIdMap.get(cc.id);
+          await task.edit("title", `Aufgabe ${(counter++).toString()}`);
+          orderedTasks.push(orderedTasks);
         }
       }
-      await context.sync();
+
+      this.tasks = orderedTasks;
+
+      this.save(context);
 
       return this.copy();
     });
   }
 
-  editTask(taskId: string, fieldName: string, newValue: any): Promise<TaskList> {
+  editTaskAsync(taskId: string, fieldName: string, newValue: any): Promise<TaskList> {
     return Word.run<TaskList>(async (context) => {
       const taskToEdit = this.getTaskById(taskId);
-      taskToEdit[fieldName] = newValue;
-      await this.save(context);
+      taskToEdit.edit(context, fieldName, newValue);
+      this.save(context);
       return this.copy();
     });
   }
@@ -58,9 +69,6 @@ export default class TaskList extends WordPersistable<TaskList> {
 
   addTaskFromSelection(maxPoints: number): Promise<TaskList> {
     return Word.run<TaskList>(async (context) => {
-      // New task id
-      const newTaskId = uuidv4();
-
       // Get the current selection
       const range = context.document.getSelection();
 
@@ -69,7 +77,7 @@ export default class TaskList extends WordPersistable<TaskList> {
 
       // Visually signal content control creation
       cc.appearance = Word.ContentControlAppearance.boundingBox;
-      cc.title = "Task " + newTaskId;
+      cc.title = "Aufgabe " + (this.tasks.length + 1);
       cc.tag = "Task";
 
       // Need to load ID property first
@@ -78,11 +86,11 @@ export default class TaskList extends WordPersistable<TaskList> {
       await context.sync();
 
       // title will be updated later anyways
-      const newTask = new Task(newTaskId, "Aufgabe " + (this.tasks.length + 1), maxPoints, cc.id, null);
+      const newTask = new Task(uuidv4(), cc.title, maxPoints, cc.id, null);
 
       this.addTask(newTask);
 
-      await this.save(context);
+      this.save(context);
 
       return this.copy();
     });

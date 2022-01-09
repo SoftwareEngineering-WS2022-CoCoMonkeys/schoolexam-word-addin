@@ -14,6 +14,10 @@ export default abstract class WordPersistable<Type> {
     console.log("Saved " + this.propertyKey + " as ", JSON.stringify(this));
   }
 
+  async saveAsync(): Promise<void> {
+    return Word.run(async (context) => this.save(context));
+  }
+
   async load(): Promise<Type> {
     return Word.run(async (context) => {
       context.load(context.document.properties.customProperties);

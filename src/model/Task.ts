@@ -34,11 +34,41 @@ export class Task {
     return new ExportTask(this.taskId, this.title, this.maxPoints);
   }
 
-  jumpTo(): void {
-    Word.run(async (context) => {
-      const contentControl = context.document.contentControls.getByIdOrNullObject(this.ccId);
-      const range = contentControl.getRange(RangeLocation.whole);
-      range.select(SelectionMode.select);
-    });
+  jumpTo(context: Word.RequestContext) {
+    const contentControl = this.getLinkContentControl(context);
+    const range = contentControl.getRange(RangeLocation.whole);
+    range.select(SelectionMode.select);
+  }
+
+  async jumpToAsync(): Promise<void> {
+    return Word.run(async (context) => this.jumpTo(context));
+  }
+
+  async editAsync(fieldName: string, newValue: string): Promise<void> {
+    return Word.run(async (context) => this.edit(context, fieldName, newValue));
+  }
+
+  edit(context: Word.RequestContext, fieldName: string, newValue: string): void {
+    this[fieldName] = newValue;
+    if (fieldName === "title") {
+      const contentControl = this.getAssociatedContentControl(context);
+      contentControl.title = newValue;
+    }
+  }
+
+  getAssociatedContentControlAsync(): Promise<Word.ContentControl | null> {
+    return Word.run(async (context) => this.getAssociatedContentControl(context));
+  }
+
+  getAssociatedContentControl(context: Word.RequestContext): Word.ContentControl | null {
+    return context.document.contentControls.getByIdOrNullObject(this.ccId);
+  }
+
+  getLInkContentControlAsync(): Promise<Word.ContentControl | null> {
+    return Word.run(async (context) => this.getLinkContentControl(context));
+  }
+
+  getLinkContentControl(context: Word.RequestContext): Word.ContentControl | null {
+    return context.document.contentControls.getByIdOrNullObject(this.linkCcId);
   }
 }
