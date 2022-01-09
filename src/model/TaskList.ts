@@ -52,8 +52,15 @@ export default class TaskList extends WordPersistable<TaskList> {
     });
   }
 
+  toExportTaskList() {
+    return this.tasks.map((task) => task.toExportTask());
+  }
+
   addTaskFromSelection(maxPoints: number): Promise<TaskList> {
     return Word.run<TaskList>(async (context) => {
+      // New task id
+      const newTaskId = uuidv4();
+
       // Get the current selection
       const range = context.document.getSelection();
 
@@ -62,11 +69,7 @@ export default class TaskList extends WordPersistable<TaskList> {
 
       // Visually signal content control creation
       cc.appearance = Word.ContentControlAppearance.boundingBox;
-
-      // Associate ID with content control
-      const globalTaskId = uuidv4();
-
-      cc.title = "Task " + globalTaskId;
+      cc.title = "Task " + newTaskId;
       cc.tag = "Task";
 
       // Need to load ID property first
@@ -75,13 +78,11 @@ export default class TaskList extends WordPersistable<TaskList> {
       await context.sync();
 
       // title will be updated later anyways
-      const newTask = new Task(globalTaskId, "Aufgabe " + (this.tasks.length + 1), maxPoints, cc.id);
+      const newTask = new Task(newTaskId, "Aufgabe " + (this.tasks.length + 1), maxPoints, cc.id, null);
 
       this.addTask(newTask);
 
       await this.save(context);
-
-      await context.sync();
 
       return this.copy();
     });

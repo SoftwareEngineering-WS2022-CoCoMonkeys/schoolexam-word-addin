@@ -95,7 +95,7 @@ export default function TaskTable(props: TaskTableProps) {
   };
 
   return (
-    <div>
+    <div id="task-table-container">
       <DetailsList selectionMode={SelectionMode.none} columns={columns} items={props.taskList.tasks} />
       <ActionButton iconProps={updateIcon} onClick={updateTasks}>
         Reihenfolge zurücksetzen
