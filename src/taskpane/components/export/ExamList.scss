@@ -8,6 +8,10 @@
   width: 100%;
 }
 
+.selected-exam {
+  background-color: green;
+}
+
 .exam-cell:hover {
   background-color: lightgray;
   cursor: pointer;

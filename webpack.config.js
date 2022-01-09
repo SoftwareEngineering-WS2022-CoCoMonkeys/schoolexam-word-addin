@@ -99,11 +99,6 @@ module.exports = async (env, options) => {
         chunks: ["taskpane", "vendor", "polyfills"],
       }),
       new HtmlWebpackPlugin({
-        filename: "exportPreparedDialog.html",
-        template: "./src/taskpane/components/export/exportPreparedDialog.html",
-        chunks: ["taskpane", "vendor", "polyfills"],
-      }),
-      new HtmlWebpackPlugin({
         filename: "commands.html",
         template: "./src/commands/commands.html",
         chunks: ["commands"],

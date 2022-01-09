@@ -1,14 +1,14 @@
 import axios from "axios";
 import AuthService from "./AuthService";
 import Exam from "../../../model/Exam";
+import ExportModel from "../../../model/ExportModel";
 
 class ApiService {
-  private readonly API_URL = "33.196.27:55011"; //TODO
-
   async getExams(): Promise<Exam[]> {
-    /* return Promise.resolve(
-       new Array(7).fill(new Exam("e001", "Projektmanagement", "planned", new Date(), "Sozialwissenschaften"))
-     );*/
+    return Promise.resolve(
+      new Array(7).fill(new Exam("e001", "Projektmanagement", "planned", new Date(), "Sozialwissenschaften"))
+    );
+    /*
     return axios
       .get(`${this.API_URL}/Course/ByTeacher`, {
         headers: AuthService.authHeader(),
@@ -22,6 +22,18 @@ class ApiService {
           console.log("error");
           return null;
         }
+      });
+      */
+  }
+
+  async postExamPdf(examId: string, exportData: ExportModel): Promise<number> {
+    return axios
+      .post(`Exam/${examId}/UploadTaskPdf`, exportData, {
+        headers: AuthService.authHeader(),
+      })
+      .then((response) => {
+        console.log(response.data);
+        return response.status;
       });
   }
 }

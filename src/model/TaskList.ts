@@ -148,7 +148,6 @@ export default class TaskList extends WordPersistable<TaskList> {
 
   newEmpty(): TaskList {
     const t = new TaskList();
-    //t.tasks = [new Task("123", "Aufgabe 3", 3, 0)];
     return t;
   }
 }

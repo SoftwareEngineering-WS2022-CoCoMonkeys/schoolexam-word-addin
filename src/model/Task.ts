@@ -16,13 +16,16 @@ export class Task {
   }
 
   equals(other: any): boolean {
+    if (other == null) {
+      return false;
+    }
     if (this === other) {
       return true;
     }
     if (typeof this !== typeof other) {
       return this == other;
     }
-    return this.taskId == (other as Task).taskId;
+    return this.taskId === (other as Task).taskId;
   }
 
   toExportTask() {

@@ -15,9 +15,12 @@ export default function ExamList(props: ExamListProps) {
 
   function onRenderExamCell(exam: Exam) {
     return (
-      <div className="exam-cell" onClick={() => props.setSelectedExam(exam)}>
+      <div
+        className={`exam-cell ${exam.equals(props.selectedExam) ?? "selected-exam"}`}
+        onClick={() => props.setSelectedExam(exam)}
+      >
         <div>
-          {exam.id} - {exam.title} - {exam.subject}
+          {exam.examId} - {exam.title} - {exam.subject}
         </div>
         <div>{exam.dateOfExam.toLocaleDateString("de-DE")}</div>
       </div>

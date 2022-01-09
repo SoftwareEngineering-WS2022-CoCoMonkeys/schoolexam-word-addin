@@ -29,15 +29,21 @@ export default function App(props: AppProps) {
     );
   }
 
+  const mainContent = displayLogin ? (
+    <LoginForm setLoggedIn={setLoggedIn} setDisplayLogin={setDisplayLogin} />
+  ) : (
+    <Navbar />
+  );
+
   return (
-    <div id="app-main">
+    <div className="center-items">
       <Header
         loggedIn={loggedIn}
         setLoggedIn={setLoggedIn}
         setDisplayLogin={setDisplayLogin}
         displayLogin={displayLogin}
       />
-      {displayLogin ? <LoginForm setLoggedIn={setLoggedIn} setDisplayLogin={setDisplayLogin} /> : <Navbar />}
+      {mainContent}
     </div>
   );
 }

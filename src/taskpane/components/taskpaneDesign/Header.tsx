@@ -31,9 +31,11 @@ export default function Header(props: HeaderProps) {
     />
   );
 
+  const headerContent = props.displayLogin ? <BackButton onBack={() => props.setDisplayLogin(false)} /> : loginButton;
+
   return (
-    <div id="header">
-      {props.displayLogin ? <BackButton onBack={() => props.setDisplayLogin(false)} /> : loginButton}
+    <div id="header" className="center-items">
+      {headerContent}
     </div>
   );
 }

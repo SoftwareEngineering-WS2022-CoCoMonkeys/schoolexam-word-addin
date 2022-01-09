@@ -6,12 +6,12 @@ import "./StructureNavbar.scss";
 import DocumentTitlePage from "./DocumentTitlePage";
 
 export const StructureNavbar: React.FunctionComponent = () => (
-  <div>
+  <div id="structure-navbar">
     <Pivot aria-label="StructureNavigationBar">
-      <PivotItem headerText="Fußzeile (Benötigt)">
+      <PivotItem headerText="Fußzeile">
         <PageFooter />
       </PivotItem>
-      <PivotItem headerText="Titelseite (Benötigt)">
+      <PivotItem headerText="Titelseite">
         <DocumentTitlePage />
       </PivotItem>
       <PivotItem headerText="Kopfzeile">

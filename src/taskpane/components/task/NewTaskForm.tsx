@@ -3,6 +3,7 @@ import { ActionButton, IIconProps, PrimaryButton, Stack, Text, TextField } from 
 import BackButton from "../util/BackButton";
 import { useState } from "react";
 import TaskList from "../../../model/TaskList";
+import "./NewTaskForm.scss";
 import InstrutctionList from "./NewTaskFromInstructionList";
 
 export interface NewTaskFormProps {
@@ -15,7 +16,6 @@ export default function NewTaskForm(props: NewTaskFormProps) {
   const [pointsInput, setPointsInput] = useState(null);
 
   const addIcon: IIconProps = { iconName: "Add" };
-  const backIcon: IIconProps = { iconName: "Back" };
 
   function addTask(): void {
     props.taskList.addTaskFromSelection(pointsInput).then((taskList) => {
@@ -23,11 +23,17 @@ export default function NewTaskForm(props: NewTaskFormProps) {
     });
   }
 
+  const expandCollapseBtn = expanded ? (
+    <BackButton onBack={() => setExpanded(false)} />
+  ) : (
+    <ActionButton iconProps={addIcon} text="Neue Aufgabe" className="margin-btn" onClick={() => setExpanded(true)} />
+  );
+
   return (
-    <div >
-      {expanded ? (
-        <div id="newTaskForm">
-          <BackButton onBack={() => setExpanded(false)} />
+    <div id="new-task-form" className="center-items">
+      {expandCollapseBtn}
+      {expanded && (
+        <div id="expanded-new-task-form" className="center-items">
           <InstrutctionList />
           <Stack>
             <TextField
@@ -40,13 +46,6 @@ export default function NewTaskForm(props: NewTaskFormProps) {
             </PrimaryButton>
           </Stack>
         </div>
-      ) : (
-        <ActionButton
-          iconProps={addIcon}
-          text="Neue Aufgabe"
-          className="margin-btn"
-          onClick={() => setExpanded(true)}
-        />
       )}
     </div>
   );

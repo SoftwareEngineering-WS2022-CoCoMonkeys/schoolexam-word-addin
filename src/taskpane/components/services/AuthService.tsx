@@ -1,6 +1,6 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "https://cocomonkeys-schoolexam.herokuapp.com/";
+axios.defaults.baseURL = "https://cocomonkeys-schoolexam.herokuapp.com";
 
 class AuthService {
   private readonly AUTH_URL = "Authentication/Authenticate";

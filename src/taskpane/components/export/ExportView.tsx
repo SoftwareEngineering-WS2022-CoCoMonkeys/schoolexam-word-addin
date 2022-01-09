@@ -14,7 +14,7 @@ export interface ExportViewProps {
 
 export default function ExportView(props: ExportViewProps) {
   return (
-    <div id="export-view">
+    <div id="export-view" className="center-items">
       <ExamList selectedExam={props.selectedExam} setSelectedExam={props.setSelectedExam} />
       <ExportButton taskList={props.taskList} selectedExam={props.selectedExam} />
     </div>

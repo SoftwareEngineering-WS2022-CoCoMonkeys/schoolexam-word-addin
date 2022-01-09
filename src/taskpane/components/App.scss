@@ -7,9 +7,11 @@
 
 .margin-btn {
   margin-top: 1rem !important;
-  margin-bottom: 1rem !important;
+}
+
+.center-items {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
 }

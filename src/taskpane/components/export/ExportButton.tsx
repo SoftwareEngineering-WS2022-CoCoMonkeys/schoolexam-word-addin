@@ -7,6 +7,7 @@ import TaskList from "../../../model/TaskList";
 import ExportModel from "../../../model/ExportModel";
 import RangeLocation = Word.RangeLocation;
 import ContentControlAppearance = Word.ContentControlAppearance;
+import ApiService from "../services/ApiService";
 
 export interface ExportButtonProps {
   selectedExam: Exam;
@@ -16,8 +17,11 @@ export interface ExportButtonProps {
 export default function ExportButton(props: ExportButtonProps) {
   function exportExam() {
     prepareDocumentForExport().then(() => {
+      console.log("prepared");
       PdfService.getDocument().then((pdf: string) => {
         const exportData = new ExportModel(pdf, props.taskList.toExportTaskList());
+        ApiService.postExamPdf(props.selectedExam.examId, exportData);
+        console.log(exportData);
       });
 
       // reset async
@@ -70,8 +74,6 @@ export default function ExportButton(props: ExportButtonProps) {
           Word.InsertLocation.start
         );
 
-        console.log(linkContentControl.getHtml());
-
         linkContentControl.load("id");
 
         await context.sync();
@@ -83,7 +85,13 @@ export default function ExportButton(props: ExportButtonProps) {
 
   return (
     <div>
-      <PrimaryButton id="export-exam-btn" className="margin-btn" onClick={exportExam} text="Dokument exportieren" />
+      <PrimaryButton
+        id="export-exam-btn"
+        className="margin-btn"
+        disabled={props.selectedExam == null}
+        onClick={exportExam}
+        text="Dokument exportieren"
+      />
     </div>
   );
 }

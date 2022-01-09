@@ -23,15 +23,13 @@ export default function Navbar(_props) {
   });
 
   return (
-    <div id="topLevelNavbar">
+    <div id="navbar">
       <Pivot aria-label="NavigationBar">
         <PivotItem className="pivot-item" headerText="Aufgaben" itemCount={taskList.getLength()} itemIcon="Dictionary">
           <TaskView taskList={taskList} setTaskList={setTaskList} />
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Struktur" itemIcon="BulletedTreeList">
-          <Stack horizontal>
-            <StructureNavbar />
-          </Stack>
+          <StructureNavbar />
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Exportieren" itemIcon="Share">
           <ExportView
