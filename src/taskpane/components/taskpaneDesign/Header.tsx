@@ -30,9 +30,37 @@ export default function Header(props: HeaderProps) {
       onClick={() => props.setDisplayLogin(true)}
     />
   );
+
+  function testFunc() {
+    /* Word.run(async (context) => {
+       const range = context.document.getSelection();
+       await context.sync();
+
+       const insertedTextRange = range.insertText(`Test Bookmark`, Word.InsertLocation.replace);
+
+       const uniqueStr = new Date().getTime();
+       const bookmarkName = `Test_BookmarkCode_${uniqueStr}`;
+       insertedTextRange.insertBookmark(bookmarkName);
+
+       await context.sync();
+     });
+     */
+    Word.run(async (context) => {
+      context.document.body.paragraphs
+        .getFirst()
+        .getRange()
+        .insertHtml(
+          '<a style="text-decoration: none" href="www.google.com">selectedWord</a>',
+          Word.InsertLocation.replace
+        );
+      await context.sync();
+    });
+  }
+
   return (
     <div id="header">
       {props.displayLogin ? <BackButton onBack={() => props.setDisplayLogin(false)} /> : loginButton}
+      <ActionButton onClick={testFunc}>asdfsfsfa</ActionButton>
     </div>
   );
 }

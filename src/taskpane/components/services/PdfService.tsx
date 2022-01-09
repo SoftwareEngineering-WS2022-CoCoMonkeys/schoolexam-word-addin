@@ -2,7 +2,7 @@ import FileType = Office.FileType;
 import File = Office.File;
 
 class PdfService {
-  async getDocument(): Promise<Array<any>> {
+  async getDocument(): Promise<string> {
     const promises: Promise<Array<any>>[] = [];
     const result = await new Promise<Office.AsyncResult<File>>((resolve, reject) => {
       Office.context.document.getFileAsync(FileType.Pdf, async (result) => {
@@ -29,8 +29,19 @@ class PdfService {
         })
       );
     }
-    console.log(promises);
-    return Promise.all(promises).then((slices) => slices.reduce((a, b) => a.concat(b)));
+    return Promise.all(promises)
+      .then((slices) => slices.reduce((a, b) => a.concat(b)))
+      .then((byteArr) => this.arrayBufferToBase64(byteArr));
+  }
+
+  arrayBufferToBase64(buffer) {
+    let binary = "";
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
   }
 }
 

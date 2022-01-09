@@ -9,7 +9,6 @@ import TaskList from "../../../model/TaskList";
 import Exam from "../../../model/Exam";
 
 export default function Navbar(_props) {
-  const [exportButtonDisabled, setExportButtonDisabled] = React.useState(true);
   const [taskList, setTaskList] = useState(new TaskList());
   const [selectedExam, setSelectedExam] = useState(null as Exam);
 
@@ -43,8 +42,6 @@ export default function Navbar(_props) {
             setSelectedExam={setSelectedExam}
             taskList={taskList}
             setTaskList={setTaskList}
-            exportButtonDisabled={exportButtonDisabled}
-            setExportButtonDisabled={setExportButtonDisabled}
           />
         </PivotItem>
       </Pivot>
