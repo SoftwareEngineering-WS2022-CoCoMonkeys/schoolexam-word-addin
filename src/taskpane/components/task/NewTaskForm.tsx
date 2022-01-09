@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ActionButton, CommandBarButton, DetailsList, DetailsListLayoutMode, IIconProps, PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
+import { ActionButton, IIconProps, PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
 import BackButton from "../util/BackButton";
 import { useState } from "react";
 import TaskList from "../../../model/TaskList";
@@ -21,9 +21,9 @@ export default function NewTaskForm(props: NewTaskFormProps) {
       props.setTaskList(taskList);
     });
   }
-  
+
   return (
-    <div>
+    <div id="">
       {expanded ? (
         <div>
           <BackButton onBack={() => setExpanded(false)} />
