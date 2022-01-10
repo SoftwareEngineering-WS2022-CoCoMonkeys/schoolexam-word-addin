@@ -15,7 +15,6 @@ export default function ExamList(props: ExamListProps) {
 
   useEffect(() => {
     ApiService.getExams().then((result) => {
-      console.log(result);
       setExams(result);
     });
   }, []);

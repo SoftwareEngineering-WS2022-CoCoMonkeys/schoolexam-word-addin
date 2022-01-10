@@ -20,108 +20,81 @@ export default class TaskList extends WordPersistable<TaskList> {
     return this.tasks.length;
   }
 
-  copy() {
-    return Object.assign(new TaskList(), this) as TaskList;
+  async copy() {
+    const copy = Object.assign(new TaskList(), this) as TaskList;
+    await copy.saveAsync();
+    return copy;
   }
 
-  udpateTaskTitles(): Promise<TaskList> {
-    return Word.run<TaskList>(async (context) => {
-      const ccIdMap = new Map();
-      for (const task of this.tasks) {
-        ccIdMap.set(task.ccId, task);
+  async updateTaskTitles(context: Word.RequestContext): Promise<TaskList> {
+    const ccIdMap = new Map();
+    for (const task of this.tasks) {
+      ccIdMap.set(task.ccId, task);
+    }
+    const contentControls = context.document.contentControls;
+
+    contentControls.load("items");
+    await context.sync();
+
+    let counter = 1;
+    const orderedTasks = [];
+    for (const cc of contentControls.items) {
+      if (ccIdMap.has(cc.id)) {
+        const task = ccIdMap.get(cc.id);
+        await task.edit(context, "title", `Aufgabe ${(counter++).toString()}`);
+        orderedTasks.push(task);
       }
-      const contentControls = context.document.contentControls;
+    }
 
-      contentControls.load("items");
-      await context.sync();
+    this.tasks = orderedTasks;
 
-      let counter = 1;
-      const orderedTasks = [];
-      for (const cc of contentControls.items) {
-        console.log(cc.id);
-        if (ccIdMap.has(cc.id)) {
-          const task = ccIdMap.get(cc.id);
-          await task.edit("title", `Aufgabe ${(counter++).toString()}`);
-          orderedTasks.push(orderedTasks);
-        }
-      }
+    return this.copy();
+  }
 
-      this.tasks = orderedTasks;
+  updateTaskTitlesAsync(): Promise<TaskList> {
+    return Word.run<TaskList>(async (context) => this.updateTaskTitles(context));
+  }
 
-      this.save(context);
-
-      return this.copy();
-    });
+  async editTask(context: Word.RequestContext, taskId: string, fieldName: string, newValue: any): Promise<TaskList> {
+    const taskToEdit = this.getTaskById(taskId);
+    await taskToEdit.edit(context, fieldName, newValue);
+    return this.copy();
   }
 
   editTaskAsync(taskId: string, fieldName: string, newValue: any): Promise<TaskList> {
-    return Word.run<TaskList>(async (context) => {
-      const taskToEdit = this.getTaskById(taskId);
-      taskToEdit.edit(context, fieldName, newValue);
-      this.save(context);
-      return this.copy();
-    });
+    return Word.run<TaskList>(async (context) => this.editTask(context, taskId, fieldName, newValue));
   }
 
   toExportTaskList() {
     return this.tasks.map((task) => task.toExportTask());
   }
 
-  addTaskFromSelection(maxPoints: number): Promise<TaskList> {
-    return Word.run<TaskList>(async (context) => {
-      // Get the current selection
-      const range = context.document.getSelection();
+  async addTaskFromSelection(context: Word.RequestContext, maxPoints: number): Promise<TaskList> {
+    // Get the current selection
+    const range = context.document.getSelection();
 
-      // Create a content control
-      const cc = range.insertContentControl();
+    // Create a content control
+    const cc = range.insertContentControl();
 
-      // Visually signal content control creation
-      cc.appearance = Word.ContentControlAppearance.boundingBox;
-      cc.title = "Aufgabe " + (this.tasks.length + 1);
-      cc.tag = "Task";
+    // Visually signal content control creation
+    cc.appearance = Word.ContentControlAppearance.boundingBox;
+    cc.title = "Aufgabe " + (this.tasks.length + 1);
+    cc.tag = "Task";
 
-      // Need to load ID property first
-      cc.load("id");
+    // Need to load ID property first
+    cc.load("id");
 
-      await context.sync();
+    await context.sync();
 
-      // title will be updated later anyways
-      const newTask = new Task(uuidv4(), cc.title, maxPoints, cc.id, null);
+    const newTask = new Task(uuidv4(), cc.title, maxPoints, cc.id, null);
 
-      this.addTask(newTask);
+    this.tasks.push(newTask);
 
-      this.save(context);
-
-      return this.copy();
-    });
+    return this.copy();
   }
 
-  addTask(task: Task) {
-    // Remove task first
-    if (this.removeTask(task)) {
-      console.warn("Overwriting existing task");
-    }
-    this.tasks.push(task);
-  }
-
-  removeTask(task: Task): boolean {
-    const index = this.tasks.findIndex((t) => t.taskId == task.taskId);
-    if (index != -1) {
-      this.tasks.splice(index, 1);
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  clear(context: Word.RequestContext) {
-    const ccs = context.document.contentControls;
-    for (const task of this.tasks) {
-      const cc = ccs.getById(task.ccId);
-      // keep the content
-      cc.delete(true);
-    }
-    this.tasks = [];
+  addTaskFromSelectionAsync(maxPoints: number): Promise<TaskList> {
+    return Word.run(async (context) => this.addTaskFromSelection(context, maxPoints));
   }
 
   async init(obj, context: Word.RequestContext): Promise<void> {

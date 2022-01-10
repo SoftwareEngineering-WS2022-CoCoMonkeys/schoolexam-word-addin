@@ -11,7 +11,7 @@ export default abstract class WordPersistable<Type> {
 
     await context.sync();
 
-    console.log("Saved " + this.propertyKey + " as ", JSON.stringify(this));
+    console.debug("Saved " + this.propertyKey + " as ", JSON.stringify(this));
   }
 
   async saveAsync(): Promise<void> {
@@ -38,7 +38,7 @@ export default abstract class WordPersistable<Type> {
       const loadedObject = JSON.parse(json, this.reviver) as Type;
       this.init(loadedObject, context);
 
-      console.log("Loaded", loadedObject);
+      console.debug("Successfully loaded", loadedObject);
       return loadedObject;
     });
   }

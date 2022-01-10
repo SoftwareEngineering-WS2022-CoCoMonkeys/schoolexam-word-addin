@@ -34,26 +34,30 @@ export class Task {
     return new ExportTask(this.taskId, this.title, this.maxPoints);
   }
 
-  jumpTo(context: Word.RequestContext) {
-    const contentControl = this.getLinkContentControl(context);
+  async jumpTo(context: Word.RequestContext) {
+    const contentControl = this.getAssociatedContentControl(context);
     const range = contentControl.getRange(RangeLocation.whole);
     range.select(SelectionMode.select);
+
+    await context.sync();
   }
 
-  async jumpToAsync(): Promise<void> {
+  jumpToAsync(): Promise<void> {
     return Word.run(async (context) => this.jumpTo(context));
   }
 
-  async editAsync(fieldName: string, newValue: string): Promise<void> {
+  editAsync(fieldName: string, newValue: string): Promise<void> {
     return Word.run(async (context) => this.edit(context, fieldName, newValue));
   }
 
-  edit(context: Word.RequestContext, fieldName: string, newValue: string): void {
+  async edit(context: Word.RequestContext, fieldName: string, newValue: string): Promise<void> {
     this[fieldName] = newValue;
     if (fieldName === "title") {
       const contentControl = this.getAssociatedContentControl(context);
       contentControl.title = newValue;
     }
+
+    await context.sync();
   }
 
   getAssociatedContentControlAsync(): Promise<Word.ContentControl | null> {

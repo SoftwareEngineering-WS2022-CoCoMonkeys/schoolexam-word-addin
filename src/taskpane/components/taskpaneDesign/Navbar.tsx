@@ -8,7 +8,11 @@ import { useEffect, useState } from "react";
 import TaskList from "../../../model/TaskList";
 import Exam from "../../../model/Exam";
 
-export default function Navbar(_props) {
+export interface NavbarProps {
+  loggedIn: boolean;
+}
+
+export default function Navbar(props : NavbarProps) {
   const [taskList, setTaskList] = useState(new TaskList());
   const [selectedExam, setSelectedExam] = useState(null as Exam);
 
@@ -29,6 +33,7 @@ export default function Navbar(_props) {
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Exportieren" itemIcon="Share">
           <ExportView
+            loggedIn={props.loggedIn}
             selectedExam={selectedExam}
             setSelectedExam={setSelectedExam}
             taskList={taskList}

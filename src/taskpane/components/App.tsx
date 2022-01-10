@@ -32,7 +32,7 @@ export default function App(props: AppProps) {
   const mainContent = displayLogin ? (
     <LoginForm setLoggedIn={setLoggedIn} setDisplayLogin={setDisplayLogin} />
   ) : (
-    <Navbar />
+    <Navbar loggedIn={loggedIn} />
   );
 
   return (

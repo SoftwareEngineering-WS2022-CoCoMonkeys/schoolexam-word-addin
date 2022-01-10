@@ -85,7 +85,7 @@ export default function TaskTable(props: TaskTableProps) {
   }
 
   function updateTasks() {
-    props.taskList.udpateTaskTitles().then((taskList) => props.setTaskList(taskList));
+    props.taskList.updateTaskTitlesAsync().then((taskList) => props.setTaskList(taskList));
   }
 
   const updateIcon: IIconProps = {

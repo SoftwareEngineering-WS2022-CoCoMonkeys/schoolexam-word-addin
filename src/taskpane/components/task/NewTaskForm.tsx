@@ -18,7 +18,7 @@ export default function NewTaskForm(props: NewTaskFormProps) {
   const addIcon: IIconProps = { iconName: "Add" };
 
   function addTask(): void {
-    props.taskList.addTaskFromSelection(pointsInput).then((taskList) => {
+    props.taskList.addTaskFromSelectionAsync(pointsInput).then((taskList) => {
       props.setTaskList(taskList);
     });
   }
@@ -43,11 +43,16 @@ export default function NewTaskForm(props: NewTaskFormProps) {
           <InstrutctionList />
           <Stack>
             <TextField
+              required={true}
               label="Punkte"
               type="number"
               onChange={(event) => setPointsInput(parseInt(event.currentTarget.value))}
             />
-            <PrimaryButton className="margin-btn" onClick={addTask}>
+            <PrimaryButton
+              className="margin-btn"
+              onClick={addTask}
+              disabled={pointsInput == null || isNaN(pointsInput) || pointsInput <= 0}
+            >
               Aufgabe hinzufügen
             </PrimaryButton>
           </Stack>

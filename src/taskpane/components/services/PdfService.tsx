@@ -1,9 +1,9 @@
 import FileType = Office.FileType;
 import File = Office.File;
 
-class PdfService {
-  async getDocument(): Promise<string> {
-    const promises: Promise<Array<any>>[] = [];
+export default class PdfService {
+  static async getDocument(): Promise<string> {
+    const promises: Promise<any[]>[] = [];
     const result = await new Promise<Office.AsyncResult<File>>((resolve, reject) => {
       Office.context.document.getFileAsync(FileType.Pdf, async (result) => {
         if (result.status === Office.AsyncResultStatus.Succeeded) {
@@ -14,15 +14,13 @@ class PdfService {
       });
     });
     const sliceCount = result.value.sliceCount;
-    let completedSlices = 0;
     // The Office API gives us the PDF document in 4MB slices.
     // We have to concatenate them ourselves.
     for (let i = 0; i < sliceCount; i++) {
       promises.push(
-        new Promise<Array<any>>((resolve, reject) => {
+        new Promise<any[]>((resolve, reject) => {
           result.value.getSliceAsync(i, (result) => {
             if (result.status === Office.AsyncResultStatus.Succeeded) {
-              completedSlices++;
               resolve(result.value.data);
             } else {
               reject();
@@ -36,7 +34,7 @@ class PdfService {
       .then((byteArr) => this.arrayBufferToBase64(byteArr));
   }
 
-  arrayBufferToBase64(buffer) {
+  static arrayBufferToBase64(buffer: any[]): string {
     let binary = "";
     const bytes = new Uint8Array(buffer);
     const len = bytes.byteLength;
@@ -46,5 +44,3 @@ class PdfService {
     return window.btoa(binary);
   }
 }
-
-export default new PdfService();

@@ -1,25 +1,23 @@
-import axios from "axios";
+import ApiService from "./ApiService";
 
-axios.defaults.baseURL = "https://cocomonkeys-schoolexam.herokuapp.com";
+export default class AuthService {
+  private static readonly AUTH_URL = "/Authentication/Authenticate";
 
-class AuthService {
-  private readonly AUTH_URL = "Authentication/Authenticate";
-
-  login(username: string, password: string): Promise<boolean> {
-    return axios.post(this.AUTH_URL, { username, password }).then((response) => {
-      if (response) {
-        console.log(response.data);
-        localStorage.setItem("userJwt", response.data);
-        return true;
-      } else {
-        return false;
-      }
-    });
+  static login(username: string, password: string): Promise<boolean> {
+    return ApiService.api("POST", this.AUTH_URL, { username, password })
+      .then((response) => response.text())
+      .then((response) => {
+        if (response) {
+          localStorage.setItem("userJwt", response);
+          return true;
+        } else {
+          return false;
+        }
+      });
   }
 
-  authHeader() {
+  static authHeader() {
     const userJwt = localStorage.getItem("userJwt");
-    // TODO
     if (userJwt) {
       return { Authorization: "Bearer " + userJwt };
     } else {
@@ -27,5 +25,3 @@ class AuthService {
     }
   }
 }
-
-export default new AuthService();
