@@ -1,0 +1,19 @@
+a, u, #download-anchor {
+  color: white;
+  text-decoration: none !important;
+}
+
+#convert-btn {
+  margin-right: 1rem;
+}
+
+#convert-btns-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+#conversion-error-msg {
+  transition: height 1s;
+}

@@ -1,42 +1,69 @@
-import { PrimaryButton } from "@fluentui/react";
+import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner } from "@fluentui/react";
 import * as React from "react";
+import { useState } from "react";
 import Exam from "../../../model/Exam";
 import "./ExportButton.scss";
-import PdfService from "../services/PdfService";
 import TaskList from "../../../model/TaskList";
-import TemplateDTO from "../../../dto/TemplateDTO";
 import ApiService from "../services/ApiService";
+import TemplateDTO from "../../../dto/TemplateDTO";
 
 export interface ExportButtonProps {
-  selectedExam: Exam;
+  selectedExam: Exam | null;
   taskList: TaskList;
+  taskPdf: string | null;
+}
+
+enum ExportState {
+  idle,
+  exporting,
+  error,
+  success,
 }
 
 export default function ExportButton(props: ExportButtonProps): JSX.Element {
+  const [exportState, setExportState] = useState(ExportState.idle);
+
   async function exportExam() {
+    setExportState(ExportState.exporting);
+
     // remove and re-insert linkContentControls
     await props.taskList.removeLinkContentControlsAsync();
     await props.taskList.insertLinkContentControlsAsync();
 
-    // get pdf and export
-    const pdfBase64: string = await PdfService.getDocument();
-    // assemble DTO
-    const exportData = new TemplateDTO(pdfBase64, props.taskList.assembleDTO());
-    await ApiService.postExamPdf(props.selectedExam.examId, exportData);
-
-    // remove link content controls
-    await props.taskList.removeLinkContentControlsAsync();
+    const exportData = new TemplateDTO(props.taskPdf, props.taskList.assembleDTO());
+    try {
+      const response = await ApiService.postExamPdf(props.selectedExam.examId, exportData);
+      setExportState(ExportState.success);
+    } catch (e) {
+      setExportState(ExportState.error);
+    }
   }
+
+  const errorDialogContentProps = {
+    type: DialogType.normal,
+    title: "Export gescheitert",
+    subText: "Der Export ist fehlgeschlagen",
+  };
 
   return (
     <div>
+      <Dialog
+        hidden={exportState !== ExportState.error}
+        onDismiss={() => setExportState(ExportState.idle)}
+        dialogContentProps={errorDialogContentProps}
+      >
+        <DialogFooter>
+          <DefaultButton onClick={() => setExportState(ExportState.idle)} text="Ok" />
+        </DialogFooter>
+      </Dialog>
       <PrimaryButton
-        id="export-exam-btn"
-        className="margin-btn"
-        disabled={props.selectedExam == null}
+        id="export-btn"
+        className="margin-btn stretch"
+        disabled={props.selectedExam == null || props.taskPdf == null}
         onClick={exportExam}
-        text="Dokument exportieren"
-      />
+      >
+        {exportState === ExportState.exporting ? <Spinner /> : "Dokument exportieren"}
+      </PrimaryButton>
     </div>
   );
 }

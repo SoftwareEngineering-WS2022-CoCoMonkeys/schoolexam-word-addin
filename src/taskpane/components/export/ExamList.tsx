@@ -6,7 +6,7 @@ import Exam from "../../../model/Exam";
 import "./ExamList.scss";
 
 export interface ExamListProps {
-  selectedExam: Exam;
+  selectedExam: Exam | null;
   setSelectedExam: (exam: Exam) => void;
 }
 

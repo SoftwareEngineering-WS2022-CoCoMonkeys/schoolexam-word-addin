@@ -1,13 +1,16 @@
 import * as React from "react";
+import { useState } from "react";
 import "./ExportView.scss";
 import ExamList from "./ExamList";
 import Exam from "../../../model/Exam";
 import ExportButton from "./ExportButton";
 import TaskList from "../../../model/TaskList";
 import { MessageBar, MessageBarType } from "@fluentui/react";
+import BuildButton from "./BuildButton";
+import ConvertButton from "./ConvertButton";
 
 export interface ExportViewProps {
-  selectedExam: Exam;
+  selectedExam: Exam | null;
   setSelectedExam: (exam: Exam) => void;
   taskList: TaskList;
   setTaskList: (taskList: TaskList) => void;
@@ -15,19 +18,25 @@ export interface ExportViewProps {
 }
 
 export default function ExportView(props: ExportViewProps): JSX.Element {
-  const mainContent = props.loggedIn ? (
-    <div>
+  const [taskPdf, setTaskPdf] = useState(null);
+
+  const lockedContent = props.loggedIn ? (
+    <div className="center-items">
       <ExamList selectedExam={props.selectedExam} setSelectedExam={props.setSelectedExam} />
-      <ExportButton taskList={props.taskList} selectedExam={props.selectedExam} />
+      <div id="export-btns-container" className="center-items">
+        <ExportButton taskList={props.taskList} selectedExam={props.selectedExam} taskPdf={taskPdf} />
+        <BuildButton selectedExam={props.selectedExam} taskPdf={taskPdf} />
+      </div>
     </div>
   ) : (
     <MessageBar messageBarType={MessageBarType.blocked}>
-      Sie müssen sich zuert einloggen, um eine Prüfung zu exportieren.
+      Sie müssen sich zuerst einloggen, um eine Prüfung zu exportieren oder zu kompilieren.
     </MessageBar>
   );
   return (
     <div id="export-view" className="center-items">
-      {mainContent}
+      <ConvertButton taskList={props.taskList} taskPdf={taskPdf} setTaskPdf={setTaskPdf} />
+      {lockedContent}
     </div>
   );
 }

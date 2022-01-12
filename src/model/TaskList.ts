@@ -79,9 +79,7 @@ export default class TaskList extends WordPersistable<TaskList> {
   }
 
   async removeLinkContentControls(context: Word.RequestContext): Promise<void> {
-    console.log(this.tasks.length);
     for (const task of this.tasks) {
-      console.log("task", task.taskId);
       await task.removeLinkContentControl(context);
     }
   }

@@ -33,9 +33,11 @@ export default class ApiService {
       .then((jsonArr) => jsonArr.map((examObj) => Exam.fromImport(examObj)));
   }
 
-  static postExamPdf(examId: string, exportData: TemplateDTO): Promise<number> {
-    return this.api("POST", `/Exam/${examId}/UploadTaskPdf`, exportData).then((response) => {
-      return response.status;
-    });
+  static triggerBuild(examId: string, count: number): Promise<Response> {
+    return this.api("POST", `/Exam/${examId}/Build`, { count });
+  }
+
+  static postExamPdf(examId: string, exportData: TemplateDTO): Promise<Response> {
+    return this.api("POST", `/Exam/${examId}/UploadTaskPdf`, exportData);
   }
 }

@@ -3,13 +3,13 @@ import File = Office.File;
 
 export default class PdfService {
   static async getDocument(): Promise<string> {
-    const promises: Promise<number[]>[] = [];
+    const promises: Promise<any[]>[] = [];
     const result = await new Promise<Office.AsyncResult<File>>((resolve, reject) => {
       Office.context.document.getFileAsync(FileType.Pdf, async (result) => {
         if (result.status === Office.AsyncResultStatus.Succeeded) {
           resolve(result);
         } else {
-          reject();
+          reject(result);
         }
       });
     });
@@ -18,10 +18,9 @@ export default class PdfService {
     // We have to concatenate them ourselves.
     for (let i = 0; i < sliceCount; i++) {
       promises.push(
-        new Promise<number[]>((resolve, reject) => {
+        new Promise<any[]>((resolve, reject) => {
           result.value.getSliceAsync(i, (result) => {
             if (result.status === Office.AsyncResultStatus.Succeeded) {
-              console.log(typeof result.value.data);
               resolve(result.value.data);
             } else {
               reject();
@@ -35,7 +34,7 @@ export default class PdfService {
       .then((byteArr) => this.arrayBufferToBase64(byteArr));
   }
 
-  static arrayBufferToBase64(buffer: number[]): string {
+  static arrayBufferToBase64(buffer: any[]): string {
     let binary = "";
     const bytes = new Uint8Array(buffer);
     const len = bytes.byteLength;

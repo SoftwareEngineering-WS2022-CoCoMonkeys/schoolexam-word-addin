@@ -22,6 +22,15 @@ GLOBAL STYLES
   justify-content: center;
 }
 
+.row-flex {
+  display: flex;
+  flex-direction: row;
+}
+
 .horizontal-separator {
+  width: 100%;
+}
+
+.stretch {
   width: 100%;
 }

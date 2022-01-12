@@ -1,10 +1,10 @@
 export default class TaskDTO {
-  id: string;
+  taskId: string;
   title: string;
   maxPoints: number;
 
-  constructor(id: string, title: string, maxPoints: number) {
-    this.id = id;
+  constructor(taskId: string, title: string, maxPoints: number) {
+    this.taskId = taskId;
     this.title = title;
     this.maxPoints = maxPoints;
   }
