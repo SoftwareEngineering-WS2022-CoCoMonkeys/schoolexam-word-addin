@@ -1,4 +1,4 @@
-import { DefaultButton, PrimaryButton, TextField } from "@fluentui/react";
+import { PrimaryButton, TextField } from "@fluentui/react";
 import * as React from "react";
 import "./PageHeader.scss";
 
@@ -31,7 +31,7 @@ function _createPageHeader(headerText): void {
     // eslint-disable-next-line prettier/prettier
     const paragraph = header.insertParagraph(
       headerText,
-      Word.InsertLocation.end
+      Word.InsertLocation.end,
     );
 
     paragraph.font.bold = true;

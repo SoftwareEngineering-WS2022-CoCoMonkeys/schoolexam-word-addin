@@ -1,10 +1,10 @@
 import * as React from "react";
-import { Pivot, PivotItem, Stack } from "@fluentui/react";
+import { useEffect, useState } from "react";
+import { Pivot, PivotItem } from "@fluentui/react";
 import TaskView from "../task/TaskView";
 import ExportView from "../export/ExportView";
 import "./Navbar.scss";
 import { StructureNavbar } from "../structural/StructureNavbar";
-import { useEffect, useState } from "react";
 import TaskList from "../../../model/TaskList";
 import Exam from "../../../model/Exam";
 
@@ -12,7 +12,7 @@ export interface NavbarProps {
   loggedIn: boolean;
 }
 
-export default function Navbar(props : NavbarProps) {
+export default function Navbar(props: NavbarProps): JSX.Element {
   const [taskList, setTaskList] = useState(new TaskList());
   const [selectedExam, setSelectedExam] = useState(null as Exam);
 

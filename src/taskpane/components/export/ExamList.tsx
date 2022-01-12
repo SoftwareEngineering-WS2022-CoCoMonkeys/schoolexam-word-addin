@@ -10,15 +10,17 @@ export interface ExamListProps {
   setSelectedExam: (exam: Exam) => void;
 }
 
-export default function ExamList(props: ExamListProps) {
+export default function ExamList(props: ExamListProps): JSX.Element {
   const [exams, setExams] = useState([]);
 
+  // retrieve Exams from backend
   useEffect(() => {
     ApiService.getExams().then((result) => {
       setExams(result);
     });
   }, []);
 
+  // custom render function (anonymous component) for a single exam
   function onRenderExamCell(exam: Exam) {
     return (
       <div

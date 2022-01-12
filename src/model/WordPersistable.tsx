@@ -1,5 +1,7 @@
-/* global Word, require */
-
+/**
+ * Common superclass for custom objects that should be persisted inside Word's custom properties.
+ * Consequently, only small objects and config and no binary data is to be stored using this method.
+ */
 export default abstract class WordPersistable<Type> {
   protected abstract propertyKey: string;
 
@@ -22,9 +24,13 @@ export default abstract class WordPersistable<Type> {
     return Word.run(async (context) => {
       context.load(context.document.properties.customProperties);
       const customProp = context.document.properties.customProperties.getItemOrNullObject(this.propertyKey);
-      if (customProp == null) {
+
+      // required for .isNullObject check
+      await context.sync();
+      if (customProp.isNullObject) {
         return this.newEmpty();
       }
+
       customProp.load("value");
 
       await context.sync();
@@ -45,7 +51,7 @@ export default abstract class WordPersistable<Type> {
 
   abstract init(loadedObject: Type, context: Word.RequestContext): void;
 
-  abstract reviver(key, value): any;
+  abstract reviver(key: string, value: unknown): unknown;
 
   abstract newEmpty(): Type;
 }

@@ -10,11 +10,11 @@ export interface TaskViewProps {
   setTaskList: (taskList: TaskList) => void;
 }
 
-export default function TaskView(props: TaskViewProps) {
+export default function TaskView(props: TaskViewProps): JSX.Element {
   return (
     <div id="task-view">
       <NewTaskForm taskList={props.taskList} setTaskList={props.setTaskList} />
-      <Separator className="horizontal-separator"></Separator>
+      <Separator className="horizontal-separator" />
       <TaskTable taskList={props.taskList} setTaskList={props.setTaskList} />
     </div>
   );

@@ -16,7 +16,7 @@ export default class AuthService {
       });
   }
 
-  static authHeader() {
+  static authHeader(): { Authorization?: string } {
     const userJwt = localStorage.getItem("userJwt");
     if (userJwt) {
       return { Authorization: "Bearer " + userJwt };

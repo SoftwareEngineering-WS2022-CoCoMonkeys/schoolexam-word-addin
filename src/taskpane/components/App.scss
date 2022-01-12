@@ -5,6 +5,12 @@
   align-items: center;
 }
 
+/*
+============================
+GLOBAL STYLES
+============================
+ */
+
 .margin-btn {
   margin-top: 1rem !important;
 }
@@ -14,4 +20,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.horizontal-separator {
+  width: 100%;
 }

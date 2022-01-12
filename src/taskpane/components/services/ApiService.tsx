@@ -1,18 +1,19 @@
 import AuthService from "./AuthService";
 import Exam from "../../../model/Exam";
-import ExportModel from "../../../model/ExportModel";
+import ExportDTO from "../../../dto/ExportDTO";
 
 export default class ApiService {
   private static readonly BASE_URL = "https://cocomonkeys-schoolexam.herokuapp.com";
 
-  static api(method: string, url: string, data?: any): Promise<any> {
+  static api(method: string, url: string, data?: unknown): Promise<Response> {
     const config: RequestInit = {
       method: method,
+      // includes JWT for authentication
       headers: AuthService.authHeader(),
     };
     if (data) {
-      // @ts-ignore
       config.body = JSON.stringify(data);
+      // default to JSON
       config.headers = { ...config.headers, "Content-Type": "application/json" };
     }
     return fetch(this.BASE_URL + url, config).then((response) => {
@@ -32,7 +33,7 @@ export default class ApiService {
       .then((jsonArr) => jsonArr.map((examObj) => Exam.fromImport(examObj)));
   }
 
-  static postExamPdf(examId: string, exportData: ExportModel): Promise<number> {
+  static postExamPdf(examId: string, exportData: ExportDTO): Promise<number> {
     return this.api("POST", `/Exam/${examId}/UploadTaskPdf`, exportData).then((response) => {
       return response.status;
     });

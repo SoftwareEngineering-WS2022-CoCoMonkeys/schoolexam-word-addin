@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Text, MessageBar, MessageBarType } from "@fluentui/react";
+import { MessageBar, MessageBarType, Text } from "@fluentui/react";
 import "./NewTaskFromInstructionList.scss";
 
-export default function InstrutctionList() {
+export default function InstrutctionList(): JSX.Element {
   return (
     <MessageBar messageBarType={MessageBarType.info} id="instruction-list">
       <Text id="instruction-title">Vorgehen</Text>

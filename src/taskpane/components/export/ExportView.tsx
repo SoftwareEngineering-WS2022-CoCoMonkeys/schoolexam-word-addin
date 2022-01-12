@@ -14,7 +14,7 @@ export interface ExportViewProps {
   loggedIn: boolean;
 }
 
-export default function ExportView(props: ExportViewProps) {
+export default function ExportView(props: ExportViewProps): JSX.Element {
   const mainContent = props.loggedIn ? (
     <div>
       <ExamList selectedExam={props.selectedExam} setSelectedExam={props.setSelectedExam} />

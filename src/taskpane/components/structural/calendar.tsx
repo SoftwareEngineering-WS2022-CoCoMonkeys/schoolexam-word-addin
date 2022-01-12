@@ -1,4 +1,4 @@
-import { Calendar, defaultCalendarStrings } from "@fluentui/react";
+import { Calendar } from "@fluentui/react";
 import React = require("react");
 
 export interface ICalendarProps {

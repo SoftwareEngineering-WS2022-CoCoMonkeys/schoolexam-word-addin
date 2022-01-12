@@ -7,6 +7,6 @@ export interface ProgressProps {
   title: string;
 }
 
-export default function Progress(props: ProgressProps) {
+export default function Progress(props: ProgressProps): JSX.Element {
   return <Spinner size={SpinnerSize.large} label={props.message} />;
 }

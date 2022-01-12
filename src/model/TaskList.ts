@@ -1,6 +1,7 @@
 import { Task } from "./Task";
 import WordPersistable from "./WordPersistable";
 import { v4 as uuidv4 } from "uuid";
+import TaskDTO from "../dto/TaskDTO";
 
 export default class TaskList extends WordPersistable<TaskList> {
   tasks: Task[];
@@ -12,15 +13,15 @@ export default class TaskList extends WordPersistable<TaskList> {
     this.tasks = [];
   }
 
-  getTaskById(taskId: string) {
+  getTaskById(taskId: string): Task {
     return this.tasks.find((task) => task.taskId === taskId);
   }
 
-  getLength() {
+  getLength(): number {
     return this.tasks.length;
   }
 
-  async copy() {
+  async copy(): Promise<TaskList> {
     const copy = Object.assign(new TaskList(), this) as TaskList;
     await copy.saveAsync();
     return copy;
@@ -36,6 +37,7 @@ export default class TaskList extends WordPersistable<TaskList> {
     contentControls.load("items");
     await context.sync();
 
+    // real world numbering
     let counter = 1;
     const orderedTasks = [];
     for (const cc of contentControls.items) {
@@ -65,8 +67,30 @@ export default class TaskList extends WordPersistable<TaskList> {
     return Word.run<TaskList>(async (context) => this.editTask(context, taskId, fieldName, newValue));
   }
 
-  toExportTaskList() {
+  toExportTaskList(): TaskDTO[] {
     return this.tasks.map((task) => task.toExportTask());
+  }
+
+  removeLinkContentControlsAsync(): Promise<void> {
+    return Word.run(async (context) => this.removeLinkContentControls(context));
+  }
+
+  async removeLinkContentControls(context: Word.RequestContext): Promise<void> {
+    console.log(this.tasks.length);
+    for (const task of this.tasks) {
+      console.log("task", task.taskId);
+      await task.removeLinkContentControl(context);
+    }
+  }
+
+  insertLinkContentControlsAsync(): Promise<void> {
+    return Word.run(async (context) => this.insertLinkContentControls(context));
+  }
+
+  async insertLinkContentControls(context: Word.RequestContext): Promise<void> {
+    for (const task of this.tasks) {
+      await task.insertLinkContentControl(context);
+    }
   }
 
   async addTaskFromSelection(context: Word.RequestContext, maxPoints: number): Promise<TaskList> {

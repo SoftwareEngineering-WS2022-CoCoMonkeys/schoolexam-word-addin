@@ -1,10 +1,10 @@
 import * as React from "react";
+import { useState } from "react";
 import Progress from "./Progress";
 import Header from "./taskpaneDesign/Header";
 import "./App.scss";
 import Navbar from "./taskpaneDesign/Navbar";
 import LoginForm from "./login/LoginForm";
-import { useState } from "react";
 
 /* global Word, require */
 
@@ -13,7 +13,7 @@ export interface AppProps {
   isOfficeInitialized: boolean;
 }
 
-export default function App(props: AppProps) {
+export default function App(props: AppProps): JSX.Element {
   const [displayLogin, setDisplayLogin] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 

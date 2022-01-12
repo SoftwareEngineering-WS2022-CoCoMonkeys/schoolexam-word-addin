@@ -1,8 +1,8 @@
 import * as React from "react";
-import { PrimaryButton, SpinnerSize, Stack, TextField, Spinner, MessageBar, MessageBarType } from "@fluentui/react";
+import { useState } from "react";
+import { MessageBar, MessageBarType, PrimaryButton, Spinner, SpinnerSize, Stack, TextField } from "@fluentui/react";
 import "./LoginForm.scss";
 import AuthService from "../services/AuthService";
-import { useState } from "react";
 
 export interface LoginFormProps {
   setDisplayLogin: (displayLogin: boolean) => void;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Icon, IStyleSet, Label, ILabelStyles, Pivot, IPivotItemProps, PivotItem } from "@fluentui/react";
+import { Pivot, PivotItem } from "@fluentui/react";
 import PageHeader from "./PageHeader";
 import PageFooter from "./PageFooter";
 import "./StructureNavbar.scss";

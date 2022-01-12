@@ -1,6 +1,6 @@
 import * as React from "react";
 import "./Header.scss";
-import { ActionButton, CommandBarButton, IIconProps } from "@fluentui/react";
+import { ActionButton, IIconProps } from "@fluentui/react";
 import BackButton from "../util/BackButton";
 
 export interface HeaderProps {
@@ -10,7 +10,7 @@ export interface HeaderProps {
   displayLogin: boolean;
 }
 
-export default function Header(props: HeaderProps) {
+export default function Header(props: HeaderProps): JSX.Element {
   const userIcon: IIconProps = { iconName: "Contact" };
   const userIconChecked: IIconProps = {
     iconName: "ReminderPerson",

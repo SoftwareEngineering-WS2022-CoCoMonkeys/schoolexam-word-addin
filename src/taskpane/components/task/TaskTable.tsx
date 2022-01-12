@@ -15,10 +15,11 @@ export interface ActiveEdit {
   fieldName: string;
 }
 
-export default function TaskTable(props: TaskTableProps) {
+export default function TaskTable(props: TaskTableProps): JSX.Element {
   const [activeEdit, setActiveEdit] = useState(null as ActiveEdit);
 
   function editableColumnRenderer(fieldName: string) {
+    // eslint-disable-next-line react/display-name
     return (task: Task) => {
       if (activeEdit && activeEdit.taskId === task.taskId && fieldName === activeEdit.fieldName) {
         return (
@@ -46,17 +47,6 @@ export default function TaskTable(props: TaskTableProps) {
     };
   }
 
-  function renderCheckbox(_task: Task) {
-    const editIcon: IIconProps = { iconName: "Edit" };
-    const deleteIcon: IIconProps = { iconName: "Delete" };
-    return (
-      <div className="detail-hover-container">
-        <ActionButton className="detail-edit-btn row-btn" iconProps={editIcon}></ActionButton>
-        <ActionButton className="detail-delete-btn row-btn" iconProps={deleteIcon}></ActionButton>
-      </div>
-    );
-  }
-
   const columns: IColumn[] = [
     {
       key: "titleColumn",
@@ -78,7 +68,7 @@ export default function TaskTable(props: TaskTableProps) {
     },
   ];
 
-  function editTask(taskId: string, fieldName: string, newValue: any): void {
+  function editTask(taskId: string, fieldName: string, newValue: string | number): void {
     props.taskList.editTaskAsync(taskId, fieldName, newValue).then((taskList) => {
       props.setTaskList(taskList);
     });

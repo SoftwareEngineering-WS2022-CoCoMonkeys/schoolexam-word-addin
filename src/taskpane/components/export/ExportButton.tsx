@@ -4,9 +4,7 @@ import Exam from "../../../model/Exam";
 import "./ExportButton.scss";
 import PdfService from "../services/PdfService";
 import TaskList from "../../../model/TaskList";
-import ExportModel from "../../../model/ExportModel";
-import RangeLocation = Word.RangeLocation;
-import ContentControlAppearance = Word.ContentControlAppearance;
+import ExportDTO from "../../../dto/ExportDTO";
 import ApiService from "../services/ApiService";
 
 export interface ExportButtonProps {
@@ -14,69 +12,19 @@ export interface ExportButtonProps {
   taskList: TaskList;
 }
 
-export default function ExportButton(props: ExportButtonProps) {
-  function exportExam() {
-    prepareDocumentForExport().then(() => {
-      PdfService.getDocument().then((pdf: string) => {
-        const exportData = new ExportModel(pdf, props.taskList.toExportTaskList());
-        ApiService.postExamPdf(props.selectedExam.examId, exportData);
-      });
+export default function ExportButton(props: ExportButtonProps): JSX.Element {
+  async function exportExam() {
+    // remove and re-insert linkContentControls
+    await props.taskList.removeLinkContentControlsAsync();
+    await props.taskList.insertLinkContentControlsAsync();
 
-      // reset async
-      resetLinkContentControls();
-    });
-  }
+    // get pdf and export
+    const pdfBase64: string = await PdfService.getDocument();
+    const exportData = new ExportDTO(pdfBase64, props.taskList.toExportTaskList());
+    await ApiService.postExamPdf(props.selectedExam.examId, exportData);
 
-  async function resetLinkContentControls(): Promise<void> {
-    return Word.run(async (context) => {
-      for (const task of props.taskList.tasks) {
-        // Delete existing link content control
-        if (task.linkCcId != null) {
-          const linkContentControl = task.getLinkContentControl(context);
-          if (linkContentControl == null) {
-            console.warn(`Link content control with id ${task.linkCcId} does not exist`);
-            continue;
-          } else {
-            // Delete with content
-            linkContentControl.delete(false);
-          }
-        }
-
-        await context.sync();
-      }
-    });
-  }
-
-  async function prepareDocumentForExport(): Promise<void> {
-    return Word.run(async (context) => {
-      await resetLinkContentControls();
-      for (const task of props.taskList.tasks) {
-        const contentControl = task.getAssociatedContentControl(context);
-
-        if (contentControl == null) {
-          console.error(`Task content control with id ${task.ccId} does not exist`);
-          continue;
-        }
-
-        const linkContentControl = contentControl.getRange(RangeLocation.start).insertContentControl();
-
-        linkContentControl.appearance = ContentControlAppearance.tags;
-        linkContentControl.tag = "task-link";
-        linkContentControl.title = "task-link-" + task.taskId;
-
-        // Insert anchor element
-        linkContentControl.insertHtml(
-          `<a style="text-decoration: none; font-size:0.01em; transform: translate(-1px)" href="task-${task.taskId}">&nbsp;</a>`,
-          Word.InsertLocation.start
-        );
-
-        linkContentControl.load("id");
-
-        await context.sync();
-
-        task.linkCcId = linkContentControl.id;
-      }
-    });
+    // remove link content controls
+    await props.taskList.removeLinkContentControlsAsync();
   }
 
   return (

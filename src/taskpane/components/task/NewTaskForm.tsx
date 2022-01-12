@@ -1,7 +1,7 @@
 import * as React from "react";
-import { ActionButton, IIconProps, PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
-import BackButton from "../util/BackButton";
 import { useState } from "react";
+import { ActionButton, IIconProps, PrimaryButton, Stack, TextField } from "@fluentui/react";
+import BackButton from "../util/BackButton";
 import TaskList from "../../../model/TaskList";
 import "./NewTaskForm.scss";
 import InstrutctionList from "./NewTaskFromInstructionList";
@@ -11,7 +11,7 @@ export interface NewTaskFormProps {
   setTaskList: (taskList: TaskList) => void;
 }
 
-export default function NewTaskForm(props: NewTaskFormProps) {
+export default function NewTaskForm(props: NewTaskFormProps): JSX.Element {
   const [expanded, setExpanded] = useState(false);
   const [pointsInput, setPointsInput] = useState(null);
 
