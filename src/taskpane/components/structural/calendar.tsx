@@ -1,5 +1,5 @@
 import { Calendar } from "@fluentui/react";
-import React = require("react");
+import * as React from "react";
 
 export interface ICalendarProps {
   examDate: Date;

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ActionButton, DetailsList, IColumn, IIconProps, SelectionMode, TextField } from "@fluentui/react";
 import TaskList from "../../../model/TaskList";
 import "./TaskTable.scss";
-import { Task } from "../../../model/Task";
+import Task from "../../../model/Task";
 
 export interface TaskTableProps {
   taskList: TaskList;

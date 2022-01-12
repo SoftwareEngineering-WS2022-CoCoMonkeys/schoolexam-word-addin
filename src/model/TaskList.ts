@@ -1,4 +1,4 @@
-import { Task } from "./Task";
+import Task from "./Task";
 import WordPersistable from "./WordPersistable";
 import { v4 as uuidv4 } from "uuid";
 import TaskDTO from "../dto/TaskDTO";
@@ -32,15 +32,13 @@ export default class TaskList extends WordPersistable<TaskList> {
     for (const task of this.tasks) {
       ccIdMap.set(task.ccId, task);
     }
-    const contentControls = context.document.contentControls;
-
-    contentControls.load("items");
+    context.load(context.document, "contentControls/id");
     await context.sync();
 
     // real world numbering
     let counter = 1;
     const orderedTasks = [];
-    for (const cc of contentControls.items) {
+    for (const cc of context.document.contentControls.items) {
       if (ccIdMap.has(cc.id)) {
         const task = ccIdMap.get(cc.id);
         await task.edit(context, "title", `Aufgabe ${(counter++).toString()}`);
@@ -57,13 +55,18 @@ export default class TaskList extends WordPersistable<TaskList> {
     return Word.run<TaskList>(async (context) => this.updateTaskTitles(context));
   }
 
-  async editTask(context: Word.RequestContext, taskId: string, fieldName: string, newValue: any): Promise<TaskList> {
+  async editTask(
+    context: Word.RequestContext,
+    taskId: string,
+    fieldName: string,
+    newValue: number | string
+  ): Promise<TaskList> {
     const taskToEdit = this.getTaskById(taskId);
     await taskToEdit.edit(context, fieldName, newValue);
     return this.copy();
   }
 
-  editTaskAsync(taskId: string, fieldName: string, newValue: any): Promise<TaskList> {
+  editTaskAsync(taskId: string, fieldName: string, newValue: number | string): Promise<TaskList> {
     return Word.run<TaskList>(async (context) => this.editTask(context, taskId, fieldName, newValue));
   }
 
@@ -103,7 +106,7 @@ export default class TaskList extends WordPersistable<TaskList> {
     // Visually signal content control creation
     cc.appearance = Word.ContentControlAppearance.boundingBox;
     cc.title = "Aufgabe " + (this.tasks.length + 1);
-    cc.tag = "Task";
+    cc.tag = "task";
 
     // Need to load ID property first
     cc.load("id");
@@ -121,23 +124,21 @@ export default class TaskList extends WordPersistable<TaskList> {
     return Word.run(async (context) => this.addTaskFromSelection(context, maxPoints));
   }
 
-  async init(obj, context: Word.RequestContext): Promise<void> {
+  async init(loadedTaskList: TaskList, context: Word.RequestContext): Promise<void> {
     // Bind content controls
     const ccs = context.document.contentControls;
-    for (const task of obj.tasks) {
+    for (const task of loadedTaskList.tasks) {
       const cc = ccs.getById(task.ccId);
 
       if (cc == null) {
         console.error(`Missing content control for ${task.taskId}`);
       }
-
-      cc.load("id");
-
-      await context.sync();
     }
+
+    await context.sync();
   }
 
-  reviver(_key: string, value) {
+  reviver(_key: string, value: unknown) {
     if (value == null) {
       return null;
     }

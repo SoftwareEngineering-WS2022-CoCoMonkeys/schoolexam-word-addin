@@ -1,9 +1,6 @@
 import TaskDTO from "../dto/TaskDTO";
-import RangeLocation = Word.RangeLocation;
-import SelectionMode = Word.SelectionMode;
-import ContentControlAppearance = Word.ContentControlAppearance;
 
-export class Task {
+export default class Task {
   taskId: string;
   title: string;
   maxPoints: number;
@@ -37,8 +34,8 @@ export class Task {
 
   async jumpTo(context: Word.RequestContext): Promise<void> {
     const contentControl = this.getAssociatedContentControl(context);
-    const range = contentControl.getRange(RangeLocation.whole);
-    range.select(SelectionMode.select);
+    const range = contentControl.getRange(Word.RangeLocation.whole);
+    range.select(Word.SelectionMode.select);
 
     await context.sync();
   }
@@ -51,11 +48,11 @@ export class Task {
     return Word.run(async (context) => this.edit(context, fieldName, newValue));
   }
 
-  async edit(context: Word.RequestContext, fieldName: string, newValue: string): Promise<void> {
+  async edit(context: Word.RequestContext, fieldName: string, newValue: string | number): Promise<void> {
     this[fieldName] = newValue;
     if (fieldName === "title") {
       const contentControl = this.getAssociatedContentControl(context);
-      contentControl.title = newValue;
+      contentControl.title = newValue.toString();
     }
 
     await context.sync();
@@ -99,9 +96,9 @@ export class Task {
       return;
     }
 
-    const linkContentControl = contentControl.getRange(RangeLocation.start).insertContentControl();
+    const linkContentControl = contentControl.getRange(Word.RangeLocation.start).insertContentControl();
 
-    linkContentControl.appearance = ContentControlAppearance.hidden;
+    linkContentControl.appearance = Word.ContentControlAppearance.hidden;
     linkContentControl.tag = "task-link";
     linkContentControl.title = "task-link-" + this.taskId;
 
