@@ -67,8 +67,8 @@ export default class TaskList extends WordPersistable<TaskList> {
     return Word.run<TaskList>(async (context) => this.editTask(context, taskId, fieldName, newValue));
   }
 
-  toExportTaskList(): TaskDTO[] {
-    return this.tasks.map((task) => task.toExportTask());
+  assembleDTO(): TaskDTO[] {
+    return this.tasks.map((task) => task.assembleDTO());
   }
 
   removeLinkContentControlsAsync(): Promise<void> {

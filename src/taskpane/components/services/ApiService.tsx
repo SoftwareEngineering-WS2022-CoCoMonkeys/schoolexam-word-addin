@@ -1,6 +1,6 @@
 import AuthService from "./AuthService";
 import Exam from "../../../model/Exam";
-import ExportDTO from "../../../dto/ExportDTO";
+import TemplateDTO from "../../../dto/TemplateDTO";
 
 export default class ApiService {
   private static readonly BASE_URL = "https://cocomonkeys-schoolexam.herokuapp.com";
@@ -33,7 +33,7 @@ export default class ApiService {
       .then((jsonArr) => jsonArr.map((examObj) => Exam.fromImport(examObj)));
   }
 
-  static postExamPdf(examId: string, exportData: ExportDTO): Promise<number> {
+  static postExamPdf(examId: string, exportData: TemplateDTO): Promise<number> {
     return this.api("POST", `/Exam/${examId}/UploadTaskPdf`, exportData).then((response) => {
       return response.status;
     });

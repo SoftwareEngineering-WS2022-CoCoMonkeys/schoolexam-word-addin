@@ -31,7 +31,7 @@ export class Task {
     return this.taskId === (other as Task).taskId;
   }
 
-  toExportTask(): TaskDTO {
+  assembleDTO(): TaskDTO {
     return new TaskDTO(this.taskId, this.title, this.maxPoints);
   }
 

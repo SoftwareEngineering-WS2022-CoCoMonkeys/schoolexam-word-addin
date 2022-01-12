@@ -4,7 +4,7 @@ import Exam from "../../../model/Exam";
 import "./ExportButton.scss";
 import PdfService from "../services/PdfService";
 import TaskList from "../../../model/TaskList";
-import ExportDTO from "../../../dto/ExportDTO";
+import TemplateDTO from "../../../dto/TemplateDTO";
 import ApiService from "../services/ApiService";
 
 export interface ExportButtonProps {
@@ -20,7 +20,8 @@ export default function ExportButton(props: ExportButtonProps): JSX.Element {
 
     // get pdf and export
     const pdfBase64: string = await PdfService.getDocument();
-    const exportData = new ExportDTO(pdfBase64, props.taskList.toExportTaskList());
+    // assemble DTO
+    const exportData = new TemplateDTO(pdfBase64, props.taskList.assembleDTO());
     await ApiService.postExamPdf(props.selectedExam.examId, exportData);
 
     // remove link content controls

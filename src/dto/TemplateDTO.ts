@@ -1,6 +1,6 @@
 import TaskDTO from "./TaskDTO";
 
-export default class ExportDTO {
+export default class TemplateDTO {
   /** base64 encoded PDF of the exam template */
   taskPdf: string;
   tasks: TaskDTO[];
