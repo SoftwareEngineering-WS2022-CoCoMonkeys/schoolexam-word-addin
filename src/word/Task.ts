@@ -6,14 +6,15 @@ export default class Task implements ITask {
   private _title: string;
   private _maxPoints: number;
   private readonly _ccId: number;
-  private _linkCcId: number | null;
+  private _startLinkCcId: number | null;
+  private _endLinkCcId: number | null;
 
   constructor(taskId: string, title: string, maxPoints: number, ccId: number, linkCcId: number | null) {
     this._taskId = taskId;
     this._title = title;
     this._maxPoints = maxPoints;
     this._ccId = ccId;
-    this._linkCcId = linkCcId;
+    this._startLinkCcId = linkCcId;
   }
 
   get taskId(): string {
@@ -61,10 +62,6 @@ export default class Task implements ITask {
     return Word.run(async (context) => this.jumpTo(context));
   }
 
-  editAsync(fieldName: string, newValue: string): Promise<void> {
-    return Word.run(async (context) => this.edit(context, fieldName, newValue));
-  }
-
   async edit(context: Word.RequestContext, fieldName: string, newValue: string | number): Promise<void> {
     switch (fieldName) {
       case "title": {
@@ -84,11 +81,11 @@ export default class Task implements ITask {
     await context.sync();
   }
 
-  async prepareForDeletionAsync() {
+  async prepareForDeletionAsync(): Promise<void> {
     return Word.run(async (context) => this.prepareForDeletion(context));
   }
 
-  async prepareForDeletion(context: Word.RequestContext) {
+  async prepareForDeletion(context: Word.RequestContext): Promise<void> {
     // delete associated content control
     const contentControl = this.getAssociatedContentControl(context);
 
@@ -106,29 +103,37 @@ export default class Task implements ITask {
     return context.document.contentControls.getByIdOrNullObject(this._ccId);
   }
 
-  getLInkContentControlAsync(): Promise<Word.ContentControl | null> {
-    return Word.run(async (context) => this.getLinkContentControl(context));
+  getStartLinkContentControl(context: Word.RequestContext): Word.ContentControl | null {
+    return context.document.contentControls.getByIdOrNullObject(this._startLinkCcId);
   }
 
-  getLinkContentControl(context: Word.RequestContext): Word.ContentControl | null {
-    return context.document.contentControls.getByIdOrNullObject(this._linkCcId);
+  getEndLinkContentControl(context: Word.RequestContext): Word.ContentControl | null {
+    return context.document.contentControls.getByIdOrNullObject(this._endLinkCcId);
   }
 
-  async removeLinkContentControl(context: Word.RequestContext): Promise<void> {
-    if (this._linkCcId != null) {
-      const linkContentControl = this.getLinkContentControl(context);
-      if (linkContentControl == null) {
-        console.warn(`Link content control with id ${this._linkCcId} does not exist`);
+  async removeLinkContentControls(context: Word.RequestContext): Promise<void> {
+    if (this._startLinkCcId != null) {
+      const startLinkContentControl = this.getStartLinkContentControl(context);
+      if (startLinkContentControl == null) {
+        console.warn(`Start link content control with id ${this._startLinkCcId} does not exist`);
       } else {
         // Delete with content
-        linkContentControl.delete(false);
-
-        await context.sync();
+        startLinkContentControl.delete(false);
       }
     }
+    if (this._endLinkCcId != null) {
+      const endLinkContentControl = this.getEndLinkContentControl(context);
+      if (endLinkContentControl == null) {
+        console.warn(`End link content control with id ${this._endLinkCcId} does not exist`);
+      } else {
+        // Delete with content
+        endLinkContentControl.delete(false);
+      }
+    }
+    await context.sync();
   }
 
-  async insertLinkContentControl(context: Word.RequestContext): Promise<void> {
+  async insertLinkContentControls(context: Word.RequestContext): Promise<void> {
     const contentControl = this.getAssociatedContentControl(context);
 
     if (contentControl == null) {
@@ -136,26 +141,41 @@ export default class Task implements ITask {
       return;
     }
 
-    const linkContentControl = contentControl.getRange(Word.RangeLocation.start).insertContentControl();
+    // 1. Insert content controls at start and end
+    const startLinkContentControl = contentControl.getRange(Word.RangeLocation.start).insertContentControl();
+    const endLinkContentControl = contentControl.getRange(Word.RangeLocation.end).insertContentControl();
 
-    linkContentControl.appearance = Word.ContentControlAppearance.hidden;
-    linkContentControl.tag = "task-link";
-    linkContentControl.title = "task-link-" + this._taskId;
+    // 2. Set title and tag accordingly
+    startLinkContentControl.appearance = Word.ContentControlAppearance.hidden;
+    startLinkContentControl.tag = "task-start-link";
+    startLinkContentControl.title = "task-start-link-" + this._taskId;
+
+    endLinkContentControl.appearance = Word.ContentControlAppearance.hidden;
+    endLinkContentControl.tag = "task-end-link";
+    endLinkContentControl.title = "task-end-link-" + this._taskId;
 
     /*
-     Insert anchor element.
+     3. Insert anchor element.
      Hyperlinks emerged as the best alternative to create markers inside the PDF document generated by Word.
      Bookmarks, although preferable, are not exported properly.
      */
-    linkContentControl.insertHtml(
-      `<a style="text-decoration: none; font-size:0.01em; transform: translate(-1px)" href="task-${this._taskId}">&nbsp;</a>`,
+    startLinkContentControl.insertHtml(
+      `<a style="text-decoration: none; font-size:0.01em; transform: translate(-1px)" href="task-start-${this._taskId}">&nbsp;</a>`,
       Word.InsertLocation.start
     );
 
-    linkContentControl.load("id");
+    endLinkContentControl.insertHtml(
+      `<a style="text-decoration: none; font-size:0.01em; transform: translate(-1px)" href="task-end-${this._taskId}">&nbsp;</a>`,
+      Word.InsertLocation.end
+    );
+
+    // 4. Remember IDs for subsequent deletion
+    startLinkContentControl.load("id");
+    endLinkContentControl.load("id");
 
     await context.sync();
 
-    this._linkCcId = linkContentControl.id;
+    this._startLinkCcId = startLinkContentControl.id;
+    this._endLinkCcId = endLinkContentControl.id;
   }
 }

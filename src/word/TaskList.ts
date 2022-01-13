@@ -71,17 +71,6 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
     return this.copy();
   }
 
-  deleteAllAsync(tasksToDelete: Task[]): Promise<TaskList> {
-    return Word.run(async (context) => this.deleteAll(context, tasksToDelete));
-  }
-
-  async deleteAll(context: Word.RequestContext, tasksToDelete: Task[]): Promise<TaskList> {
-    for (const taskToDelete of tasksToDelete) {
-      await this.deleteTask(context, taskToDelete);
-    }
-    return this.copy();
-  }
-
   async deleteTask(context: Word.RequestContext, taskToDelete: Task): Promise<TaskList> {
     // slightly ugly way to get index
     const localTask = this.getTaskById(taskToDelete.taskId);
@@ -116,7 +105,7 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
 
   async removeLinkContentControls(context: Word.RequestContext): Promise<void> {
     for (const task of this._tasks) {
-      await task.removeLinkContentControl(context);
+      await task.removeLinkContentControls(context);
     }
   }
 
@@ -126,7 +115,7 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
 
   async insertLinkContentControls(context: Word.RequestContext): Promise<void> {
     for (const task of this._tasks) {
-      await task.insertLinkContentControl(context);
+      await task.insertLinkContentControls(context);
     }
   }
 
