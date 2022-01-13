@@ -1,10 +1,9 @@
 import * as React from "react";
 import { useState } from "react";
-import { ActionButton, IIconProps, PrimaryButton, Stack, TextField } from "@fluentui/react";
-import BackButton from "../util/BackButton";
+import { ActionButton, DefaultButton, Dialog, DialogFooter, DialogType, IIconProps, TextField } from "@fluentui/react";
 import TaskList from "../../../word/TaskList";
 import "./NewTaskForm.scss";
-import InstrutctionList from "./NewTaskFromInstructionList";
+import InstructionList from "./NewTaskFromInstructionList";
 
 export interface NewTaskFormProps {
   taskList: TaskList;
@@ -12,7 +11,7 @@ export interface NewTaskFormProps {
 }
 
 export default function NewTaskForm(props: NewTaskFormProps): JSX.Element {
-  const [expanded, setExpanded] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false);
   const [pointsInput, setPointsInput] = useState(null);
 
   const addIcon: IIconProps = { iconName: "Add" };
@@ -20,44 +19,44 @@ export default function NewTaskForm(props: NewTaskFormProps): JSX.Element {
   function addTask(): void {
     props.taskList.addTaskFromSelectionAsync(pointsInput).then((taskList) => {
       props.setTaskList(taskList);
+      setDialogVisible(false);
     });
   }
 
-  const expandCollapseBtn = expanded ? (
-    <BackButton onBack={() => setExpanded(false)} />
-  ) : (
-    <ActionButton
-      iconProps={addIcon}
-      text="Neue Aufgabe"
-      id="new-task-btn"
-      className="margin-btn"
-      onClick={() => setExpanded(true)}
-    />
-  );
+  const newTaskDialogContentProps = {
+    type: DialogType.normal,
+    title: "Neue Aufgabe",
+  };
 
   return (
     <div id="new-task-form" className="center-items">
-      {expandCollapseBtn}
-      {expanded && (
-        <div id="expanded-new-task-form" className="center-items">
-          <InstrutctionList />
-          <Stack>
-            <TextField
-              required={true}
-              label="Punkte"
-              type="number"
-              onChange={(event) => setPointsInput(parseInt(event.currentTarget.value))}
-            />
-            <PrimaryButton
-              className="margin-btn"
-              onClick={addTask}
-              disabled={pointsInput == null || isNaN(pointsInput) || pointsInput <= 0}
-            >
-              Aufgabe hinzufügen
-            </PrimaryButton>
-          </Stack>
-        </div>
-      )}
+      <Dialog
+        hidden={!dialogVisible}
+        onDismiss={() => setDialogVisible(false)}
+        dialogContentProps={newTaskDialogContentProps}
+      >
+        <InstructionList />
+        <TextField
+          required={true}
+          label="Punkte"
+          type="number"
+          onChange={(event) => setPointsInput(parseInt(event.currentTarget.value))}
+        />
+        <DialogFooter>
+          <DefaultButton
+            onClick={addTask}
+            disabled={pointsInput == null || isNaN(pointsInput) || pointsInput <= 0}
+            text="Aufgabe hinzufügen"
+          />
+        </DialogFooter>
+      </Dialog>
+      <ActionButton
+        iconProps={addIcon}
+        text="Neue Aufgabe"
+        id="new-task-btn"
+        className="margin-btn"
+        onClick={() => setDialogVisible(true)}
+      />
     </div>
   );
 }

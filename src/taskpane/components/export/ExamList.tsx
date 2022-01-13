@@ -26,7 +26,11 @@ export default function ExamList(props: ExamListProps): JSX.Element {
       <div
         className={`exam-cell ${exam.equals(props.selectedExam) ? "selected-exam" : ""}`}
         onClick={() => {
-          props.setSelectedExam(exam);
+          if (exam.equals(props.selectedExam)) {
+            props.setSelectedExam(null);
+          } else {
+            props.setSelectedExam(exam);
+          }
           // force rerender
           setExams((prevState) => [].concat(prevState));
         }}
@@ -40,7 +44,7 @@ export default function ExamList(props: ExamListProps): JSX.Element {
   }
 
   const examList =
-    exams.length > 0 ? <List id="exam-list" items={exams} onRenderCell={onRenderExamCell} /> : <Spinner></Spinner>;
+    exams.length > 0 ? <List id="exam-list" items={exams} onRenderCell={onRenderExamCell} /> : <Spinner />;
 
   return (
     <div>
