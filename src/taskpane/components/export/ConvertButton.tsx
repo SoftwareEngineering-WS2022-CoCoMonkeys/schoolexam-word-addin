@@ -2,7 +2,7 @@ import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner
 import * as React from "react";
 import { useState } from "react";
 import PdfService from "../services/PdfService";
-import TaskList from "../../../model/TaskList";
+import TaskList from "../../../word/TaskList";
 import "./ConvertButton.scss";
 
 export interface ConvertButtonProps {

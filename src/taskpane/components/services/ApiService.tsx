@@ -1,5 +1,5 @@
 import AuthService from "./AuthService";
-import Exam from "../../../model/Exam";
+import Exam from "../../../word/Exam";
 import TemplateDTO from "../../../dto/TemplateDTO";
 
 export default class ApiService {

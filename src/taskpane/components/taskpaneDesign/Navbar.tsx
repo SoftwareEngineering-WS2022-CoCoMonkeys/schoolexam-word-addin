@@ -5,8 +5,8 @@ import TaskView from "../task/TaskView";
 import ExportView from "../export/ExportView";
 import "./Navbar.scss";
 import { StructureNavbar } from "../structural/StructureNavbar";
-import TaskList from "../../../model/TaskList";
-import Exam from "../../../model/Exam";
+import TaskList from "../../../word/TaskList";
+import Exam from "../../../word/Exam";
 
 export interface NavbarProps {
   loggedIn: boolean;

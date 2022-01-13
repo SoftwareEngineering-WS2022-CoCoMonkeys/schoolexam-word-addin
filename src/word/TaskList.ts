@@ -2,23 +2,28 @@ import Task from "./Task";
 import WordPersistable from "./WordPersistable";
 import { v4 as uuidv4 } from "uuid";
 import TaskDTO from "../dto/TaskDTO";
+import ITaskList from "../model/ITaskList";
 
-export default class TaskList extends WordPersistable<TaskList> {
-  tasks: Task[];
-
+export default class TaskList extends WordPersistable<TaskList> implements ITaskList {
   propertyKey = "task-data";
 
   constructor() {
     super();
-    this.tasks = [];
+    this._tasks = [];
+  }
+
+  private _tasks: Task[];
+
+  get tasks(): Task[] {
+    return this._tasks;
   }
 
   getTaskById(taskId: string): Task {
-    return this.tasks.find((task) => task.taskId === taskId);
+    return this._tasks.find((task) => task.taskId === taskId);
   }
 
   getLength(): number {
-    return this.tasks.length;
+    return this._tasks.length;
   }
 
   async copy(): Promise<TaskList> {
@@ -29,7 +34,7 @@ export default class TaskList extends WordPersistable<TaskList> {
 
   async updateTaskTitles(context: Word.RequestContext): Promise<TaskList> {
     const ccIdMap = new Map();
-    for (const task of this.tasks) {
+    for (const task of this._tasks) {
       ccIdMap.set(task.ccId, task);
     }
     context.load(context.document, "contentControls/id");
@@ -46,7 +51,7 @@ export default class TaskList extends WordPersistable<TaskList> {
       }
     }
 
-    this.tasks = orderedTasks;
+    this._tasks = orderedTasks;
 
     return this.copy();
   }
@@ -66,12 +71,43 @@ export default class TaskList extends WordPersistable<TaskList> {
     return this.copy();
   }
 
+  deleteAllAsync(tasksToDelete: Task[]): Promise<TaskList> {
+    return Word.run(async (context) => this.deleteAll(context, tasksToDelete));
+  }
+
+  async deleteAll(context: Word.RequestContext, tasksToDelete: Task[]): Promise<TaskList> {
+    for (const taskToDelete of tasksToDelete) {
+      await this.deleteTask(context, taskToDelete);
+    }
+    return this.copy();
+  }
+
+  async deleteTask(context: Word.RequestContext, taskToDelete: Task): Promise<TaskList> {
+    // slightly ugly way to get index
+    const localTask = this.getTaskById(taskToDelete.taskId);
+
+    await localTask.prepareForDeletion(context);
+
+    const index = this._tasks.indexOf(localTask);
+    // task could be deleted in the meanwhile
+    if (index != -1) {
+      this._tasks.splice(index, 1);
+    } else {
+      console.warn("Possible synchronization issue: Task already deleted locally");
+    }
+    return this.copy();
+  }
+
+  deleteTaskAsync(taskToDelete: Task): Promise<TaskList> {
+    return Word.run(async (context) => this.deleteTask(context, taskToDelete));
+  }
+
   editTaskAsync(taskId: string, fieldName: string, newValue: number | string): Promise<TaskList> {
     return Word.run<TaskList>(async (context) => this.editTask(context, taskId, fieldName, newValue));
   }
 
   assembleDTO(): TaskDTO[] {
-    return this.tasks.map((task) => task.assembleDTO());
+    return this._tasks.map((task) => task.assembleDTO());
   }
 
   removeLinkContentControlsAsync(): Promise<void> {
@@ -79,7 +115,7 @@ export default class TaskList extends WordPersistable<TaskList> {
   }
 
   async removeLinkContentControls(context: Word.RequestContext): Promise<void> {
-    for (const task of this.tasks) {
+    for (const task of this._tasks) {
       await task.removeLinkContentControl(context);
     }
   }
@@ -89,7 +125,7 @@ export default class TaskList extends WordPersistable<TaskList> {
   }
 
   async insertLinkContentControls(context: Word.RequestContext): Promise<void> {
-    for (const task of this.tasks) {
+    for (const task of this._tasks) {
       await task.insertLinkContentControl(context);
     }
   }
@@ -103,7 +139,7 @@ export default class TaskList extends WordPersistable<TaskList> {
 
     // Visually signal content control creation
     cc.appearance = Word.ContentControlAppearance.boundingBox;
-    cc.title = "Aufgabe " + (this.tasks.length + 1);
+    cc.title = "Aufgabe " + (this._tasks.length + 1);
     cc.tag = "task";
 
     // Need to load ID property first
@@ -113,7 +149,7 @@ export default class TaskList extends WordPersistable<TaskList> {
 
     const newTask = new Task(uuidv4(), cc.title, maxPoints, cc.id, null);
 
-    this.tasks.push(newTask);
+    this._tasks.push(newTask);
 
     return this.copy();
   }
@@ -124,26 +160,23 @@ export default class TaskList extends WordPersistable<TaskList> {
 
   async init(loadedTaskList: TaskList, context: Word.RequestContext): Promise<void> {
     // Bind content controls
-    const ccs = context.document.contentControls;
     for (const task of loadedTaskList.tasks) {
-      const cc = ccs.getById(task.ccId);
+      const cc = task.getAssociatedContentControl(context);
 
       if (cc == null) {
         console.error(`Missing content control for ${task.taskId}`);
       }
     }
-
-    await context.sync();
   }
 
-  reviver(_key: string, value: unknown) {
+  reviver(_key: string, value: unknown): unknown {
     if (value == null) {
       return null;
     }
-    if (value["tasks"] != null) {
+    if (value["_tasks"] != null) {
       return Object.assign(new TaskList(), value);
     }
-    if (value["taskId"] != null) {
+    if (value["_taskId"] != null) {
       // @ts-ignore
       return Object.assign(new Task(), value);
     }

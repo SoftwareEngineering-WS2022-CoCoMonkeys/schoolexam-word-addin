@@ -1,9 +1,9 @@
 import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner } from "@fluentui/react";
 import * as React from "react";
 import { useState } from "react";
-import Exam from "../../../model/Exam";
+import Exam from "../../../word/Exam";
 import "./ExportButton.scss";
-import TaskList from "../../../model/TaskList";
+import TaskList from "../../../word/TaskList";
 import ApiService from "../services/ApiService";
 import TemplateDTO from "../../../dto/TemplateDTO";
 

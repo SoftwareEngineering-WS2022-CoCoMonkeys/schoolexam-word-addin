@@ -2,7 +2,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import ApiService from "../services/ApiService";
 import { List, MessageBar, MessageBarType, Spinner } from "@fluentui/react";
-import Exam from "../../../model/Exam";
+import Exam from "../../../word/Exam";
 import "./ExamList.scss";
 
 export interface ExamListProps {

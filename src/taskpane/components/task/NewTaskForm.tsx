@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import { ActionButton, IIconProps, PrimaryButton, Stack, TextField } from "@fluentui/react";
 import BackButton from "../util/BackButton";
-import TaskList from "../../../model/TaskList";
+import TaskList from "../../../word/TaskList";
 import "./NewTaskForm.scss";
 import InstrutctionList from "./NewTaskFromInstructionList";
 

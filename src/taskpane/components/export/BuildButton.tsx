@@ -1,7 +1,7 @@
 import { PrimaryButton, Spinner, TextField } from "@fluentui/react";
 import * as React from "react";
 import { useState } from "react";
-import Exam from "../../../model/Exam";
+import Exam from "../../../word/Exam";
 import ApiService from "../services/ApiService";
 import "./BuildButton.scss";
 
@@ -12,12 +12,12 @@ export interface BuildButtonProps {
 
 export default function BuildButton(props: BuildButtonProps): JSX.Element {
   const [countInput, setCountInput] = useState(null);
-  const [waiting, setWating] = useState(false);
+  const [waiting, setWaiting] = useState(false);
 
   async function triggerBuild() {
-    setWating(true);
+    setWaiting(true);
     await ApiService.triggerBuild(props.selectedExam.examId, countInput);
-    setWating(false);
+    setWaiting(false);
   }
 
   return (

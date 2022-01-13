@@ -1,9 +1,21 @@
 import * as React from "react";
 import { useState } from "react";
-import { ActionButton, DetailsList, IColumn, IIconProps, SelectionMode, TextField } from "@fluentui/react";
-import TaskList from "../../../model/TaskList";
+import {
+  ActionButton,
+  DetailsList,
+  IColumn,
+  IconButton,
+  IDetailsCheckboxProps,
+  IDetailsRowProps,
+  IIconProps,
+  IRenderFunction,
+  SelectionMode,
+  TextField,
+  Toggle,
+} from "@fluentui/react";
+import TaskList from "../../../word/TaskList";
 import "./TaskTable.scss";
-import Task from "../../../model/Task";
+import Task from "../../../word/Task";
 
 export interface TaskTableProps {
   taskList: TaskList;
@@ -17,23 +29,31 @@ export interface ActiveEdit {
 
 export default function TaskTable(props: TaskTableProps): JSX.Element {
   const [activeEdit, setActiveEdit] = useState(null as ActiveEdit);
+  const [deleteMode, setDeleteMode] = useState(false);
+
+  function editTask(taskId: string, fieldName: string, newValue: string | number): void {
+    props.taskList.editTaskAsync(taskId, fieldName, newValue).then((taskList) => {
+      props.setTaskList(taskList);
+    });
+  }
+
+  function updateTaskTitles() {
+    props.taskList.updateTaskTitlesAsync().then((taskList) => props.setTaskList(taskList));
+  }
 
   function editableColumnRenderer(fieldName: string) {
     // eslint-disable-next-line react/display-name
     return (task: Task) => {
+      function setActiveEditOnEnter(event) {
+        if (event.key == "Enter") {
+          event.preventDefault();
+          editTask(task.taskId, fieldName, event.currentTarget.value);
+          setActiveEdit(null);
+        }
+      }
+
       if (activeEdit && activeEdit.taskId === task.taskId && fieldName === activeEdit.fieldName) {
-        return (
-          <TextField
-            defaultValue={task[fieldName]}
-            onKeyPress={(event) => {
-              if (event.key == "Enter") {
-                event.preventDefault();
-                editTask(task.taskId, fieldName, event.currentTarget.value);
-                setActiveEdit(null);
-              }
-            }}
-          />
-        );
+        return <TextField defaultValue={task[fieldName]} onKeyPress={setActiveEditOnEnter} />;
       } else {
         return (
           <div
@@ -45,6 +65,24 @@ export default function TaskTable(props: TaskTableProps): JSX.Element {
         );
       }
     };
+  }
+
+  const deleteIcon: IIconProps = {
+    iconName: "Delete",
+    color: "red",
+  };
+
+  function rowCheckBoxRenderer(task: Task): IRenderFunction<IDetailsCheckboxProps> {
+    // don't actually render the component, instead return a render function
+    const renderCheckBox = () => (
+      <IconButton
+        iconProps={deleteIcon}
+        onClick={() => {
+          props.taskList.deleteTaskAsync(task).then((taskList) => props.setTaskList(taskList));
+        }}
+      />
+    );
+    return renderCheckBox;
   }
 
   const columns: IColumn[] = [
@@ -68,24 +106,25 @@ export default function TaskTable(props: TaskTableProps): JSX.Element {
     },
   ];
 
-  function editTask(taskId: string, fieldName: string, newValue: string | number): void {
-    props.taskList.editTaskAsync(taskId, fieldName, newValue).then((taskList) => {
-      props.setTaskList(taskList);
-    });
-  }
-
-  function updateTasks() {
-    props.taskList.updateTaskTitlesAsync().then((taskList) => props.setTaskList(taskList));
-  }
-
   const updateIcon: IIconProps = {
     iconName: "Refresh",
   };
 
+  function renderRow(rowProps: IDetailsRowProps, defaultRender?: IRenderFunction<IDetailsRowProps>): JSX.Element {
+    rowProps.onRenderDetailsCheckbox = rowCheckBoxRenderer(rowProps.item);
+    return defaultRender(rowProps);
+  }
+
   return (
     <div id="task-table-container">
-      <DetailsList selectionMode={SelectionMode.none} columns={columns} items={props.taskList.tasks} />
-      <ActionButton iconProps={updateIcon} onClick={updateTasks}>
+      <Toggle label="Löschen" onChange={(_event, checked) => setDeleteMode(checked ?? false)} />
+      <DetailsList
+        selectionMode={deleteMode ? SelectionMode.multiple : SelectionMode.none}
+        columns={columns}
+        items={props.taskList.tasks}
+        onRenderRow={renderRow}
+      />
+      <ActionButton iconProps={updateIcon} onClick={updateTaskTitles}>
         Reihenfolge zurücksetzen
       </ActionButton>
     </div>

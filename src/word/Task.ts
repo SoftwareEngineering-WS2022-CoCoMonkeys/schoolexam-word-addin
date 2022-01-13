@@ -1,18 +1,35 @@
 import TaskDTO from "../dto/TaskDTO";
+import ITask from "../model/ITask";
 
-export default class Task {
-  taskId: string;
-  title: string;
-  maxPoints: number;
-  ccId: number;
-  linkCcId: number | null;
+export default class Task implements ITask {
+  private readonly _taskId: string;
+  private _title: string;
+  private _maxPoints: number;
+  private readonly _ccId: number;
+  private _linkCcId: number | null;
 
   constructor(taskId: string, title: string, maxPoints: number, ccId: number, linkCcId: number | null) {
-    this.taskId = taskId;
-    this.title = title;
-    this.maxPoints = maxPoints;
-    this.ccId = ccId;
-    this.linkCcId = linkCcId;
+    this._taskId = taskId;
+    this._title = title;
+    this._maxPoints = maxPoints;
+    this._ccId = ccId;
+    this._linkCcId = linkCcId;
+  }
+
+  get taskId(): string {
+    return this._taskId;
+  }
+
+  get title(): string {
+    return this._title;
+  }
+
+  get maxPoints(): number {
+    return this._maxPoints;
+  }
+
+  get ccId(): number {
+    return this._ccId;
   }
 
   equals(other: unknown): boolean {
@@ -25,11 +42,11 @@ export default class Task {
     if (typeof this !== typeof other) {
       return this == other;
     }
-    return this.taskId === (other as Task).taskId;
+    return this._taskId === (other as Task).taskId;
   }
 
   assembleDTO(): TaskDTO {
-    return new TaskDTO(this.taskId, this.title, this.maxPoints);
+    return new TaskDTO(this._taskId, this._title, this._maxPoints);
   }
 
   async jumpTo(context: Word.RequestContext): Promise<void> {
@@ -49,11 +66,34 @@ export default class Task {
   }
 
   async edit(context: Word.RequestContext, fieldName: string, newValue: string | number): Promise<void> {
-    this[fieldName] = newValue;
-    if (fieldName === "title") {
-      const contentControl = this.getAssociatedContentControl(context);
-      contentControl.title = newValue.toString();
+    switch (fieldName) {
+      case "title": {
+        this._title = newValue as string;
+        const contentControl = this.getAssociatedContentControl(context);
+        contentControl.title = newValue.toString();
+        break;
+      }
+      case "maxPoints": {
+        this._maxPoints = newValue as number;
+        break;
+      }
+      default:
+        console.warn(`Unknown task field: ${fieldName}`);
     }
+
+    await context.sync();
+  }
+
+  async prepareForDeletionAsync() {
+    return Word.run(async (context) => this.prepareForDeletion(context));
+  }
+
+  async prepareForDeletion(context: Word.RequestContext) {
+    // delete associated content control
+    const contentControl = this.getAssociatedContentControl(context);
+
+    // keep content
+    contentControl.delete(true);
 
     await context.sync();
   }
@@ -63,7 +103,7 @@ export default class Task {
   }
 
   getAssociatedContentControl(context: Word.RequestContext): Word.ContentControl | null {
-    return context.document.contentControls.getByIdOrNullObject(this.ccId);
+    return context.document.contentControls.getByIdOrNullObject(this._ccId);
   }
 
   getLInkContentControlAsync(): Promise<Word.ContentControl | null> {
@@ -71,14 +111,14 @@ export default class Task {
   }
 
   getLinkContentControl(context: Word.RequestContext): Word.ContentControl | null {
-    return context.document.contentControls.getByIdOrNullObject(this.linkCcId);
+    return context.document.contentControls.getByIdOrNullObject(this._linkCcId);
   }
 
   async removeLinkContentControl(context: Word.RequestContext): Promise<void> {
-    if (this.linkCcId != null) {
+    if (this._linkCcId != null) {
       const linkContentControl = this.getLinkContentControl(context);
       if (linkContentControl == null) {
-        console.warn(`Link content control with id ${this.linkCcId} does not exist`);
+        console.warn(`Link content control with id ${this._linkCcId} does not exist`);
       } else {
         // Delete with content
         linkContentControl.delete(false);
@@ -92,7 +132,7 @@ export default class Task {
     const contentControl = this.getAssociatedContentControl(context);
 
     if (contentControl == null) {
-      console.error(`Task content control with id ${this.ccId} does not exist`);
+      console.error(`Task content control with id ${this._ccId} does not exist`);
       return;
     }
 
@@ -100,7 +140,7 @@ export default class Task {
 
     linkContentControl.appearance = Word.ContentControlAppearance.hidden;
     linkContentControl.tag = "task-link";
-    linkContentControl.title = "task-link-" + this.taskId;
+    linkContentControl.title = "task-link-" + this._taskId;
 
     /*
      Insert anchor element.
@@ -108,7 +148,7 @@ export default class Task {
      Bookmarks, although preferable, are not exported properly.
      */
     linkContentControl.insertHtml(
-      `<a style="text-decoration: none; font-size:0.01em; transform: translate(-1px)" href="task-${this.taskId}">&nbsp;</a>`,
+      `<a style="text-decoration: none; font-size:0.01em; transform: translate(-1px)" href="task-${this._taskId}">&nbsp;</a>`,
       Word.InsertLocation.start
     );
 
@@ -116,6 +156,6 @@ export default class Task {
 
     await context.sync();
 
-    this.linkCcId = linkContentControl.id;
+    this._linkCcId = linkContentControl.id;
   }
 }

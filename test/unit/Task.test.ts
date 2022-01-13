@@ -1,4 +1,4 @@
-import Task from "../../src/model/Task";
+import Task from "../../src/word/Task";
 import TaskDTO from "../../src/dto/TaskDTO";
 
 test("equals() should work as expected", () => {
