@@ -1,7 +1,7 @@
 import Task from "./Task";
 import WordPersistable from "./WordPersistable";
 import { v4 as uuidv4 } from "uuid";
-import TaskDTO from "../dto/TaskDTO";
+import TaskDTO from "../export_dto/TaskDTO";
 import ITaskList from "../model/ITaskList";
 
 export default class TaskList extends WordPersistable<TaskList> implements ITaskList {
@@ -127,6 +127,7 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
     const cc = range.insertContentControl();
 
     // Visually signal content control creation
+    cc.cannotDelete = true;
     cc.appearance = Word.ContentControlAppearance.boundingBox;
     cc.title = "Aufgabe " + (this._tasks.length + 1);
     cc.tag = "task";

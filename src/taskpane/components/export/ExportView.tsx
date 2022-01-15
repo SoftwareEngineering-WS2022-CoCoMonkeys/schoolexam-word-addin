@@ -2,30 +2,26 @@ import * as React from "react";
 import { useState } from "react";
 import "./ExportView.scss";
 import ExamList from "./ExamList";
-import Exam from "../../../word/Exam";
 import ExportButton from "./ExportButton";
-import TaskList from "../../../word/TaskList";
 import { MessageBar, MessageBarType } from "@fluentui/react";
 import BuildButton from "./BuildButton";
 import ConvertButton from "./ConvertButton";
+import usePrep from "../state/PreparationStore";
+import ConvertDownloadButton from "./ConvertDownloadButton";
+import BuildDownloadButton from "./BuildDownloadButton";
 
-export interface ExportViewProps {
-  selectedExam: Exam | null;
-  setSelectedExam: (exam: Exam) => void;
-  taskList: TaskList;
-  setTaskList: (taskList: TaskList) => void;
-  loggedIn: boolean;
-}
+export default function ExportView(_props: unknown): JSX.Element {
+  const [prepState, prepActions] = usePrep();
 
-export default function ExportView(props: ExportViewProps): JSX.Element {
-  const [taskPdf, setTaskPdf] = useState(null);
-
-  const lockedContent = props.loggedIn ? (
-    <div className="center-items">
-      <ExamList selectedExam={props.selectedExam} setSelectedExam={props.setSelectedExam} />
-      <div id="export-btns-container" className="center-items">
-        <ExportButton taskList={props.taskList} selectedExam={props.selectedExam} taskPdf={taskPdf} />
-        <BuildButton selectedExam={props.selectedExam} taskPdf={taskPdf} />
+  const lockedContent = prepState.loggedIn ? (
+    <div className="center-items column-flex">
+      <ExamList />
+      <div className="center-items row-flex two-btn-container margin-top1">
+        <ExportButton />
+      </div>
+      <div className="center-items row-flex two-btn-container margin-top1">
+        <BuildButton />
+        <BuildDownloadButton />
       </div>
     </div>
   ) : (
@@ -34,9 +30,12 @@ export default function ExportView(props: ExportViewProps): JSX.Element {
     </MessageBar>
   );
   return (
-    <div id="export-view" className="center-items">
-      <ConvertButton taskList={props.taskList} taskPdf={taskPdf} setTaskPdf={setTaskPdf} />
-      {lockedContent}
+    <div className="center-items column-flex">
+      <div className="row-flex two-btn-container">
+        <ConvertButton />
+        <ConvertDownloadButton />
+      </div>
+      <div className="margin-top1">{lockedContent}</div>
     </div>
   );
 }

@@ -1,44 +1,29 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
 import { Pivot, PivotItem } from "@fluentui/react";
 import TaskView from "../task/TaskView";
 import ExportView from "../export/ExportView";
 import "./Navbar.scss";
-import { StructureNavbar } from "../structural/StructureNavbar";
-import TaskList from "../../../word/TaskList";
-import Exam from "../../../word/Exam";
+import StructureNavbar from "../structural/StructureNavbar";
+import useTasks from "../state/TaskStore";
 
-export interface NavbarProps {
-  loggedIn: boolean;
-}
-
-export default function Navbar(props: NavbarProps): JSX.Element {
-  const [taskList, setTaskList] = useState(new TaskList());
-  const [selectedExam, setSelectedExam] = useState(null as Exam);
-
-  useEffect(() => {
-    taskList.load().then((taskList) => {
-      setTaskList(taskList);
-    });
-  }, []);
-
+export default function Navbar(_props: unknown): JSX.Element {
+  const [taskState, taskActions] = useTasks();
   return (
     <div id="navbar">
       <Pivot aria-label="NavigationBar">
-        <PivotItem className="pivot-item" headerText="Aufgaben" itemCount={taskList.getLength()} itemIcon="Dictionary">
-          <TaskView taskList={taskList} setTaskList={setTaskList} />
+        <PivotItem
+          className="pivot-item"
+          headerText="Aufgaben"
+          itemCount={taskState.taskList.getLength()}
+          itemIcon="Dictionary"
+        >
+          <TaskView />
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Struktur" itemIcon="BulletedTreeList">
           <StructureNavbar />
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Exportieren" itemIcon="Share">
-          <ExportView
-            loggedIn={props.loggedIn}
-            selectedExam={selectedExam}
-            setSelectedExam={setSelectedExam}
-            taskList={taskList}
-            setTaskList={setTaskList}
-          />
+          <ExportView />
         </PivotItem>
       </Pivot>
     </div>

@@ -34,6 +34,7 @@
     "graceful-fs": "^4.2.8",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
+    "react-sweet-state": "^2.5.2",
     "react-transition-group": "^4.4.2",
     "regenerator-runtime": "^0.13.7",
     "uuid": "^8.3.2"

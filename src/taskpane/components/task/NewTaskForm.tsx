@@ -1,26 +1,21 @@
 import * as React from "react";
 import { useState } from "react";
 import { ActionButton, DefaultButton, Dialog, DialogFooter, DialogType, IIconProps, TextField } from "@fluentui/react";
-import TaskList from "../../../word/TaskList";
 import "./NewTaskForm.scss";
 import InstructionList from "./NewTaskFromInstructionList";
+import useTasks from "../state/TaskStore";
 
-export interface NewTaskFormProps {
-  taskList: TaskList;
-  setTaskList: (taskList: TaskList) => void;
-}
-
-export default function NewTaskForm(props: NewTaskFormProps): JSX.Element {
+export default function NewTaskForm(_props: unknown): JSX.Element {
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [pointsInput, setPointsInput] = useState(null);
+  const defaultPointsInput = 1;
+  const [taskState, taskActions] = useTasks();
+  const [pointsInput, setPointsInput] = useState(defaultPointsInput);
 
   const addIcon: IIconProps = { iconName: "Add" };
 
   function addTask(): void {
-    props.taskList.addTaskFromSelectionAsync(pointsInput).then((taskList) => {
-      props.setTaskList(taskList);
-      setDialogVisible(false);
-    });
+    console.log(taskState);
+    taskActions.addTask(pointsInput).then(() => setDialogVisible(false));
   }
 
   const newTaskDialogContentProps = {
@@ -29,7 +24,7 @@ export default function NewTaskForm(props: NewTaskFormProps): JSX.Element {
   };
 
   return (
-    <div id="new-task-form" className="center-items">
+    <div id="new-task-form" className="center-items column-flex">
       <Dialog
         hidden={!dialogVisible}
         onDismiss={() => setDialogVisible(false)}
@@ -40,6 +35,7 @@ export default function NewTaskForm(props: NewTaskFormProps): JSX.Element {
           required={true}
           label="Punkte"
           type="number"
+          defaultValue={defaultPointsInput.toString()}
           onChange={(event) => setPointsInput(parseInt(event.currentTarget.value))}
         />
         <DialogFooter>
@@ -54,7 +50,7 @@ export default function NewTaskForm(props: NewTaskFormProps): JSX.Element {
         iconProps={addIcon}
         text="Neue Aufgabe"
         id="new-task-btn"
-        className="margin-btn"
+        className="margin-top1"
         onClick={() => setDialogVisible(true)}
       />
     </div>

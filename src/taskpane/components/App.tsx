@@ -1,10 +1,12 @@
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Progress from "./Progress";
 import "./App.scss";
 import Navbar from "./taskpaneDesign/Navbar";
 import LoginForm from "./login/LoginForm";
 import Header from "./taskpaneDesign/Header";
+import useTasks from "./state/TaskStore";
+import usePrep from "./state/PreparationStore";
 
 /* global Word, require */
 
@@ -14,8 +16,8 @@ export interface AppProps {
 }
 
 export default function App(props: AppProps): JSX.Element {
-  const [displayLogin, setDisplayLogin] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false); // TODO
+  const [prepState, prepActions] = usePrep();
+  const [taskState, taskActions] = useTasks();
 
   const { title, isOfficeInitialized } = props;
 
@@ -29,20 +31,16 @@ export default function App(props: AppProps): JSX.Element {
     );
   }
 
-  const mainContent = displayLogin ? (
-    <LoginForm setLoggedIn={setLoggedIn} setDisplayLogin={setDisplayLogin} />
-  ) : (
-    <Navbar loggedIn={loggedIn} />
-  );
+  useEffect(() => {
+    taskActions.load();
+    prepActions.loadQrCode();
+  }, []);
+
+  const mainContent = prepState.displayLogin ? <LoginForm /> : <Navbar />;
 
   return (
-    <div className="center-items">
-      <Header
-        loggedIn={loggedIn}
-        setLoggedIn={setLoggedIn}
-        setDisplayLogin={setDisplayLogin}
-        displayLogin={displayLogin}
-      />
+    <div className="center-items column-flex">
+      <Header />
       {mainContent}
     </div>
   );

@@ -10,70 +10,57 @@ import {
 } from "@fluentui/react";
 import * as React from "react";
 import { useState } from "react";
-import Exam from "../../../word/Exam";
 import ApiService from "../services/ApiService";
 import "./BuildButton.scss";
+import usePrep from "../state/PreparationStore";
+import Status from "../state/CompletionStatus";
 
-export interface BuildButtonProps {
-  selectedExam: Exam | null;
-  taskPdf: string | null;
+enum BuildState {
+  idle,
+  waiting,
+  error,
+  success,
 }
 
-export default function BuildButton(props: BuildButtonProps): JSX.Element {
-  const [countInput, setCountInput] = useState(null);
-  const [waiting, setWaiting] = useState(false);
+export default function BuildButton(_props: unknown): JSX.Element {
+  const [buildState, setBuildState] = useState(BuildState.idle);
   const [dialogVisible, setDialogVisible] = useState(false);
+  const [prepState, prepActions] = usePrep();
 
   async function triggerBuild() {
-    setWaiting(true);
-    await ApiService.triggerBuild(props.selectedExam.examId, countInput);
-    setWaiting(false);
+    setBuildState(BuildState.waiting);
+    const build = await ApiService.getBuild(prepState.selectedExam.id);
+    prepActions.setBuild(build);
+    setBuildState(BuildState.success);
     setDialogVisible(false);
   }
 
   const buildDialogContentProps: IDialogContentProps = {
     type: DialogType.normal,
     title: "Kompilieren",
-    subText: "Wählen Sie die gewünscht Anzahl an Prüfungsexemplaren aus",
+    subText: "Dies kann einige Minuten dauern",
   };
 
   return (
-    <div id="build-container" className="center-items stretch">
+    <div>
       <Dialog
         onDismiss={() => setDialogVisible(false)}
         hidden={!dialogVisible}
         dialogContentProps={buildDialogContentProps}
       >
-        <TextField
-          id="build-count-input"
-          required={true}
-          label="Exemplare"
-          type="number"
-          onChange={(event) => setCountInput(parseInt(event.currentTarget.value))}
-        />
         <DialogFooter>
-          <DefaultButton
-            className="margin-btn"
-            onClick={triggerBuild}
-            disabled={
-              props.selectedExam == null ||
-              props.taskPdf == null ||
-              countInput == null ||
-              isNaN(countInput) ||
-              countInput <= 0
-            }
-          >
-            {waiting ? <Spinner /> : "Kompilieren"}
+          <DefaultButton className="margin-top1" onClick={triggerBuild}>
+            {buildState === BuildState.waiting ? <Spinner /> : "Kompilieren"}
           </DefaultButton>
         </DialogFooter>
       </Dialog>
       <PrimaryButton
         id="build-dialog-btn"
-        className="margin-btn"
+        className="margin-right1"
         onClick={() => setDialogVisible(true)}
-        disabled={props.taskPdf == null}
+        disabled={!Status(prepState).isBuildReady()}
       >
-        {waiting ? <Spinner /> : "Kompilieren"}
+        {buildState === BuildState.waiting ? <Spinner /> : "Kompilieren"}
       </PrimaryButton>
     </div>
   );

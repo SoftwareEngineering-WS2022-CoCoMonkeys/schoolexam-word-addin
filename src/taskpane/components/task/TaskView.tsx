@@ -5,17 +5,12 @@ import NewTaskForm from "./NewTaskForm";
 import "./TaskView.scss";
 import { Separator } from "@fluentui/react";
 
-export interface TaskViewProps {
-  taskList: TaskList;
-  setTaskList: (taskList: TaskList) => void;
-}
-
-export default function TaskView(props: TaskViewProps): JSX.Element {
+export default function TaskView(_props: unknown): JSX.Element {
   return (
     <div id="task-view">
-      <NewTaskForm taskList={props.taskList} setTaskList={props.setTaskList} />
+      <NewTaskForm />
       <Separator className="horizontal-separator" />
-      <TaskTable taskList={props.taskList} setTaskList={props.setTaskList} />
+      <TaskTable />
     </div>
   );
 }

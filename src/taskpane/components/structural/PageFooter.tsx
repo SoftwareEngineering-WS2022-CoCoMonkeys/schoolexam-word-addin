@@ -1,10 +1,14 @@
 import { PrimaryButton, TextField } from "@fluentui/react";
 import * as React from "react";
 import "./PageFooter.scss";
-import { getQrCodeBase64 } from "./structuralUtil";
+import { getQrCodeBase64 } from "./StructuralUtil";
+import usePrep from "../state/PreparationStore";
+import RangeLocation = Word.RangeLocation;
+import ContentControlAppearance = Word.ContentControlAppearance;
 
-export default function PageFooter() {
+export default function PageFooter(_props: unknown): JSX.Element {
   const [footerText, setFooterText] = React.useState("      ");
+  const [prepState, prepActions] = usePrep();
 
   const onChangeFooterTextFieldValue = React.useCallback(
     (_event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
@@ -13,34 +17,41 @@ export default function PageFooter() {
     []
   );
 
+  function createFooter(): Promise<void> {
+    return Word.run(async (context) => {
+      const footer = context.document.sections.getFirst().getFooter(Word.HeaderFooterType.primary);
+      footer.clear();
+
+      const contentControl = footer.getRange(RangeLocation.start).insertContentControl();
+      contentControl.appearance = ContentControlAppearance.boundingBox;
+      contentControl.tag = "footer-qr-code";
+      contentControl.title = "footer-qr-code";
+
+      // Warning: setting cannot edit breaks this content control
+
+      await context.sync();
+
+      const qrCode = getQrCodeBase64();
+      // we CANNOT use the InlinePicture returned from this method as working with it leads to a GeneralException
+      contentControl.insertInlinePictureFromBase64(qrCode, Word.InsertLocation.start);
+      const qrCodePicture = contentControl.inlinePictures.getFirst();
+      await context.sync();
+      qrCodePicture.hyperlink = "http://pageQrCode";
+      qrCodePicture.height = 30;
+
+      // persist footer QR Code id
+      contentControl.load("id");
+      await context.sync();
+      await prepActions.setFooterQrCodeCcId(contentControl.id);
+    });
+  }
+
+  // TODO footer text
   return (
     <div className="centerTopPadding">
       <TextField label="Fußzeilentext" placeholder="z.B. das Thema des Tests" onChange={onChangeFooterTextFieldValue} />
       <br></br>
-      <PrimaryButton text="Fußzeile erstellen" id="footerCreate" onClick={() => _createFooter(footerText)} />
+      <PrimaryButton text="Fußzeile erstellen" id="footerCreate" onClick={() => createFooter()} />
     </div>
   );
-}
-
-function _createFooter(footerText): void {
-  Word.run(async (context) => {
-    const footer = context.document.sections.getFirst().getFooter(Word.HeaderFooterType.primary);
-    footer.clear();
-
-    const paragraph = footer.insertParagraph(footerText, Word.InsertLocation.end);
-    const qrCode = getQrCodeBase64();
-    footer.insertInlinePictureFromBase64(qrCode, Word.InsertLocation.start);
-    const firstPicture = footer.inlinePictures.getFirstOrNullObject();
-    firstPicture.hyperlink = "http://pageQrCode";
-    firstPicture.height = 30;
-    paragraph.font.bold = true;
-    paragraph.alignment = Word.Alignment.left;
-
-    const sXml =
-      '<pkg:package xmlns:pkg="http://schemas.microsoft.com/office/2006/xmlPackage"><pkg:part pkg:name="/_rels/.rels" pkg:contentType="application/vnd.openxmlformats-package.relationships+xml" pkg:padding="512"><pkg:xmlData><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships></pkg:xmlData></pkg:part><pkg:part pkg:name="/word/document.xml" pkg:contentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"><pkg:xmlData><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> Page </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:noProof/></w:rPr><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r></w:p></w:body></w:document></pkg:xmlData></pkg:part></pkg:package>';
-    const hdr = context.document.sections.getFirst().getFooter("Primary"); //returns Word.Body type
-    const pageNumber = hdr.insertOoxml(sXml, Word.InsertLocation.end);
-
-    await context.sync();
-  });
 }

@@ -1,4 +1,4 @@
-import TaskDTO from "../dto/TaskDTO";
+import TaskDTO from "../export_dto/TaskDTO";
 import ITask from "../model/ITask";
 
 export default class Task implements ITask {

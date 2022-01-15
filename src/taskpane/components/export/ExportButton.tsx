@@ -1,38 +1,35 @@
 import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner } from "@fluentui/react";
 import * as React from "react";
 import { useState } from "react";
-import Exam from "../../../word/Exam";
 import "./ExportButton.scss";
-import TaskList from "../../../word/TaskList";
 import ApiService from "../services/ApiService";
-import TemplateDTO from "../../../dto/TemplateDTO";
-
-export interface ExportButtonProps {
-  selectedExam: Exam | null;
-  taskList: TaskList;
-  taskPdf: string | null;
-}
+import TemplateDTO from "../../../export_dto/TemplateDTO";
+import useTasks from "../state/TaskStore";
+import usePrep from "../state/PreparationStore";
+import Status from "../state/CompletionStatus";
 
 enum ExportState {
   idle,
-  exporting,
+  waiting,
   error,
   success,
 }
 
-export default function ExportButton(props: ExportButtonProps): JSX.Element {
+export default function ExportButton(_props: unknown): JSX.Element {
   const [exportState, setExportState] = useState(ExportState.idle);
+  const [taskState] = useTasks();
+  const [prepState] = usePrep();
 
   async function exportExam() {
-    setExportState(ExportState.exporting);
+    setExportState(ExportState.waiting);
 
     // remove and re-insert linkContentControls
-    await props.taskList.removeLinkContentControlsAsync();
-    await props.taskList.insertLinkContentControlsAsync();
+    await taskState.taskList.removeLinkContentControlsAsync();
+    await taskState.taskList.insertLinkContentControlsAsync();
 
-    const exportData = new TemplateDTO(props.taskPdf, props.taskList.assembleDTO());
+    const exportData = new TemplateDTO(prepState.taskPdf, taskState.taskList.assembleDTO());
     try {
-      const response = await ApiService.postExamPdf(props.selectedExam.examId, exportData);
+      await ApiService.postExamPdf(prepState.selectedExam.id, exportData);
       setExportState(ExportState.success);
     } catch (e) {
       setExportState(ExportState.error);
@@ -56,13 +53,8 @@ export default function ExportButton(props: ExportButtonProps): JSX.Element {
           <DefaultButton onClick={() => setExportState(ExportState.idle)} text="Ok" />
         </DialogFooter>
       </Dialog>
-      <PrimaryButton
-        id="export-btn"
-        className="margin-btn stretch"
-        disabled={props.selectedExam == null || props.taskPdf == null}
-        onClick={exportExam}
-      >
-        {exportState === ExportState.exporting ? <Spinner /> : "Dokument exportieren"}
+      <PrimaryButton id="export-btn" disabled={!Status(prepState).isExportReady()} onClick={exportExam}>
+        {exportState === ExportState.waiting ? <Spinner /> : "Dokument exportieren"}
       </PrimaryButton>
     </div>
   );
