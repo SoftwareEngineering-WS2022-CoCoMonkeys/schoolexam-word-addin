@@ -1,5 +1,5 @@
 import Task from "../../src/word/Task";
-import TaskDTO from "../../src/dto/TaskDTO";
+import TaskDTO from "../../src/export_dto/TaskDTO";
 
 test("equals() should work as expected", () => {
   const task = new Task("123", "Aufgabe 1", 3, 100, null);

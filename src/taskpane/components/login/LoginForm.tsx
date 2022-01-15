@@ -3,65 +3,85 @@ import { useState } from "react";
 import { MessageBar, MessageBarType, PrimaryButton, Spinner, SpinnerSize, Stack, TextField } from "@fluentui/react";
 import "./LoginForm.scss";
 import AuthService from "../services/AuthService";
+import usePrep from "../state/PreparationStore";
 
-export interface LoginFormProps {
-  setDisplayLogin: (displayLogin: boolean) => void;
-  setLoggedIn: (loggedIn: boolean) => void;
+enum LoginState {
+  idle,
+  waiting,
+  success,
+  invalid,
+  error,
 }
 
-export default function LoginForm(props: LoginFormProps) {
+export default function LoginForm(_props: unknown): JSX.Element {
+  // global state
+  const [prepState, prepActions] = usePrep();
+
+  // local state
   const [username, setUsername] = useState(null as string);
   const [password, setPassword] = useState(null as string);
-  const [waiting, setWaiting] = useState(false);
-  const [loginSuccessful, setLoginSuccessful] = useState(null as boolean);
+  const [loginState, setLoginState] = useState(LoginState.idle);
 
-  function submitLogin() {
-    setWaiting(true);
-    AuthService.login(username, password)
-      .then((loginSuccessful) => {
-        setLoginSuccessful(loginSuccessful);
-        setTimeout(() => {
-          // Return to main screen
-          props.setLoggedIn(true);
-          props.setDisplayLogin(false);
-        }, 1000);
-      })
-      .finally(() => {
-        setWaiting(false);
-      });
+  async function submitLogin() {
+    setLoginState(LoginState.waiting);
+    const authData = await AuthService.login(username, password);
+    prepActions.setAuthData(authData);
+    setLoginState(LoginState.success);
+    setTimeout(() => {
+      // Return to main screen
+      prepActions.setLoggedIn(true);
+      setLoginState(LoginState.idle);
+      prepActions.setDisplayLogin(false);
+    }, 1000);
   }
 
-  let loginMessage: any = "";
-  if (loginSuccessful != null) {
-    loginMessage = loginSuccessful ? (
-      <MessageBar
-        messageBarType={MessageBarType.success}
-        isMultiline={true}
-        onDismiss={() => setLoginSuccessful(null)}
-        dismissButtonAriaLabel="Close"
-      >
-        Erfolgreich eingeloggt!
-      </MessageBar>
-    ) : (
-      <MessageBar
-        messageBarType={MessageBarType.error}
-        isMultiline={true}
-        onDismiss={() => setLoginSuccessful(null)}
-        dismissButtonAriaLabel="Close"
-      >
-        Ungültige Kombination aus Nutzername und Passwort
-      </MessageBar>
-    );
+  let loginMessage: unknown = "";
+  switch (loginState) {
+    case LoginState.success:
+      loginMessage = (
+        <MessageBar
+          messageBarType={MessageBarType.success}
+          isMultiline={true}
+          onDismiss={() => setLoginState(LoginState.idle)}
+          dismissButtonAriaLabel="Close"
+        >
+          Erfolgreich eingeloggt!
+        </MessageBar>
+      );
+      break;
+    case LoginState.invalid:
+      loginMessage = (
+        <MessageBar
+          messageBarType={MessageBarType.error}
+          isMultiline={true}
+          onDismiss={() => setLoginState(LoginState.idle)}
+          dismissButtonAriaLabel="Close"
+        >
+          Ungültige Kombination aus Nutzername und Passwort
+        </MessageBar>
+      );
+      break;
+    case LoginState.error:
+    default:
+      loginMessage = "";
   }
-
   return (
     <div id="login-form">
       {loginMessage}
       <Stack>
-        <TextField label="Nutzername" onChange={(event) => setUsername(event.currentTarget.value)} />
-        <TextField type="password" label="Passwort" onChange={(event) => setPassword(event.currentTarget.value)} />
-        <PrimaryButton id="submit-login-btn" className="margin-btn" onClick={submitLogin}>
-          {waiting ? <Spinner size={SpinnerSize.small} /> : "Einloggen"}
+        <TextField
+          placeholder="Nutzername"
+          label="Nutzername"
+          onChange={(event) => setUsername(event.currentTarget.value)}
+        />
+        <TextField
+          placeholder="Passwort"
+          type="password"
+          label="Passwort"
+          onChange={(event) => setPassword(event.currentTarget.value)}
+        />
+        <PrimaryButton id="submit-login-btn" className="margin-top1" onClick={submitLogin}>
+          {loginState === LoginState.waiting ? <Spinner size={SpinnerSize.small} /> : "Einloggen"}
         </PrimaryButton>
       </Stack>
     </div>

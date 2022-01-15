@@ -7,5 +7,5 @@ export interface BackButtonProps {
 
 export default function BackButton(props: BackButtonProps): JSX.Element {
   const backIcon: IIconProps = { iconName: "Back" };
-  return <ActionButton iconProps={backIcon} className="margin-btn" text="Zurück" onClick={props.onBack} />;
+  return <ActionButton iconProps={backIcon} className="margin-top1" text="Zurück" onClick={props.onBack} />;
 }

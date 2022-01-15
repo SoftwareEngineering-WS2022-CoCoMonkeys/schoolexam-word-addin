@@ -13,32 +13,26 @@ import {
   TextField,
   Toggle,
 } from "@fluentui/react";
-import TaskList from "../../../word/TaskList";
 import "./TaskTable.scss";
 import Task from "../../../word/Task";
-
-export interface TaskTableProps {
-  taskList: TaskList;
-  setTaskList: (taskList: TaskList) => void;
-}
+import useTasks from "../state/TaskStore";
 
 export interface ActiveEdit {
   taskId: string;
   fieldName: string;
 }
 
-export default function TaskTable(props: TaskTableProps): JSX.Element {
+export default function TaskTable(_props: unknown): JSX.Element {
+  const [taskState, taskActions] = useTasks();
   const [activeEdit, setActiveEdit] = useState(null as ActiveEdit);
   const [deleteMode, setDeleteMode] = useState(false);
 
   function editTask(taskId: string, fieldName: string, newValue: string | number): void {
-    props.taskList.editTaskAsync(taskId, fieldName, newValue).then((taskList) => {
-      props.setTaskList(taskList);
-    });
+    taskActions.editTask(taskId, fieldName, newValue);
   }
 
   function updateTaskTitles() {
-    props.taskList.updateTaskTitlesAsync().then((taskList) => props.setTaskList(taskList));
+    taskActions.updateTaskTitles();
   }
 
   function editableColumnRenderer(fieldName: string) {
@@ -74,14 +68,7 @@ export default function TaskTable(props: TaskTableProps): JSX.Element {
 
   function rowCheckBoxRenderer(task: Task): IRenderFunction<IDetailsCheckboxProps> {
     // don't actually render the component, instead return a render function
-    const renderCheckBox = () => (
-      <IconButton
-        iconProps={deleteIcon}
-        onClick={() => {
-          props.taskList.deleteTaskAsync(task).then((taskList) => props.setTaskList(taskList));
-        }}
-      />
-    );
+    const renderCheckBox = () => <IconButton iconProps={deleteIcon} onClick={() => taskActions.deleteTask(task)} />;
     return renderCheckBox;
   }
 
@@ -121,7 +108,7 @@ export default function TaskTable(props: TaskTableProps): JSX.Element {
       <DetailsList
         selectionMode={deleteMode ? SelectionMode.multiple : SelectionMode.none}
         columns={columns}
-        items={props.taskList.tasks}
+        items={taskState.taskList.tasks}
         onRenderRow={renderRow}
       />
       <ActionButton iconProps={updateIcon} onClick={updateTaskTitles}>

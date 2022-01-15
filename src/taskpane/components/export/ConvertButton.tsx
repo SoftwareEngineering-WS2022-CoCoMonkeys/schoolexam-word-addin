@@ -2,43 +2,41 @@ import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner
 import * as React from "react";
 import { useState } from "react";
 import PdfService from "../services/PdfService";
-import TaskList from "../../../word/TaskList";
 import "./ConvertButton.scss";
-
-export interface ConvertButtonProps {
-  taskList: TaskList;
-  taskPdf: string | null;
-  setTaskPdf: (templatePdf: string) => void;
-}
+import useTasks from "../state/TaskStore";
+import usePrep from "../state/PreparationStore";
+import ConvertDownloadButton from "./ConvertDownloadButton";
 
 enum ConversionState {
   idle,
-  converting,
+  waiting,
   error,
   success,
 }
 
-export default function ConvertButton(props: ConvertButtonProps): JSX.Element {
+export default function ConvertButton(_props: unknown): JSX.Element {
   const [conversionState, setConversionState] = useState(ConversionState.idle);
+  const [prepState, prepActions] = usePrep();
+  const [taskState, taskActions] = useTasks();
 
   async function convertToPdf() {
-    setConversionState(ConversionState.converting);
+    setConversionState(ConversionState.waiting);
 
     // remove and re-insert linkContentControls
-    await props.taskList.removeLinkContentControlsAsync();
-    await props.taskList.insertLinkContentControlsAsync();
+    await taskState.taskList.removeLinkContentControlsAsync();
+    await taskState.taskList.insertLinkContentControlsAsync();
 
     // get pdf
     try {
       const pdfBase64: string = await PdfService.getDocument();
-      props.setTaskPdf(pdfBase64);
+      prepActions.setTaskPdf(pdfBase64);
       setConversionState(ConversionState.success);
     } catch (e) {
       console.error("PDF conversion failed with error:", e);
       setConversionState(ConversionState.error);
     } finally {
       // remove link content controls
-      await props.taskList.removeLinkContentControlsAsync();
+      await taskState.taskList.removeLinkContentControlsAsync();
     }
   }
 
@@ -50,7 +48,7 @@ export default function ConvertButton(props: ConvertButtonProps): JSX.Element {
   };
 
   return (
-    <div id="convert-btns-container">
+    <div>
       <Dialog
         hidden={conversionState !== ConversionState.error}
         onDismiss={() => setConversionState(ConversionState.idle)}
@@ -60,23 +58,9 @@ export default function ConvertButton(props: ConvertButtonProps): JSX.Element {
           <DefaultButton onClick={() => setConversionState(ConversionState.idle)} text="Ok" />
         </DialogFooter>
       </Dialog>
-      <div className="row-flex">
-        <PrimaryButton id="convert-btn" className="margin-btn" onClick={convertToPdf}>
-          {conversionState === ConversionState.converting ? <Spinner /> : "Konvertieren"}
-        </PrimaryButton>
-
-        {props.taskPdf != null ? (
-          <a id="download-anchor" download="exam.pdf" href={`data:application/pdf;base64,${props.taskPdf}`}>
-            <PrimaryButton id="download-btn" className="margin-btn">
-              Download
-            </PrimaryButton>
-          </a>
-        ) : (
-          <PrimaryButton id="download-btn" disabled={true} className="margin-btn">
-            Download
-          </PrimaryButton>
-        )}
-      </div>
+      <PrimaryButton id="convert-btn" className="margin-right1" onClick={convertToPdf}>
+        {conversionState === ConversionState.waiting ? <Spinner /> : "Konvertieren"}
+      </PrimaryButton>
     </div>
   );
 }
