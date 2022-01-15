@@ -3,8 +3,6 @@ import ITask from "../model/ITask";
 
 export default class Task implements ITask {
   private readonly _taskId: string;
-  private _title: string;
-  private _maxPoints: number;
   private readonly _ccId: number;
   private _startLinkCcId: number | null;
   private _endLinkCcId: number | null;
@@ -17,16 +15,20 @@ export default class Task implements ITask {
     this._startLinkCcId = linkCcId;
   }
 
-  get taskId(): string {
-    return this._taskId;
-  }
+  private _title: string;
 
   get title(): string {
     return this._title;
   }
 
+  private _maxPoints: number;
+
   get maxPoints(): number {
     return this._maxPoints;
+  }
+
+  get taskId(): string {
+    return this._taskId;
   }
 
   get ccId(): number {

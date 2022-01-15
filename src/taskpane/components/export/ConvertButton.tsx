@@ -5,7 +5,6 @@ import PdfService from "../services/PdfService";
 import "./ConvertButton.scss";
 import useTasks from "../state/TaskStore";
 import usePrep from "../state/PreparationStore";
-import ConvertDownloadButton from "./ConvertDownloadButton";
 
 enum ConversionState {
   idle,

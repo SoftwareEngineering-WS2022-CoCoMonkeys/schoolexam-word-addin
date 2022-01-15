@@ -1,7 +1,6 @@
 import { PrimaryButton } from "@fluentui/react";
 import * as React from "react";
 import "./PageHeader.scss";
-import { getQrCodeBase64 } from "./StructuralUtil";
 import usePrep from "../state/PreparationStore";
 import RangeLocation = Word.RangeLocation;
 import ContentControlAppearance = Word.ContentControlAppearance;

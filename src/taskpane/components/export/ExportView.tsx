@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useState } from "react";
 import "./ExportView.scss";
 import ExamList from "./ExamList";
 import ExportButton from "./ExportButton";

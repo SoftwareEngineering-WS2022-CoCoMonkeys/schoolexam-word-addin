@@ -1,6 +1,20 @@
 import WordPersistable from "./WordPersistable";
 
 export default class QrCode extends WordPersistable<QrCode> {
+  propertyKey = "qrcode-data";
+
+  private _footerCcId: number;
+
+  get footerCcId(): number {
+    return this._footerCcId;
+  }
+
+  private _titleCcId: number;
+
+  get titleCcId(): number {
+    return this._titleCcId;
+  }
+
   async setFooterCcIdAndCopy(value: number): Promise<QrCode> {
     this._footerCcId = value;
     return await this.copy();
@@ -10,19 +24,6 @@ export default class QrCode extends WordPersistable<QrCode> {
     this._titleCcId = value;
     return await this.copy();
   }
-
-  propertyKey = "qrcode-data";
-
-  get footerCcId(): number {
-    return this._footerCcId;
-  }
-
-  get titleCcId(): number {
-    return this._titleCcId;
-  }
-
-  private _footerCcId: number;
-  private _titleCcId: number;
 
   getFooterContentControl(context: Word.RequestContext): Word.ContentControl {
     return context.document.contentControls.getByIdOrNullObject(this._footerCcId);

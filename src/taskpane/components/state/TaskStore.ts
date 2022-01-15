@@ -1,4 +1,4 @@
-import { createStore, createSubscriber, createHook } from "react-sweet-state";
+import { createHook, createStore } from "react-sweet-state";
 import TaskList from "../../../word/TaskList";
 import Task from "../../../word/Task";
 import ITaskState from "./ITaskState";
