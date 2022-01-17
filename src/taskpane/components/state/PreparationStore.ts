@@ -1,37 +1,15 @@
 import { createHook, createStore } from "react-sweet-state";
-import Exam from "../../../import_dto/Exam";
 import IPreparationState from "./IPreparationState";
 import QrCode from "../../../word/QrCode";
-import Authentication from "../../../import_dto/Authentication";
-import Build from "../../../import_dto/Build";
 
 const preparationStore = createStore({
   // value of the store on initialisation
   initialState: <IPreparationState>{
     // Load from Word "storage"
-    selectedExam: null,
     qrCode: new QrCode(),
-    taskPdf: null,
-    build: null,
   },
   // actions that trigger store mutation
   actions: {
-    setSelectedExam(selectedExam: Exam) {
-      return ({ setState, getState }) => {
-        setState({
-          ...getState(),
-          selectedExam: selectedExam,
-        });
-      };
-    },
-    setTaskPdf(taskPdf: string) {
-      return ({ setState, getState }) => {
-        setState({
-          ...getState(),
-          taskPdf: taskPdf,
-        });
-      };
-    },
     setFooterQrCodeCcId(footerCcId: number) {
       return async ({ setState, getState }) => {
         setState({
@@ -45,14 +23,6 @@ const preparationStore = createStore({
         setState({
           ...getState(),
           qrCode: await getState().qrCode.setTitleCcIdAndCopy(titleCcId),
-        });
-      };
-    },
-    setBuild(build: Build) {
-      return ({ setState, getState }) => {
-        setState({
-          ...getState(),
-          build: build,
         });
       };
     },

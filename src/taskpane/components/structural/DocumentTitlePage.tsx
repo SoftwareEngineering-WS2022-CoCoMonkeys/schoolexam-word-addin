@@ -59,7 +59,6 @@ export default function DocumentTitlePage(_props: unknown): JSX.Element {
         contentControl.title = "title-qr-code";
 
         // Warning: setting cannot edit breaks this content control
-
         contentControl.insertInlinePictureFromBase64(getTitlePlaceHolderBase64(), Word.InsertLocation.start);
         contentControl.inlinePictures.getFirst().hyperlink = "http://studentQrCode";
 

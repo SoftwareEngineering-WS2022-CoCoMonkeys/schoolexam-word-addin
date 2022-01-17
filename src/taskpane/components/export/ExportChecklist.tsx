@@ -2,18 +2,20 @@ import usePrep from "../state/PreparationStore";
 import { Icon, Text } from "@fluentui/react";
 import * as React from "react";
 import { useLoggedIn } from "../state/AuthenticationStore";
+import useExams from "../state/ExamsStore";
 
 export default function ExportChecklist(_props: unknown): JSX.Element {
-  const [prepState] = usePrep();
   const [loggedIn] = useLoggedIn();
+  const [prepState] = usePrep();
+  const [examsState] = useExams();
 
   function activityIconFromStatus(status: boolean) {
     return status ? <Icon iconName={"CheckMark"} color="green" /> : <Icon iconName={"Cancel"} color="red" />;
   }
 
   const loggedInActivityIcon = activityIconFromStatus(loggedIn);
-  const convertedDocumentActivityIcon = activityIconFromStatus(prepState.taskPdf != null);
-  const selectedExamActivityIcon = activityIconFromStatus(prepState.selectedExam != null);
+  const convertedDocumentActivityIcon = activityIconFromStatus(examsState.taskPdf != null);
+  const selectedExamActivityIcon = activityIconFromStatus(examsState.selectedExam != null);
   const footerQrCodeActivityIcon = activityIconFromStatus(prepState.qrCode.footerIsPresent());
   const titleQrCodeActivityIcon = activityIconFromStatus(prepState.qrCode.titleIsPresent());
 

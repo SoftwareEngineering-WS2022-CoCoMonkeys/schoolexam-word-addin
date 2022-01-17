@@ -3,6 +3,6 @@ import RequestStatus from "./RequestStatus";
 
 export default interface IAuthenticationState {
   displayLogin: boolean;
-  authData?: Authentication;
+  authData: Authentication | null;
   loginStatus: RequestStatus;
 }

@@ -13,10 +13,6 @@ export default function LoginForm(_props: unknown): JSX.Element {
   const [username, setUsername] = useState(null as string);
   const [password, setPassword] = useState(null as string);
 
-  useEffect(() => {
-    console.log(authState);
-  });
-
   let loginMessage: unknown = "";
   switch (authState.loginStatus) {
     case RequestStatus.SUCCESS:

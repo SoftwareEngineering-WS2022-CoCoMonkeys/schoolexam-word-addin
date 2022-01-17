@@ -28,10 +28,8 @@ export default function PageHeader(): JSX.Element {
       paragraph.font.set({
         color: "grey",
       });
-      const qrCodePicture = contentControl.inlinePictures.getFirst();
+
       await context.sync();
-      qrCodePicture.hyperlink = "http://pageQrCode";
-      qrCodePicture.height = 30;
 
       // persist header QR Code id
       contentControl.load("id");

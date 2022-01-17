@@ -9,6 +9,15 @@
   justify-content: start;
   width: 100%;
   padding: 5px;
+
+
+}
+
+.selectable-exam-cell:hover {
+  background-color: lightgray;
+  cursor: pointer;
+
+  @include ms-depth-8;
 }
 
 .exam-cell-date {
@@ -24,11 +33,12 @@
   background-color: $ms-color-sharedCyanBlue10 !important;
 }
 
-.exam-cell:hover {
-  background-color: lightgray;
-  cursor: pointer;
+.unselectable-exam-cell {
+  color: $ms-color-sharedGray10;
 
-  @include ms-depth-8;
+  :hover {
+    background-color: inherit;
+  }
 }
 
 #exam-list-container {
