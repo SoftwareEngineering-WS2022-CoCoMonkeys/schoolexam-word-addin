@@ -1,10 +1,10 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import ApiService from "../services/ApiService";
 import { List, MessageBar, MessageBarType, Spinner } from "@fluentui/react";
 import Exam from "../../../import_dto/Exam";
 import "./ExamList.scss";
 import usePrep from "../state/PreparationStore";
+import ExamsRepository from "../services/OnlineExamsRepository";
 
 export enum ExamsState {
   idle,
@@ -21,9 +21,10 @@ export default function ExamList(_props: unknown): JSX.Element {
   // retrieve Exams from backend
   useEffect(() => {
     setExamsState(ExamsState.waiting);
-    ApiService.getExams().then((result) => {
+    ExamsRepository.getExams().then((result) => {
       setExams(result);
       setExamsState(ExamsState.success);
+      console.debug("Received exams", exams);
     });
   }, []);
 
@@ -43,9 +44,9 @@ export default function ExamList(_props: unknown): JSX.Element {
         }}
       >
         <div>
-          {exam.title} - {exam.topic}
+          {exam.title} - {exam.topic} - {exam.status}
         </div>
-        <div className="exam-cell-date">am {exam.dateOfExam?.toLocaleDateString() ?? ""}</div>
+        <div className="exam-cell-date">am {exam.date?.toLocaleDateString() ?? ""}</div>
       </div>
     );
   }

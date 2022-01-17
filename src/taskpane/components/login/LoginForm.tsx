@@ -2,8 +2,8 @@ import * as React from "react";
 import { useState } from "react";
 import { MessageBar, MessageBarType, PrimaryButton, Spinner, SpinnerSize, Stack, TextField } from "@fluentui/react";
 import "./LoginForm.scss";
-import AuthService from "../services/AuthService";
 import usePrep from "../state/PreparationStore";
+import AuthentificationRepository from "../services/OnlineAuthenticationRepository";
 
 enum LoginState {
   idle,
@@ -24,15 +24,20 @@ export default function LoginForm(_props: unknown): JSX.Element {
 
   async function submitLogin() {
     setLoginState(LoginState.waiting);
-    const authData = await AuthService.login(username, password);
-    prepActions.setAuthData(authData);
-    setLoginState(LoginState.success);
-    setTimeout(() => {
-      // Return to main screen
-      prepActions.setLoggedIn(true);
-      setLoginState(LoginState.idle);
-      prepActions.setDisplayLogin(false);
-    }, 1000);
+    try {
+      const authData = await AuthentificationRepository.login(username, password);
+      prepActions.setAuthData(authData);
+      setLoginState(LoginState.success);
+      setTimeout(() => {
+        // Return to main screen
+        prepActions.setLoggedIn(true);
+        setLoginState(LoginState.idle);
+        prepActions.setDisplayLogin(false);
+      }, 1000);
+    } catch (e) {
+      console.error(e);
+      setLoginState(LoginState.error);
+    }
   }
 
   let loginMessage: unknown = "";
