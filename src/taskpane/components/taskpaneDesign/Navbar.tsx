@@ -5,9 +5,11 @@ import ExportView from "../export/ExportView";
 import "./Navbar.scss";
 import StructureNavbar from "../structural/StructureNavbar";
 import useTasks from "../state/TaskStore";
+import SubmissionsView from "../submissions/SubmissionsView";
 
 export default function Navbar(_props: unknown): JSX.Element {
   const [taskState, taskActions] = useTasks();
+
   return (
     <div id="navbar">
       <Pivot aria-label="NavigationBar">
@@ -24,6 +26,9 @@ export default function Navbar(_props: unknown): JSX.Element {
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Exportieren" itemIcon="Share">
           <ExportView />
+        </PivotItem>
+        <PivotItem className="pivot-item" headerText="Einreichung" itemIcon="OpenFile">
+          <SubmissionsView />
         </PivotItem>
       </Pivot>
     </div>

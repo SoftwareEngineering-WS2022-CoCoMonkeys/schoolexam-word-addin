@@ -1,11 +1,10 @@
-import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner } from "@fluentui/react";
+import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
 import { useState } from "react";
 import "./ExportButton.scss";
 import TemplateDTO from "../../../export_dto/TemplateDTO";
 import useTasks from "../state/TaskStore";
 import usePrep from "../state/PreparationStore";
-import Status from "../state/CompletionStatus";
 import ExamsRepository from "../services/OnlineExamsRepository";
 import ExportChecklist from "./ExportChecklist";
 import RequestStatus from "../state/RequestStatus";
@@ -55,8 +54,15 @@ export default function ExportButton(_props: unknown): JSX.Element {
         </DialogFooter>
       </Dialog>
       <ExportChecklist></ExportChecklist>
-      <PrimaryButton id="export-btn" disabled={!Status(prepState).isExportReady()} onClick={exportExam}>
-        {exportStatus === RequestStatus.WAITING ? <Spinner /> : "Dokument exportieren"}
+      <PrimaryButton
+        id="export-btn"
+        disabled={
+          !prepState.loggedIn || !prepState.taskPdf || !prepState.selectedExam || !prepState.qrCode.bothArePresent()
+        }
+        onClick={exportExam}
+        text={exportStatus === RequestStatus.WAITING ? "Dokument exportieren" : ""}
+      >
+        {exportStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
       </PrimaryButton>
     </div>
   );

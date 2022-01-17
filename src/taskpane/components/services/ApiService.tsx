@@ -34,7 +34,12 @@ export default class ApiService {
           response
             .json()
             .then((json) => {
-              console.error(`${method} ${url} returned code ${response.status}-${response.statusText}, body:`, json);
+              console.error(
+                `${method} ${url} returned code ${response.status}-${response.statusText}, body:`,
+                json,
+                "\nrequest body: ",
+                data
+              );
             })
             .catch();
           return Promise.reject(`${method} ${url} returned code ${response.status}-${response.statusText}`);

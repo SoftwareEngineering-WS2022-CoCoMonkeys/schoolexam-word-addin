@@ -1,4 +1,4 @@
-import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner } from "@fluentui/react";
+import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
 import { useState } from "react";
 import PdfService from "../services/PdfService";
@@ -58,8 +58,13 @@ export default function ConvertButton(_props: unknown): JSX.Element {
           <DefaultButton onClick={() => setConversionStatus(RequestStatus.IDLE)} text="Ok" />
         </DialogFooter>
       </Dialog>
-      <PrimaryButton id="convert-btn" className="margin-right1" onClick={convertToPdf}>
-        {conversionStatus === RequestStatus.WAITING ? <Spinner /> : "Konvertieren"}
+      <PrimaryButton
+        id="convert-btn"
+        className="margin-right1"
+        onClick={convertToPdf}
+        text={conversionStatus !== RequestStatus.WAITING ? "Konvertieren" : null}
+      >
+        {conversionStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
       </PrimaryButton>
     </div>
   );
