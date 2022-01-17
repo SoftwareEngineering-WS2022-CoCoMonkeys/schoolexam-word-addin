@@ -2,11 +2,12 @@ import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner
 import * as React from "react";
 import { useState } from "react";
 import "./ExportButton.scss";
-import ApiService from "../services/ApiService";
 import TemplateDTO from "../../../export_dto/TemplateDTO";
 import useTasks from "../state/TaskStore";
 import usePrep from "../state/PreparationStore";
 import Status from "../state/CompletionStatus";
+import ExamsRepository from "../services/OnlineExamsRepository";
+import ExportChecklist from "./ExportChecklist";
 
 enum ExportState {
   idle,
@@ -29,7 +30,7 @@ export default function ExportButton(_props: unknown): JSX.Element {
 
     const exportData = new TemplateDTO(prepState.taskPdf, taskState.taskList.assembleDTO());
     try {
-      await ApiService.postExamPdf(prepState.selectedExam.id, exportData);
+      await ExamsRepository.setTaskPdf(prepState.selectedExam.id, exportData);
       setExportState(ExportState.success);
     } catch (e) {
       setExportState(ExportState.error);
@@ -53,6 +54,7 @@ export default function ExportButton(_props: unknown): JSX.Element {
           <DefaultButton onClick={() => setExportState(ExportState.idle)} text="Ok" />
         </DialogFooter>
       </Dialog>
+      <ExportChecklist></ExportChecklist>
       <PrimaryButton id="export-btn" disabled={!Status(prepState).isExportReady()} onClick={exportExam}>
         {exportState === ExportState.waiting ? <Spinner /> : "Dokument exportieren"}
       </PrimaryButton>
