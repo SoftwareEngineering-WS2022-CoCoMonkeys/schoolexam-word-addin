@@ -10,10 +10,6 @@ const preparationStore = createStore({
   initialState: <IPreparationState>{
     // Load from Word "storage"
     selectedExam: null,
-    displayLogin: false,
-    // TODO make coincide
-    loggedIn: false,
-    authData: null,
     qrCode: new QrCode(),
     taskPdf: null,
     build: null,
@@ -28,27 +24,11 @@ const preparationStore = createStore({
         });
       };
     },
-    setLoggedIn(loggedIn = true) {
-      return ({ setState, getState }) => {
-        setState({
-          ...getState(),
-          loggedIn: loggedIn,
-        });
-      };
-    },
     setTaskPdf(taskPdf: string) {
       return ({ setState, getState }) => {
         setState({
           ...getState(),
           taskPdf: taskPdf,
-        });
-      };
-    },
-    setDisplayLogin(displayLogin: boolean) {
-      return ({ setState, getState }) => {
-        setState({
-          ...getState(),
-          displayLogin: displayLogin,
         });
       };
     },
@@ -65,15 +45,6 @@ const preparationStore = createStore({
         setState({
           ...getState(),
           qrCode: await getState().qrCode.setTitleCcIdAndCopy(titleCcId),
-        });
-      };
-    },
-
-    setAuthData(authData: Authentication) {
-      return ({ setState, getState }) => {
-        setState({
-          ...getState(),
-          authData: authData,
         });
       };
     },

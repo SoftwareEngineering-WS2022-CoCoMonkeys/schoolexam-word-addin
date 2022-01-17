@@ -6,9 +6,6 @@ import Build from "../../../import_dto/Build";
 export default interface IPreparationState {
   selectedExam: Exam | null;
   qrCode: QrCode;
-  displayLogin: boolean;
-  authData: Authentication;
-  loggedIn: boolean;
   taskPdf: string | null;
   build: Build | null;
 }

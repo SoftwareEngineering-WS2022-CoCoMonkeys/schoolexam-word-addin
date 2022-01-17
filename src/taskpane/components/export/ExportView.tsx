@@ -6,11 +6,13 @@ import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
 import BuildButton from "./BuildButton";
 import ConvertButton from "./ConvertButton";
 import usePrep from "../state/PreparationStore";
+import { useLoggedIn } from "../state/AuthenticationStore";
 
 export default function ExportView(_props: unknown): JSX.Element {
-  const [prepState, prepActions] = usePrep();
+  const [prepState] = usePrep();
+  const [loggedIn] = useLoggedIn();
 
-  const lockedContent = prepState.loggedIn ? (
+  const lockedContent = loggedIn ? (
     <>
       <ExamList />
       <ExportButton />

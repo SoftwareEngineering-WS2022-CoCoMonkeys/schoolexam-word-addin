@@ -8,11 +8,13 @@ import usePrep from "../state/PreparationStore";
 import ExamsRepository from "../services/OnlineExamsRepository";
 import ExportChecklist from "./ExportChecklist";
 import RequestStatus from "../state/RequestStatus";
+import { useLoggedIn } from "../state/AuthenticationStore";
 
 export default function ExportButton(_props: unknown): JSX.Element {
   // GLOBAL STATE
   const [taskState] = useTasks();
   const [prepState] = usePrep();
+  const [loggedIn] = useLoggedIn();
 
   // LOCAL STATE
   const [exportStatus, setExportStatus] = useState(RequestStatus.IDLE);
@@ -53,12 +55,10 @@ export default function ExportButton(_props: unknown): JSX.Element {
           <DefaultButton onClick={() => setExportStatus(RequestStatus.IDLE)} text="Ok" />
         </DialogFooter>
       </Dialog>
-      <ExportChecklist></ExportChecklist>
+      <ExportChecklist />
       <PrimaryButton
         id="export-btn"
-        disabled={
-          !prepState.loggedIn || !prepState.taskPdf || !prepState.selectedExam || !prepState.qrCode.bothArePresent()
-        }
+        disabled={loggedIn || !prepState.taskPdf || !prepState.selectedExam || !prepState.qrCode.bothArePresent()}
         onClick={exportExam}
         text={exportStatus === RequestStatus.WAITING ? "Dokument exportieren" : ""}
       >

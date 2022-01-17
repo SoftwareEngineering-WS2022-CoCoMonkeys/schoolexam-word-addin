@@ -7,6 +7,7 @@ import LoginForm from "./login/LoginForm";
 import Header from "./taskpaneDesign/Header";
 import useTasks from "./state/TaskStore";
 import usePrep from "./state/PreparationStore";
+import useAuth from "./state/AuthenticationStore";
 
 /* global Word, require */
 
@@ -18,6 +19,7 @@ export interface AppProps {
 export default function App(props: AppProps): JSX.Element {
   const [prepState, prepActions] = usePrep();
   const [taskState, taskActions] = useTasks();
+  const [authState] = useAuth();
 
   const { title, isOfficeInitialized } = props;
 
@@ -36,7 +38,7 @@ export default function App(props: AppProps): JSX.Element {
     prepActions.loadQrCode();
   }, []);
 
-  const mainContent = prepState.displayLogin ? <LoginForm /> : <Navbar />;
+  const mainContent = authState.displayLogin ? <LoginForm /> : <Navbar />;
 
   return (
     <div className="center-items column-flex">
