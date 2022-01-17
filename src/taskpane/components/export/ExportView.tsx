@@ -7,7 +7,6 @@ import BuildButton from "./BuildButton";
 import ConvertButton from "./ConvertButton";
 import usePrep from "../state/PreparationStore";
 import ConvertDownloadButton from "./ConvertDownloadButton";
-import BuildDownloadButton from "./BuildDownloadButton";
 
 export default function ExportView(_props: unknown): JSX.Element {
   const [prepState, prepActions] = usePrep();
@@ -20,7 +19,6 @@ export default function ExportView(_props: unknown): JSX.Element {
       </div>
       <div className="center-items row-flex two-btn-container margin-top1">
         <BuildButton />
-        <BuildDownloadButton />
       </div>
     </div>
   ) : (

@@ -11,42 +11,39 @@ import * as React from "react";
 import { useState } from "react";
 import "./BuildButton.scss";
 import usePrep from "../state/PreparationStore";
-import Status from "../state/CompletionStatus";
 import { ExamStatus } from "../../../import_dto/Exam";
 import ExamsRepository from "../services/OnlineExamsRepository";
-
-enum BuildState {
-  idle,
-  waiting,
-  error,
-  success,
-}
-
-enum CleanState {
-  idle,
-  waiting,
-  error,
-  success,
-}
+import RequestStatus from "../state/RequestStatus";
+import downloadFileBase64 from "../services/DownloadService";
 
 export default function BuildButton(_props: unknown): JSX.Element {
-  const [buildState, setBuildState] = useState(BuildState.idle);
-  const [cleanState, setCleanState] = useState(CleanState.idle);
-  const [dialogVisible, setDialogVisible] = useState(false);
+  // GLOBAL STATE
   const [prepState, prepActions] = usePrep();
 
+  // LOCAL STATE
+  const [buildStatus, setBuildStatus] = useState(RequestStatus.IDLE);
+  const [cleanState, setCleanState] = useState(RequestStatus.IDLE);
+  const [dialogVisible, setDialogVisible] = useState(false);
+
   async function triggerBuild() {
-    setBuildState(BuildState.waiting);
-    const build = await ExamsRepository.getBuild(prepState.selectedExam.id);
-    prepActions.setBuild(build);
-    setBuildState(BuildState.success);
-    setDialogVisible(false);
+    setBuildStatus(RequestStatus.WAITING);
+    try {
+      const build = await ExamsRepository.getBuild(prepState.selectedExam.id);
+      prepActions.setBuild(build);
+      setBuildStatus(RequestStatus.SUCCESS);
+
+      // download
+      downloadFileBase64("application/pdf", "build.pdf", prepState.build.pdfFile);
+    } catch (e) {
+      console.warn("Building failed with reason:", e);
+      setBuildStatus(RequestStatus.ERROR);
+    }
   }
 
   async function triggerClean() {
-    setCleanState(CleanState.waiting);
+    setCleanState(RequestStatus.WAITING);
     await ExamsRepository.clean(prepState.selectedExam.id);
-    setCleanState(CleanState.success);
+    setCleanState(RequestStatus.SUCCESS);
   }
 
   const buildDialogContentProps: IDialogContentProps = {
@@ -58,7 +55,7 @@ export default function BuildButton(_props: unknown): JSX.Element {
   const cleanButton =
     prepState.selectedExam != null && prepState.selectedExam.status === ExamStatus.SubmissionReady ? (
       <PrimaryButton className="margin-top1" onClick={triggerClean}>
-        {cleanState === CleanState.waiting ? <Spinner /> : "Kompilieren"}
+        {cleanState === RequestStatus.WAITING ? <Spinner /> : "Kompilieren"}
       </PrimaryButton>
     ) : (
       ""
@@ -74,7 +71,7 @@ export default function BuildButton(_props: unknown): JSX.Element {
         <DialogFooter>
           {cleanButton}
           <DefaultButton className="margin-top1" onClick={triggerBuild}>
-            {buildState === BuildState.waiting ? <Spinner /> : "Kompilieren"}
+            {buildStatus === RequestStatus.WAITING ? <Spinner /> : "Kompilieren"}
           </DefaultButton>
         </DialogFooter>
       </Dialog>
@@ -82,9 +79,13 @@ export default function BuildButton(_props: unknown): JSX.Element {
         id="build-dialog-btn"
         className="margin-right1"
         onClick={() => setDialogVisible(true)}
-        disabled={!Status(prepState).isBuildReady()}
+        disabled={
+          (prepState.selectedExam?.status !== ExamStatus.BuildReady &&
+            prepState.selectedExam?.status !== ExamStatus.SubmissionReady) ??
+          true
+        }
       >
-        {buildState === BuildState.waiting ? <Spinner /> : "Kompilieren"}
+        {buildStatus === RequestStatus.WAITING ? <Spinner /> : "Kompilieren"}
       </PrimaryButton>
     </div>
   );

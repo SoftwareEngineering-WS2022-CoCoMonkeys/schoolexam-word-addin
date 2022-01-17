@@ -5,21 +5,19 @@ import PdfService from "../services/PdfService";
 import "./ConvertButton.scss";
 import useTasks from "../state/TaskStore";
 import usePrep from "../state/PreparationStore";
-
-enum ConversionState {
-  idle,
-  waiting,
-  error,
-  success,
-}
+import RequestStatus from "../state/RequestStatus";
+import downloadFileBase64 from "../services/DownloadService";
 
 export default function ConvertButton(_props: unknown): JSX.Element {
-  const [conversionState, setConversionState] = useState(ConversionState.idle);
-  const [prepState, prepActions] = usePrep();
+  // GLOBAL STATE
   const [taskState, taskActions] = useTasks();
+  const [prepState, prepActions] = usePrep();
+
+  // LOCAL STATE
+  const [conversionStatus, setConversionStatus] = useState(RequestStatus.IDLE);
 
   async function convertToPdf() {
-    setConversionState(ConversionState.waiting);
+    setConversionStatus(RequestStatus.WAITING);
 
     // remove and re-insert linkContentControls
     await taskState.taskList.removeLinkContentControlsAsync();
@@ -29,10 +27,13 @@ export default function ConvertButton(_props: unknown): JSX.Element {
     try {
       const pdfBase64: string = await PdfService.getDocument();
       prepActions.setTaskPdf(pdfBase64);
-      setConversionState(ConversionState.success);
+      setConversionStatus(RequestStatus.SUCCESS);
+
+      // download pdf
+      downloadFileBase64("application/pdf", "exam.pdf", pdfBase64);
     } catch (e) {
-      console.error("PDF conversion failed with error:", e);
-      setConversionState(ConversionState.error);
+      console.warn("PDF conversion failed with reason:", e);
+      setConversionStatus(RequestStatus.ERROR);
     } finally {
       // remove link content controls
       await taskState.taskList.removeLinkContentControlsAsync();
@@ -49,16 +50,16 @@ export default function ConvertButton(_props: unknown): JSX.Element {
   return (
     <div>
       <Dialog
-        hidden={conversionState !== ConversionState.error}
-        onDismiss={() => setConversionState(ConversionState.idle)}
+        hidden={conversionStatus !== RequestStatus.ERROR}
+        onDismiss={() => setConversionStatus(RequestStatus.IDLE)}
         dialogContentProps={errorDialogContentProps}
       >
         <DialogFooter>
-          <DefaultButton onClick={() => setConversionState(ConversionState.idle)} text="Ok" />
+          <DefaultButton onClick={() => setConversionStatus(RequestStatus.IDLE)} text="Ok" />
         </DialogFooter>
       </Dialog>
       <PrimaryButton id="convert-btn" className="margin-right1" onClick={convertToPdf}>
-        {conversionState === ConversionState.waiting ? <Spinner /> : "Konvertieren"}
+        {conversionStatus === RequestStatus.WAITING ? <Spinner /> : "Konvertieren"}
       </PrimaryButton>
     </div>
   );

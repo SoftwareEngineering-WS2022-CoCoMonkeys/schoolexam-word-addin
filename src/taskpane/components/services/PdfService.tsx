@@ -16,6 +16,7 @@ export default class PdfService {
     const sliceCount = result.value.sliceCount;
     // The Office API gives us the PDF document in 4MB slices.
     // We have to concatenate them ourselves.
+    console.debug(`Processing ${sliceCount} slices`);
     for (let i = 0; i < sliceCount; i++) {
       promises.push(
         new Promise<any[]>((resolve, reject) => {

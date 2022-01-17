@@ -5,27 +5,29 @@ import Exam from "../../../import_dto/Exam";
 import "./ExamList.scss";
 import usePrep from "../state/PreparationStore";
 import ExamsRepository from "../services/OnlineExamsRepository";
-
-export enum ExamsState {
-  idle,
-  waiting,
-  error,
-  success,
-}
+import RequestStatus from "../state/RequestStatus";
 
 export default function ExamList(_props: unknown): JSX.Element {
-  const [exams, setExams] = useState([]);
-  const [examsState, setExamsState] = useState(ExamsState.idle);
+  // GLOBAL STATE
   const [prepState, prepActions] = usePrep();
+
+  // LOCAL STATE
+  const [exams, setExams] = useState([]);
+  const [examsState, setExamsState] = useState(RequestStatus.IDLE);
 
   // retrieve Exams from backend
   useEffect(() => {
-    setExamsState(ExamsState.waiting);
-    ExamsRepository.getExams().then((result) => {
-      setExams(result);
-      setExamsState(ExamsState.success);
-      console.debug("Received exams", exams);
-    });
+    setExamsState(RequestStatus.WAITING);
+    ExamsRepository.getExams()
+      .then((result) => {
+        setExams(result);
+        setExamsState(RequestStatus.SUCCESS);
+        console.debug("Received exams", exams);
+      })
+      .catch((reason) => {
+        console.warn("Exams retrieval failed with reason:", reason);
+        setExamsState(RequestStatus.ERROR);
+      });
   }, []);
 
   // custom render function (anonymous component) for a single exam
@@ -52,7 +54,7 @@ export default function ExamList(_props: unknown): JSX.Element {
   }
 
   const examList =
-    examsState !== ExamsState.waiting ? (
+    examsState !== RequestStatus.WAITING ? (
       <List id="exam-list" items={exams} onRenderCell={onRenderExamCell} />
     ) : (
       <Spinner />
