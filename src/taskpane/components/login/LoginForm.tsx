@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { MessageBar, MessageBarType, PrimaryButton, Spinner, SpinnerSize, Stack, TextField } from "@fluentui/react";
+import { MessageBar, MessageBarType, PrimaryButton, Spinner, SpinnerSize, TextField } from "@fluentui/react";
 import "./LoginForm.scss";
 import usePrep from "../state/PreparationStore";
 import AuthentificationRepository from "../services/OnlineAuthenticationRepository";
@@ -65,7 +65,7 @@ export default function LoginForm(_props: unknown): JSX.Element {
   return (
     <div id="login-form">
       {loginMessage}
-      <Stack>
+      <form>
         <TextField
           placeholder="Nutzername"
           label="Nutzername"
@@ -77,10 +77,15 @@ export default function LoginForm(_props: unknown): JSX.Element {
           label="Passwort"
           onChange={(event) => setPassword(event.currentTarget.value)}
         />
-        <PrimaryButton id="submit-login-btn" className="margin-top1" onClick={submitLogin}>
-          {loginState === RequestStatus.WAITING ? <Spinner size={SpinnerSize.small} /> : "Einloggen"}
+        <PrimaryButton
+          id="submit-login-btn"
+          className="margin-top1"
+          onClick={submitLogin}
+          text={loginState !== RequestStatus.WAITING ? "Einloggen" : undefined}
+        >
+          {loginState === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
         </PrimaryButton>
-      </Stack>
+      </form>
     </div>
   );
 }

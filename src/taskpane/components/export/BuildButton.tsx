@@ -6,6 +6,7 @@ import {
   IDialogContentProps,
   PrimaryButton,
   Spinner,
+  SpinnerSize,
 } from "@fluentui/react";
 import * as React from "react";
 import { useState } from "react";
@@ -84,8 +85,9 @@ export default function BuildButton(_props: unknown): JSX.Element {
             prepState.selectedExam?.status !== ExamStatus.SubmissionReady) ??
           true
         }
+        text={buildStatus !== RequestStatus.WAITING ? "Kompilieren" : ""}
       >
-        {buildStatus === RequestStatus.WAITING ? <Spinner /> : "Kompilieren"}
+        {buildStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
       </PrimaryButton>
     </div>
   );

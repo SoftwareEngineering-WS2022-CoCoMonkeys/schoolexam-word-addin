@@ -90,6 +90,7 @@ export default class Task implements ITask {
   async prepareForDeletion(context: Word.RequestContext): Promise<void> {
     // delete associated content control
     const contentControl = this.getAssociatedContentControl(context);
+    contentControl.cannotDelete = false;
 
     // keep content
     contentControl.delete(true);

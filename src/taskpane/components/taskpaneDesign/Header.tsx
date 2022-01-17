@@ -20,7 +20,7 @@ export default function Header(_props: unknown): JSX.Element {
       id="login-btn-checked"
       className="margin-top1"
       iconProps={userIconChecked}
-      //text={prepState.authData.user.username}
+      text={prepState?.authData?.user?.username ?? ""}
     />
   ) : (
     <ActionButton

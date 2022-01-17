@@ -22,7 +22,6 @@ export default function ExamList(_props: unknown): JSX.Element {
       .then((result) => {
         setExams(result);
         setExamsState(RequestStatus.SUCCESS);
-        console.debug("Received exams", exams);
       })
       .catch((reason) => {
         console.warn("Exams retrieval failed with reason:", reason);
