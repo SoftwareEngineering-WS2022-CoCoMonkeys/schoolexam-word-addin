@@ -4,69 +4,61 @@ import { MessageBar, MessageBarType, PrimaryButton, Spinner, SpinnerSize, Stack,
 import "./LoginForm.scss";
 import usePrep from "../state/PreparationStore";
 import AuthentificationRepository from "../services/OnlineAuthenticationRepository";
-
-enum LoginState {
-  idle,
-  waiting,
-  success,
-  invalid,
-  error,
-}
+import RequestStatus from "../state/RequestStatus";
 
 export default function LoginForm(_props: unknown): JSX.Element {
-  // global state
+  // GLOBAL STATE
   const [prepState, prepActions] = usePrep();
 
-  // local state
+  // LOCAL STATE
   const [username, setUsername] = useState(null as string);
   const [password, setPassword] = useState(null as string);
-  const [loginState, setLoginState] = useState(LoginState.idle);
+  const [loginState, setLoginState] = useState(RequestStatus.IDLE);
 
   async function submitLogin() {
-    setLoginState(LoginState.waiting);
+    setLoginState(RequestStatus.WAITING);
     try {
       const authData = await AuthentificationRepository.login(username, password);
       prepActions.setAuthData(authData);
-      setLoginState(LoginState.success);
+      setLoginState(RequestStatus.SUCCESS);
       setTimeout(() => {
         // Return to main screen
         prepActions.setLoggedIn(true);
-        setLoginState(LoginState.idle);
+        setLoginState(RequestStatus.IDLE);
         prepActions.setDisplayLogin(false);
       }, 1000);
     } catch (e) {
       console.error(e);
-      setLoginState(LoginState.error);
+      setLoginState(RequestStatus.ERROR);
     }
   }
 
   let loginMessage: unknown = "";
   switch (loginState) {
-    case LoginState.success:
+    case RequestStatus.SUCCESS:
       loginMessage = (
         <MessageBar
           messageBarType={MessageBarType.success}
           isMultiline={true}
-          onDismiss={() => setLoginState(LoginState.idle)}
+          onDismiss={() => setLoginState(RequestStatus.IDLE)}
           dismissButtonAriaLabel="Close"
         >
           Erfolgreich eingeloggt!
         </MessageBar>
       );
       break;
-    case LoginState.invalid:
+    case RequestStatus.ERROR:
       loginMessage = (
         <MessageBar
           messageBarType={MessageBarType.error}
           isMultiline={true}
-          onDismiss={() => setLoginState(LoginState.idle)}
+          onDismiss={() => setLoginState(RequestStatus.IDLE)}
           dismissButtonAriaLabel="Close"
         >
           Ungültige Kombination aus Nutzername und Passwort
         </MessageBar>
       );
       break;
-    case LoginState.error:
     default:
       loginMessage = "";
   }
@@ -86,7 +78,7 @@ export default function LoginForm(_props: unknown): JSX.Element {
           onChange={(event) => setPassword(event.currentTarget.value)}
         />
         <PrimaryButton id="submit-login-btn" className="margin-top1" onClick={submitLogin}>
-          {loginState === LoginState.waiting ? <Spinner size={SpinnerSize.small} /> : "Einloggen"}
+          {loginState === RequestStatus.WAITING ? <Spinner size={SpinnerSize.small} /> : "Einloggen"}
         </PrimaryButton>
       </Stack>
     </div>

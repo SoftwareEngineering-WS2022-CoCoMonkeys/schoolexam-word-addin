@@ -1,6 +1,6 @@
 export default class Build {
   count: number;
-  pdfFile: number;
+  pdfFile: string;
   qrCodePdfFile: string;
 
   static fromJson(json: string): Build {

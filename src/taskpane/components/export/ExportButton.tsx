@@ -8,21 +8,18 @@ import usePrep from "../state/PreparationStore";
 import Status from "../state/CompletionStatus";
 import ExamsRepository from "../services/OnlineExamsRepository";
 import ExportChecklist from "./ExportChecklist";
-
-enum ExportState {
-  idle,
-  waiting,
-  error,
-  success,
-}
+import RequestStatus from "../state/RequestStatus";
 
 export default function ExportButton(_props: unknown): JSX.Element {
-  const [exportState, setExportState] = useState(ExportState.idle);
+  // GLOBAL STATE
   const [taskState] = useTasks();
   const [prepState] = usePrep();
 
+  // LOCAL STATE
+  const [exportStatus, setExportStatus] = useState(RequestStatus.IDLE);
+
   async function exportExam() {
-    setExportState(ExportState.waiting);
+    setExportStatus(RequestStatus.WAITING);
 
     // remove and re-insert linkContentControls
     await taskState.taskList.removeLinkContentControlsAsync();
@@ -31,9 +28,12 @@ export default function ExportButton(_props: unknown): JSX.Element {
     const exportData = new TemplateDTO(prepState.taskPdf, taskState.taskList.assembleDTO());
     try {
       await ExamsRepository.setTaskPdf(prepState.selectedExam.id, exportData);
-      setExportState(ExportState.success);
+      setExportStatus(RequestStatus.SUCCESS);
+
+      // TODO reload exams
     } catch (e) {
-      setExportState(ExportState.error);
+      console.warn("Export failed with reason", e);
+      setExportStatus(RequestStatus.ERROR);
     }
   }
 
@@ -46,17 +46,17 @@ export default function ExportButton(_props: unknown): JSX.Element {
   return (
     <div>
       <Dialog
-        hidden={exportState !== ExportState.error}
-        onDismiss={() => setExportState(ExportState.idle)}
+        hidden={exportStatus !== RequestStatus.ERROR}
+        onDismiss={() => setExportStatus(RequestStatus.IDLE)}
         dialogContentProps={errorDialogContentProps}
       >
         <DialogFooter>
-          <DefaultButton onClick={() => setExportState(ExportState.idle)} text="Ok" />
+          <DefaultButton onClick={() => setExportStatus(RequestStatus.IDLE)} text="Ok" />
         </DialogFooter>
       </Dialog>
       <ExportChecklist></ExportChecklist>
       <PrimaryButton id="export-btn" disabled={!Status(prepState).isExportReady()} onClick={exportExam}>
-        {exportState === ExportState.waiting ? <Spinner /> : "Dokument exportieren"}
+        {exportStatus === RequestStatus.WAITING ? <Spinner /> : "Dokument exportieren"}
       </PrimaryButton>
     </div>
   );
