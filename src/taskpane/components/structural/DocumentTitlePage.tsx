@@ -3,13 +3,15 @@ import * as React from "react";
 import "./DocumentTitlePage.scss";
 import { getTitlePlaceHolderBase64 } from "./StructuralUtil";
 import CalendarInlineOverlaidMonth from "./Calendar";
-import ContentControlAppearance = Word.ContentControlAppearance;
 import { useQrCode } from "../state/DocumentStore";
+import ContentControlAppearance = Word.ContentControlAppearance;
 
 export default function DocumentTitlePage(_props: unknown): JSX.Element {
   const [examDate, setExamDate] = React.useState(new Date());
+
   const defaultCourseName = "Mathematik Klasse 8a";
   const [courseName, setCourseName] = React.useState(defaultCourseName);
+
   const defaultExamTitle = "1. Schulaufgabe";
   const [examTitle, setExamTitle] = React.useState(defaultExamTitle);
   const [qrCodeState, qrCodeActions] = useQrCode();

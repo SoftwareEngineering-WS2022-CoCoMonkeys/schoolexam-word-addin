@@ -27,21 +27,13 @@ export default function TaskTable(_props: unknown): JSX.Element {
   const [activeEdit, setActiveEdit] = useState(null as ActiveEdit);
   const [deleteMode, setDeleteMode] = useState(false);
 
-  function editTask(taskId: string, fieldName: string, newValue: string | number): void {
-    taskListActions.editTask(taskId, fieldName, newValue);
-  }
-
-  function updateTaskTitles() {
-    taskListActions.updateTaskTitles();
-  }
-
   function editableColumnRenderer(fieldName: string) {
     // eslint-disable-next-line react/display-name
     return (task: Task) => {
       function setActiveEditOnEnter(event) {
         if (event.key == "Enter") {
           event.preventDefault();
-          editTask(task.taskId, fieldName, event.currentTarget.value);
+          taskListActions.editTask(task.taskId, fieldName, event.currentTarget.value);
           setActiveEdit(null);
         }
       }
@@ -111,7 +103,7 @@ export default function TaskTable(_props: unknown): JSX.Element {
         items={taskList.tasks}
         onRenderRow={renderRow}
       />
-      <ActionButton iconProps={updateIcon} onClick={updateTaskTitles}>
+      <ActionButton iconProps={updateIcon} onClick={taskListActions.updateTaskTitles}>
         Reihenfolge zurücksetzen
       </ActionButton>
     </div>

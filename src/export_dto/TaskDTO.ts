@@ -1,10 +1,12 @@
+import Task from "../word/Task";
+
 export default class TaskDTO {
-  taskId: string;
+  id: string;
   title: string;
   maxPoints: number;
 
-  constructor(taskId: string, title: string, maxPoints: number) {
-    this.taskId = taskId;
+  constructor(id: string, title: string, maxPoints: number) {
+    this.id = id;
     this.title = title;
     this.maxPoints = maxPoints;
   }

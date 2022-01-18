@@ -14,7 +14,11 @@ export default function ExportView(_props: unknown): JSX.Element {
   const lockedContent = loggedIn ? (
     <>
       <ExamList
-        unselectableExams={(exam) => exam.status !== ExamStatus.Planned && exam.status !== ExamStatus.BuildReady}
+        unselectableExams={(exam) =>
+          exam.status !== ExamStatus.Planned &&
+          exam.status !== ExamStatus.BuildReady &&
+          exam.status !== ExamStatus.SubmissionReady
+        }
       />
       <ExportButton />
       <BuildButton />

@@ -1,5 +1,5 @@
 import { createHook, createStore } from "react-sweet-state";
-import Exam from "../../../import_dto/Exam";
+import Exam, { ExamStatus } from "../../../import_dto/Exam";
 import Build from "../../../import_dto/Build";
 import RequestStatus from "./RequestStatus";
 import PdfService from "../services/PdfService";
@@ -93,8 +93,11 @@ const build = () => {
       downloadFileBase64("application/pdf", "build.pdf", build.pdfFile);
       // download QR code etiquettes
       downloadFileBase64("application/pdf", "qrcodes.pdf", build.qrCodePdfFile);
+
+      // Reload exams to get most recent state
+      dispatch(loadExams());
     } catch (e) {
-      console.warn("Building failed with reason:", e);
+      console.warn("Build failed with reason:", e);
       dispatch(setBuildStatus(RequestStatus.ERROR));
     }
   };
@@ -103,6 +106,12 @@ const build = () => {
 const exportTaskPdf = (tasks: TaskDTO[]) => {
   return async ({ getState, dispatch }) => {
     dispatch(setExportStatus(RequestStatus.WAITING));
+
+    // If the exam has been built already (is SubmissinReady), we have to clean it first
+    if (getState().selectedExam.status === ExamStatus.SubmissionReady) {
+      console.debug("Cleaning exam before rebuild...");
+      await dispatch(clean());
+    }
 
     const exportData = new TemplateDTO(getState().taskPdf, tasks);
     try {

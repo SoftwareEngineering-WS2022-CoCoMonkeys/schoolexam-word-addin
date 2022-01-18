@@ -22,28 +22,36 @@ export default class ApiService {
       // default to JSON
       config.headers = { ...config.headers, "Content-Type": "application/json" };
     }
-    return fetch(this.BASE_URL + url, config).then((response) => {
-      switch (response.status) {
-        case 200:
-        case 201:
-        case 204: {
-          console.debug(`${method} ${url} returned code ${response.status}-${response.statusText}`);
-          return response;
-        }
-        default:
-          response
-            .json()
-            .then((json) => {
-              console.error(
-                `${method} ${url} returned code ${response.status}-${response.statusText}, body:`,
-                json,
-                "\nrequest body: ",
+    return fetch(this.BASE_URL + url, config)
+      .catch((reason) => {
+        return Promise.reject(`${method} ${url} failed\nreason: ${reason}\nrequest body: ${JSON.stringify(data)}`);
+      })
+      .then((response) => {
+        switch (response.status) {
+          case 200:
+          case 201:
+          case 204: {
+            console.debug(`${method} ${url} returned code ${response.status}-${response.statusText}`);
+            return response;
+          }
+          default:
+            response
+              .json()
+              .then((json) => {
+                console.error(
+                  `${method} ${url} returned code ${response.status}-${response.statusText}, body:`,
+                  json,
+                  "\nrequest body: ",
+                  data
+                );
+              })
+              .catch();
+            return Promise.reject(
+              `${method} ${url} returned code ${response.status}-${response.statusText}\nrequest body: ${JSON.stringify(
                 data
-              );
-            })
-            .catch();
-          return Promise.reject(`${method} ${url} returned code ${response.status}-${response.statusText}`);
-      }
-    });
+              )}`
+            );
+        }
+      });
   }
 }

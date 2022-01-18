@@ -17,12 +17,8 @@ export default function ExportButton(_props: unknown): JSX.Element {
   const errorDialogContentProps = {
     type: DialogType.normal,
     title: "Export gescheitert",
-    subText: "Der Export ist fehlgeschlagen",
+    subText: "Der Export ist fehlgeschlagen.",
   };
-
-  useEffect(() => {
-    console.log(documentState);
-  });
 
   return (
     <div>

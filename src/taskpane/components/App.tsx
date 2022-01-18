@@ -7,6 +7,7 @@ import LoginForm from "./login/LoginForm";
 import Header from "./taskpaneDesign/Header";
 import useAuth from "./state/AuthenticationStore";
 import useDocument from "./state/DocumentStore";
+import { v4 as uuidv4 } from "uuid";
 
 /* global Word, require */
 
@@ -32,6 +33,9 @@ export default function App(props: AppProps): JSX.Element {
   }
 
   useEffect(() => {
+    for (let i = 0; i < 10; i++) {
+      console.log(uuidv4());
+    }
     documentActions.load();
   }, []);
 
