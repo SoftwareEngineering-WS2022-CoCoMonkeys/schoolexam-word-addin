@@ -18,7 +18,7 @@ import Task from "../../../word/Task";
 import { useTasks } from "../state/DocumentStore";
 
 export interface ActiveEdit {
-  taskId: string;
+  id: string;
   fieldName: string;
 }
 
@@ -33,19 +33,16 @@ export default function TaskTable(_props: unknown): JSX.Element {
       function setActiveEditOnEnter(event) {
         if (event.key == "Enter") {
           event.preventDefault();
-          taskListActions.editTask(task.taskId, fieldName, event.currentTarget.value);
+          taskListActions.editTask(task.id, fieldName, event.currentTarget.value);
           setActiveEdit(null);
         }
       }
 
-      if (activeEdit && activeEdit.taskId === task.taskId && fieldName === activeEdit.fieldName) {
+      if (activeEdit && activeEdit.id === task.id && fieldName === activeEdit.fieldName) {
         return <TextField defaultValue={task[fieldName]} onKeyPress={setActiveEditOnEnter} />;
       } else {
         return (
-          <div
-            onClick={() => task.jumpToAsync()}
-            onDoubleClick={() => setActiveEdit({ taskId: task.taskId, fieldName })}
-          >
+          <div onClick={() => task.jumpToAsync()} onDoubleClick={() => setActiveEdit({ id: task.id, fieldName })}>
             {task[fieldName]}
           </div>
         );

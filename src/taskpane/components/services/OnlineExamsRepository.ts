@@ -1,8 +1,10 @@
-import Exam from "../../../import_dto/Exam";
-import Build from "../../../import_dto/Build";
-import TemplateDTO from "../../../export_dto/TemplateDTO";
+import Exam from "../../../model/Exam";
+import Build from "../../../model/Build";
 import ApiService, { HttpMethod } from "./ApiService";
 import IExamsRepository from "./IExamsRepository";
+import BuildDTO from "../../../dto/BuildDTO";
+import TemplateDTO from "../../../dto/TemplateDTO";
+import ITaskList from "../../../word/ITaskList";
 
 class OnlineExamsRepository implements IExamsRepository {
   getExams(): Promise<Exam[]> {
@@ -14,10 +16,11 @@ class OnlineExamsRepository implements IExamsRepository {
   getBuild(examId: string): Promise<Build> {
     return ApiService.request(HttpMethod.POST, `/Exam/${examId}/Build`)
       .then((response) => response.json())
-      .then((json) => Build.fromJson(JSON.stringify(json)));
+      .then((json) => BuildDTO.fromJson(JSON.stringify(json)).toModel());
   }
 
-  setTaskPdf(examId: string, data: TemplateDTO): Promise<Response> {
+  setTaskPdf(examId: string, taskPdf: string, taskList: ITaskList): Promise<Response> {
+    const data = TemplateDTO.fromModel(taskPdf, taskList);
     return ApiService.request(HttpMethod.POST, `/Exam/${examId}/UploadTaskPdf`, data);
   }
 

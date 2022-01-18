@@ -1,3 +1,5 @@
+import Participant from "./Participant";
+
 export default class Exam {
   readonly id: string;
   readonly status: string;

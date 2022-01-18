@@ -2,7 +2,7 @@ import { createHook, createStore } from "react-sweet-state";
 import IAuthenticationState from "./IAuthenticationState";
 import RequestStatus from "./RequestStatus";
 import AuthentificationRepository from "../services/OnlineAuthenticationRepository";
-import Authentication from "../../../import_dto/Authentication";
+import Authentication from "../../../model/Authentication";
 
 // ACTIONS
 const setDisplayLoginPage = (displayLogin: boolean) => {

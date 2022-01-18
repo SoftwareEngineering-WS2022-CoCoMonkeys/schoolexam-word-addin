@@ -7,19 +7,17 @@ import useDocument from "../state/ExamsStore";
 
 export default function ConvertButton(_props: unknown): JSX.Element {
   // GLOBAL STATE
-  const [taskList] = useTasks();
+  const [taskList, taskActions] = useTasks();
   const [examsState, examsActions] = useDocument();
 
   async function convertToPdf() {
     examsActions.setConversionStatus(RequestStatus.WAITING);
 
-    // remove and re-insert linkContentControls
-    await taskList.removeLinkContentControlsAsync();
-    await taskList.insertLinkContentControlsAsync();
-
+    // setup conversion
+    await taskActions.prepareForConversion();
     await examsActions.convertToPdf();
-    // remove link content controls
-    await taskList.removeLinkContentControlsAsync();
+    // tear down
+    await taskActions.afterConversion();
   }
 
   const errorDialogContentProps = {

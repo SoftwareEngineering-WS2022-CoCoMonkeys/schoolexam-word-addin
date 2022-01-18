@@ -1,55 +1,40 @@
-import TaskDTO from "../export_dto/TaskDTO";
-import ITask from "../model/ITask";
+import ITask from "./ITask";
 
 export default class Task implements ITask {
-  private readonly _taskId: string;
+  readonly id: string;
+  title: string;
+  maxPoints: number;
+
   private readonly _ccId: number;
   private _startLinkCcId: number | null;
   private _endLinkCcId: number | null;
 
-  constructor(taskId: string, title: string, maxPoints: number, ccId: number, linkCcId: number | null) {
-    this._taskId = taskId;
-    this._title = title;
-    this._maxPoints = maxPoints;
+  constructor(
+    id: string,
+    title: string,
+    maxPoints: number,
+    ccId: number,
+    startLinkCcId?: number | null,
+    endLinkCcId?: number | null
+  ) {
+    this.id = id;
+    this.title = title;
+    this.maxPoints = maxPoints;
     this._ccId = ccId;
-    this._startLinkCcId = linkCcId;
+    this._startLinkCcId = startLinkCcId;
+    this._endLinkCcId = endLinkCcId;
   }
 
-  private _title: string;
-
-  get title(): string {
-    return this._title;
+  jumpToAsync(): Promise<void> {
+    return Word.run(async (context) => this.jumpTo(context));
   }
 
-  private _maxPoints: number;
-
-  get maxPoints(): number {
-    return this._maxPoints;
-  }
-
-  get taskId(): string {
-    return this._taskId;
+  editAsync(fieldName: string, newValue: string | number): Promise<void> {
+    return Word.run(async (context) => this.edit(context, fieldName, newValue));
   }
 
   get ccId(): number {
     return this._ccId;
-  }
-
-  equals(other: unknown): boolean {
-    if (other == null) {
-      return false;
-    }
-    if (this === other) {
-      return true;
-    }
-    if (typeof this !== typeof other) {
-      return this == other;
-    }
-    return this._taskId === (other as Task).taskId;
-  }
-
-  assembleDTO(): TaskDTO {
-    return new TaskDTO(this._taskId, this._title, this._maxPoints);
   }
 
   async jumpTo(context: Word.RequestContext): Promise<void> {
@@ -60,20 +45,16 @@ export default class Task implements ITask {
     await context.sync();
   }
 
-  jumpToAsync(): Promise<void> {
-    return Word.run(async (context) => this.jumpTo(context));
-  }
-
   async edit(context: Word.RequestContext, fieldName: string, newValue: string | number): Promise<void> {
     switch (fieldName) {
       case "title": {
-        this._title = newValue as string;
+        this.title = newValue as string;
         const contentControl = this.getAssociatedContentControl(context);
         contentControl.title = newValue.toString();
         break;
       }
       case "maxPoints": {
-        this._maxPoints = newValue as number;
+        this.maxPoints = newValue as number;
         break;
       }
       default:
@@ -81,10 +62,6 @@ export default class Task implements ITask {
     }
 
     await context.sync();
-  }
-
-  async prepareForDeletionAsync(): Promise<void> {
-    return Word.run(async (context) => this.prepareForDeletion(context));
   }
 
   async prepareForDeletion(context: Word.RequestContext): Promise<void> {
@@ -96,10 +73,6 @@ export default class Task implements ITask {
     contentControl.delete(true);
 
     await context.sync();
-  }
-
-  getAssociatedContentControlAsync(): Promise<Word.ContentControl | null> {
-    return Word.run(async (context) => this.getAssociatedContentControl(context));
   }
 
   getAssociatedContentControl(context: Word.RequestContext): Word.ContentControl | null {
@@ -151,11 +124,11 @@ export default class Task implements ITask {
     // 2. Set title and tag accordingly
     startLinkContentControl.appearance = Word.ContentControlAppearance.hidden;
     startLinkContentControl.tag = "task-start-link";
-    startLinkContentControl.title = "task-start-link-" + this._taskId;
+    startLinkContentControl.title = "task-start-link-" + this.id;
 
     endLinkContentControl.appearance = Word.ContentControlAppearance.hidden;
     endLinkContentControl.tag = "task-end-link";
-    endLinkContentControl.title = "task-end-link-" + this._taskId;
+    endLinkContentControl.title = "task-end-link-" + this.id;
 
     /*
      3. Insert anchor element.
@@ -163,12 +136,12 @@ export default class Task implements ITask {
      Bookmarks, although preferable, are not exported properly.
      */
     startLinkContentControl.insertHtml(
-      `<a style="text-decoration: none; font-size:0.01em; transform: translate(-1px)" href="task-start-${this._taskId}">&nbsp;</a>`,
+      `<a style="text-decoration: none; font-size:0.01em; transform: translate(-1px)" href="task-start-${this.id}">&nbsp;</a>`,
       Word.InsertLocation.start
     );
 
     endLinkContentControl.insertHtml(
-      `<a style="text-decoration: none; font-size:0.01em; transform: translate(-1px)" href="task-end-${this._taskId}">&nbsp;</a>`,
+      `<a style="text-decoration: none; font-size:0.01em; transform: translate(-1px)" href="task-end-${this.id}">&nbsp;</a>`,
       Word.InsertLocation.end
     );
 

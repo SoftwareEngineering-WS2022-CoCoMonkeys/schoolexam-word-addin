@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect } from "react";
 import { List, MessageBar, MessageBarType, Spinner, SpinnerSize } from "@fluentui/react";
-import Exam from "../../../import_dto/Exam";
+import Exam from "../../../model/Exam";
 import "./ExamList.scss";
 import RequestStatus from "../state/RequestStatus";
 import useExams from "../state/ExamsStore";

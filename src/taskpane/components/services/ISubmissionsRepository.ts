@@ -1,5 +1,5 @@
-import SubmissionDTO from "../../../export_dto/SubmissionDTO";
+import Submission from "../../../model/Submission";
 
 export default interface ISubmissionsRepository {
-  uploadSubmission(examId: string, submission: SubmissionDTO): Promise<Response>;
+  uploadSubmission(submission: Submission): Promise<Response>;
 }

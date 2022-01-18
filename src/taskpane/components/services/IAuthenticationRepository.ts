@@ -1,4 +1,4 @@
-import Authentication from "../../../import_dto/Authentication";
+import Authentication from "../../../model/Authentication";
 
 export default interface IAuthentificationRepository {
   login(username: string, password: string): Promise<Authentication>;

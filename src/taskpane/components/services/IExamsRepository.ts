@@ -1,13 +1,13 @@
-import Exam from "../../../import_dto/Exam";
-import Build from "../../../import_dto/Build";
-import TemplateDTO from "../../../export_dto/TemplateDTO";
+import Exam from "../../../model/Exam";
+import Build from "../../../model/Build";
+import ITaskList from "../../../word/ITaskList";
 
 export default interface IExamsRepository {
   getExams(): Promise<Exam[]>;
 
   getBuild(examId: string): Promise<Build>;
 
-  setTaskPdf(examId: string, data: TemplateDTO): Promise<Response>;
+  setTaskPdf(examId: string, taskPdf: string, taskList: ITaskList): Promise<Response>;
 
   clean(examId: string): Promise<Response>;
 }
