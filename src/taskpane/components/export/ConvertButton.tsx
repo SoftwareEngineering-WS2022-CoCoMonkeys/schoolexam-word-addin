@@ -1,6 +1,5 @@
 import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
-import "./ConvertButton.scss";
 import { useTasks } from "../state/DocumentStore";
 import RequestStatus from "../state/RequestStatus";
 import useDocument from "../state/ExamsStore";
@@ -28,8 +27,9 @@ export default function ConvertButton(_props: unknown): JSX.Element {
   };
 
   return (
-    <div>
+    <>
       <Dialog
+        className="dialog"
         hidden={examsState.conversionStatus !== RequestStatus.ERROR}
         onDismiss={() => examsActions.setConversionStatus(RequestStatus.IDLE)}
         dialogContentProps={errorDialogContentProps}
@@ -39,13 +39,11 @@ export default function ConvertButton(_props: unknown): JSX.Element {
         </DialogFooter>
       </Dialog>
       <PrimaryButton
-        id="convert-btn"
-        className="margin-right1"
         onClick={convertToPdf}
         text={examsState.conversionStatus !== RequestStatus.WAITING ? "Konvertieren" : null}
       >
         {examsState.conversionStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
       </PrimaryButton>
-    </div>
+    </>
   );
 }

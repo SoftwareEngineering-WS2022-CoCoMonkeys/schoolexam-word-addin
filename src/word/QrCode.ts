@@ -2,19 +2,9 @@ import WordPersistable from "./WordPersistable";
 import IQrCode from "./IQrCode";
 
 export default class QrCode extends WordPersistable<QrCode> implements IQrCode {
-  async copyAsync(): Promise<QrCode> {
-    const copy = Object.assign(new QrCode(), this) as QrCode;
-    await copy.saveAsync();
-    return copy;
-  }
-
   propertyKey = "qrcode-data";
 
   private _footerCcId: number;
-
-  get footerCcId(): number {
-    return this._footerCcId;
-  }
 
   private _headerCcId: number;
 
@@ -26,8 +16,10 @@ export default class QrCode extends WordPersistable<QrCode> implements IQrCode {
     this._headerCcId = value;
   }
 
-  get headerCcId(): number {
-    return this._headerCcId;
+  async copyAsync(): Promise<QrCode> {
+    const copy = Object.assign(new QrCode(), this) as QrCode;
+    await copy.saveAsync();
+    return copy;
   }
 
   getFooterContentControl(context: Word.RequestContext): Word.ContentControl {

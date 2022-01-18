@@ -9,11 +9,11 @@ export default class SubmissionDTO implements IDTO<Submission> {
     this.pdf = pdf;
   }
 
-  toModel(): Submission {
-    throw new Error("Method not implemented.");
-  }
-
   static fromModel(model: Submission): SubmissionDTO {
     return new SubmissionDTO(model.pdf);
+  }
+
+  toModel(): Submission {
+    throw new Error("Method not implemented.");
   }
 }

@@ -9,16 +9,29 @@ import {
   SpinnerSize,
 } from "@fluentui/react";
 import * as React from "react";
-import "./BuildButton.scss";
 import { ExamStatus } from "../../../model/Exam";
 import RequestStatus from "../state/RequestStatus";
 import useExams from "../state/ExamsStore";
 import { useLoggedIn } from "../state/AuthenticationStore";
+import { useId } from "@fluentui/react-hooks";
+import TooltipCheckList, { CheckListItem } from "./TooltipCheckList";
 
 export default function BuildButton(_props: unknown): JSX.Element {
   // GLOBAL STATE
   const [examsState, examsActions] = useExams();
   const [loggedIn] = useLoggedIn();
+
+  const buildCheckList = [
+    new CheckListItem(loggedIn, "Eingeloggt"),
+    new CheckListItem(examsState.selectedExam != null, "Prüfung ausgewählt"),
+    new CheckListItem(
+      examsState.selectedExam != null &&
+        examsState.selectedExam.status !== ExamStatus.BuildReady &&
+        examsState.selectedExam.status !== ExamStatus.SubmissionReady,
+      'Prüfung ist "Kompilierbereit" oder "Einreichungsbereit"'
+    ),
+  ];
+  const checkListFullfilled = buildCheckList.map((item) => item.condition).reduce((a, b) => a && b);
 
   const buildDialogContentProps: IDialogContentProps = {
     type: DialogType.normal,
@@ -26,9 +39,20 @@ export default function BuildButton(_props: unknown): JSX.Element {
     subText: "Die Kompilation ist fehlgeschlagen.",
   };
 
+  const buildBtn = (
+    <PrimaryButton
+      onClick={examsActions.build}
+      disabled={!checkListFullfilled}
+      text={examsState.buildStatus !== RequestStatus.WAITING ? "Kompilieren" : ""}
+    >
+      {examsState.buildStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
+    </PrimaryButton>
+  );
+
   return (
-    <div>
+    <>
       <Dialog
+        className="dialog"
         onDismiss={() => examsActions.setBuildStatus(RequestStatus.IDLE)}
         hidden={examsState.buildStatus !== RequestStatus.ERROR}
         dialogContentProps={buildDialogContentProps}
@@ -39,20 +63,7 @@ export default function BuildButton(_props: unknown): JSX.Element {
           </DialogFooter>
         </DialogFooter>
       </Dialog>
-      <PrimaryButton
-        id="build-dialog-btn"
-        className="margin-right1"
-        onClick={examsActions.build}
-        disabled={
-          (!loggedIn ||
-            (examsState.selectedExam?.status !== ExamStatus.BuildReady &&
-              examsState.selectedExam?.status !== ExamStatus.SubmissionReady)) ??
-          true
-        }
-        text={examsState.buildStatus !== RequestStatus.WAITING ? "Kompilieren" : ""}
-      >
-        {examsState.buildStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
-      </PrimaryButton>
-    </div>
+      <TooltipCheckList renderChild={buildBtn} items={buildCheckList} />
+    </>
   );
 }

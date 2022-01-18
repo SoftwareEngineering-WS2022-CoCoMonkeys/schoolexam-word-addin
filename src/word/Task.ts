@@ -25,16 +25,16 @@ export default class Task implements ITask {
     this._endLinkCcId = endLinkCcId;
   }
 
+  get ccId(): number {
+    return this._ccId;
+  }
+
   jumpToAsync(): Promise<void> {
     return Word.run(async (context) => this.jumpTo(context));
   }
 
   editAsync(fieldName: string, newValue: string | number): Promise<void> {
     return Word.run(async (context) => this.edit(context, fieldName, newValue));
-  }
-
-  get ccId(): number {
-    return this._ccId;
   }
 
   async jumpTo(context: Word.RequestContext): Promise<void> {

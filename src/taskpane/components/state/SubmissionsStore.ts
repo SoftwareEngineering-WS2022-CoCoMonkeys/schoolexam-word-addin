@@ -65,6 +65,7 @@ const submissionsStore = createStore({
   },
   actions: {
     // PUBLIC ACTIONS
+    setUploadSubmissionsStatus,
     addSubmissions,
     uploadSubmissions,
   },

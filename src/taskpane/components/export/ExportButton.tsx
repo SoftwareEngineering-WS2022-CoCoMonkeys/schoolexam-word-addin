@@ -1,13 +1,12 @@
 import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
-import "./ExportButton.scss";
-import ExportChecklist from "./ExportChecklist";
 import RequestStatus from "../state/RequestStatus";
 import { useLoggedIn } from "../state/AuthenticationStore";
 import useExams from "../state/ExamsStore";
 import useDocument from "../state/DocumentStore";
-import { useEffect } from "react";
-import TemplateDTO from "../../../dto/TemplateDTO";
+import { useId } from "@fluentui/react-hooks";
+import { ExamStatus } from "../../../model/Exam";
+import TooltipCheckList, { CheckListItem } from "./TooltipCheckList";
 
 export default function ExportButton(_props: unknown): JSX.Element {
   // GLOBAL STATE
@@ -21,9 +20,36 @@ export default function ExportButton(_props: unknown): JSX.Element {
     subText: "Der Export ist fehlgeschlagen.",
   };
 
+  const exportCheckList = [
+    new CheckListItem(loggedIn, "Eingeloggt"),
+    new CheckListItem(examsState.taskPdf != null, "Dokument konvertiert"),
+    new CheckListItem(examsState.selectedExam != null, "Prüfung ausgewählt"),
+    new CheckListItem(documentState.qrCode.footerIsPresent(), "QR-Code in Fußzeile"),
+    new CheckListItem(documentState.qrCode.titleIsPresent(), "QR-Code-(Platzhalter) auf Titelseite"),
+    new CheckListItem(
+      examsState.selectedExam != null &&
+        examsState.selectedExam.status !== ExamStatus.Planned &&
+        examsState.selectedExam.status !== ExamStatus.BuildReady &&
+        examsState.selectedExam.status !== ExamStatus.SubmissionReady,
+      'Prüfung ist "Geplant", "Kompilierbereit" oder "Einreichungsbereit"'
+    ),
+  ];
+  const checkListFullfilled = exportCheckList.map((item) => item.condition).reduce((a, b) => a && b);
+
+  const exportBtn = (
+    <PrimaryButton
+      disabled={!checkListFullfilled}
+      onClick={() => examsActions.exportTaskPdf(documentState.taskList)}
+      text={examsState.exportStatus !== RequestStatus.WAITING ? "Dokument exportieren" : ""}
+    >
+      {examsState.exportStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
+    </PrimaryButton>
+  );
+
   return (
-    <div>
+    <>
       <Dialog
+        className="dialog"
         hidden={examsState.exportStatus !== RequestStatus.ERROR}
         onDismiss={() => examsActions.setExportStatus(RequestStatus.IDLE)}
         dialogContentProps={errorDialogContentProps}
@@ -32,17 +58,7 @@ export default function ExportButton(_props: unknown): JSX.Element {
           <DefaultButton onClick={() => examsActions.setExportStatus(RequestStatus.IDLE)} text="Ok" />
         </DialogFooter>
       </Dialog>
-      <ExportChecklist />
-      <PrimaryButton
-        id="export-btn"
-        disabled={
-          !loggedIn || !examsState.taskPdf || !examsState.selectedExam || !documentState.qrCode.bothArePresent()
-        }
-        onClick={() => examsActions.exportTaskPdf(documentState.taskList)}
-        text={examsState.exportStatus !== RequestStatus.WAITING ? "Dokument exportieren" : ""}
-      >
-        {examsState.exportStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
-      </PrimaryButton>
-    </div>
+      <TooltipCheckList renderChild={exportBtn} items={exportCheckList} />
+    </>
   );
 }

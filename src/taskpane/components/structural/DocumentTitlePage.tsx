@@ -1,6 +1,5 @@
-import { PrimaryButton, TextField } from "@fluentui/react";
+import { PrimaryButton, Stack, TextField } from "@fluentui/react";
 import * as React from "react";
-import "./DocumentTitlePage.scss";
 import CalendarInlineOverlaidMonth from "./Calendar";
 import { useQrCode } from "../state/DocumentStore";
 
@@ -22,24 +21,33 @@ export default function DocumentTitlePage(_props: unknown): JSX.Element {
   }, []);
 
   return (
-    <div className="centerTopPadding">
+    <Stack
+      className="stretch"
+      horizontal={false}
+      horizontalAlign="center"
+      verticalAlign="center"
+      tokens={{ childrenGap: 10 }}
+    >
       <TextField
         label="Name des Leistungsnachweises"
+        className="stretch"
         placeholder={`z.B.: ${defaultExamTitle}`}
         onChange={onChangeExamNameTextFieldValue}
       />
       <TextField
         label="Kursname"
+        className="stretch"
         placeholder={`z.B.: ${defaultCourseName}`}
         onChange={onChangeCourseNameTextFieldValue}
       />
       <br />
       <CalendarInlineOverlaidMonth examDate={examDate} setExamDate={setExamDate} />
       <PrimaryButton
+        styles={{ root: { marginTop: 25 } }}
         text="Titelseite erstellen"
         id="create-front-page-btn"
         onClick={() => qrCodeActions.createFrontPage(examTitle, examDate, courseName)}
       />
-    </div>
+    </Stack>
   );
 }

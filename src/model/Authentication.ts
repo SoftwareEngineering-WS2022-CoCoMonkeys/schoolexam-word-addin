@@ -1,4 +1,3 @@
-import { UserDTO } from "../dto/UserDTO";
 import User from "./User";
 
 export default class Authentication {
