@@ -1,5 +1,5 @@
-import Exam from "../../../import_dto/Exam";
-import Build from "../../../import_dto/Build";
+import Exam from "../../../model/Exam";
+import Build from "../../../model/Build";
 import RequestStatus from "./RequestStatus";
 
 export default interface IExamsState {

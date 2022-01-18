@@ -1,7 +1,7 @@
-import TaskList from "../../../word/TaskList";
-import QrCode from "../../../word/QrCode";
+import ITaskList from "../../../word/ITaskList";
+import IQrCode from "../../../word/IQrCode";
 
 export default interface IDocumentState {
-  taskList: TaskList;
-  qrCode: QrCode;
+  taskList: ITaskList;
+  qrCode: IQrCode;
 }

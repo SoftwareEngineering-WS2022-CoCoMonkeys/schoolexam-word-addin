@@ -1,6 +1,7 @@
-import Authentication from "../../../import_dto/Authentication";
+import AuthenticationDTO from "../../../dto/AuthenticationDTO";
 import IAuthenticationRepository from "./IAuthenticationRepository";
 import ApiService, { HttpMethod } from "./ApiService";
+import Authentication from "../../../model/Authentication";
 
 class OnlineAuthenticationRepository implements IAuthenticationRepository {
   private readonly AUTH_URL = "/Authentication/Authenticate";
@@ -9,7 +10,7 @@ class OnlineAuthenticationRepository implements IAuthenticationRepository {
     return ApiService.request(HttpMethod.POST, this.AUTH_URL, { username, password })
       .then((response) => response.json())
       .then((json) => {
-        const auth = json as Authentication;
+        const auth = AuthenticationDTO.fromJson(JSON.stringify(json)).toModel();
         console.debug("Received authentication token:", auth);
         localStorage.setItem("token", auth.token);
         return auth;

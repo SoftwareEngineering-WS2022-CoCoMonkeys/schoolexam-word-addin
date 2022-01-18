@@ -1,5 +1,5 @@
-import Authentication from "../../../import_dto/Authentication";
 import RequestStatus from "./RequestStatus";
+import Authentication from "../../../model/Authentication";
 
 export default interface IAuthenticationState {
   displayLogin: boolean;

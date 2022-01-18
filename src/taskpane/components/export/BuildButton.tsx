@@ -10,13 +10,15 @@ import {
 } from "@fluentui/react";
 import * as React from "react";
 import "./BuildButton.scss";
-import { ExamStatus } from "../../../import_dto/Exam";
+import { ExamStatus } from "../../../model/Exam";
 import RequestStatus from "../state/RequestStatus";
 import useExams from "../state/ExamsStore";
+import { useLoggedIn } from "../state/AuthenticationStore";
 
 export default function BuildButton(_props: unknown): JSX.Element {
   // GLOBAL STATE
   const [examsState, examsActions] = useExams();
+  const [loggedIn] = useLoggedIn();
 
   const buildDialogContentProps: IDialogContentProps = {
     type: DialogType.normal,
@@ -42,8 +44,9 @@ export default function BuildButton(_props: unknown): JSX.Element {
         className="margin-right1"
         onClick={examsActions.build}
         disabled={
-          (examsState.selectedExam?.status !== ExamStatus.BuildReady &&
-            examsState.selectedExam?.status !== ExamStatus.SubmissionReady) ??
+          (!loggedIn ||
+            (examsState.selectedExam?.status !== ExamStatus.BuildReady &&
+              examsState.selectedExam?.status !== ExamStatus.SubmissionReady)) ??
           true
         }
         text={examsState.buildStatus !== RequestStatus.WAITING ? "Kompilieren" : ""}

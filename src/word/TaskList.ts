@@ -1,40 +1,56 @@
 import Task from "./Task";
 import WordPersistable from "./WordPersistable";
 import { v4 as uuidv4 } from "uuid";
-import TaskDTO from "../export_dto/TaskDTO";
-import ITaskList from "../model/ITaskList";
+import ITaskList from "./ITaskList";
 
-export default class TaskList extends WordPersistable<TaskList> implements ITaskList {
+export default class TaskList extends WordPersistable<ITaskList> implements ITaskList {
   propertyKey = "task-data";
 
   constructor() {
     super();
-    this._tasks = [];
+    this.tasks = [];
   }
 
-  private _tasks: Task[];
-
-  get tasks(): Task[] {
-    return this._tasks;
+  async prepareForConversion(): Promise<void> {
+    await this.removeLinkContentControlsAsync();
+    await this.insertLinkContentControlsAsync();
   }
 
-  getTaskById(taskId: string): Task {
-    return this._tasks.find((task) => task.taskId === taskId);
+  async afterConversion(): Promise<void> {
+    await this.removeLinkContentControlsAsync();
+  }
+
+  tasks: Task[];
+
+  getTaskById(id: string): Task {
+    return this.tasks.find((task) => task.id === id);
   }
 
   getLength(): number {
-    return this._tasks.length;
+    return this.tasks.length;
   }
 
-  async copy(): Promise<TaskList> {
+  async copyAsync(): Promise<TaskList> {
     const copy = Object.assign(new TaskList(), this) as TaskList;
     await copy.saveAsync();
     return copy;
   }
 
-  async updateTaskTitles(context: Word.RequestContext): Promise<TaskList> {
+  addTaskFromSelectionAsync(maxPoints: number): Promise<void> {
+    return Word.run(async (context) => this.addTaskFromSelection(context, maxPoints));
+  }
+
+  deleteTaskAsync(taskToDelete: Task): Promise<void> {
+    return Word.run(async (context) => this.deleteTask(context, taskToDelete));
+  }
+
+  updateTaskTitlesAsync(): Promise<void> {
+    return Word.run(async (context) => this.updateTaskTitles(context));
+  }
+
+  async updateTaskTitles(context: Word.RequestContext): Promise<void> {
     const ccIdMap = new Map();
-    for (const task of this._tasks) {
+    for (const task of this.tasks) {
       ccIdMap.set(task.ccId, task);
     }
     context.load(context.document, "contentControls/id");
@@ -50,53 +66,22 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
         orderedTasks.push(task);
       }
     }
-
-    this._tasks = orderedTasks;
-
-    return this.copy();
+    this.tasks = orderedTasks;
   }
 
-  updateTaskTitlesAsync(): Promise<TaskList> {
-    return Word.run<TaskList>(async (context) => this.updateTaskTitles(context));
-  }
-
-  async editTask(
-    context: Word.RequestContext,
-    taskId: string,
-    fieldName: string,
-    newValue: number | string
-  ): Promise<TaskList> {
-    const taskToEdit = this.getTaskById(taskId);
-    await taskToEdit.edit(context, fieldName, newValue);
-    return this.copy();
-  }
-
-  async deleteTask(context: Word.RequestContext, taskToDelete: Task): Promise<TaskList> {
+  async deleteTask(context: Word.RequestContext, taskToDelete: Task): Promise<void> {
     // slightly ugly way to get index
-    const localTask = this.getTaskById(taskToDelete.taskId);
+    const localTask = this.getTaskById(taskToDelete.id);
 
     await localTask.prepareForDeletion(context);
 
-    const index = this._tasks.indexOf(localTask);
+    const index = this.tasks.indexOf(localTask);
     // task could be deleted in the meanwhile
     if (index != -1) {
-      this._tasks.splice(index, 1);
+      this.tasks.splice(index, 1);
     } else {
       console.warn("Possible synchronization issue: Task already deleted locally");
     }
-    return this.copy();
-  }
-
-  deleteTaskAsync(taskToDelete: Task): Promise<TaskList> {
-    return Word.run(async (context) => this.deleteTask(context, taskToDelete));
-  }
-
-  editTaskAsync(taskId: string, fieldName: string, newValue: number | string): Promise<TaskList> {
-    return Word.run<TaskList>(async (context) => this.editTask(context, taskId, fieldName, newValue));
-  }
-
-  assembleDTO(): TaskDTO[] {
-    return this._tasks.map((task) => task.assembleDTO());
   }
 
   removeLinkContentControlsAsync(): Promise<void> {
@@ -104,7 +89,7 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
   }
 
   async removeLinkContentControls(context: Word.RequestContext): Promise<void> {
-    for (const task of this._tasks) {
+    for (const task of this.tasks) {
       await task.removeLinkContentControls(context);
     }
   }
@@ -114,12 +99,12 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
   }
 
   async insertLinkContentControls(context: Word.RequestContext): Promise<void> {
-    for (const task of this._tasks) {
+    for (const task of this.tasks) {
       await task.insertLinkContentControls(context);
     }
   }
 
-  async addTaskFromSelection(context: Word.RequestContext, maxPoints: number): Promise<TaskList> {
+  async addTaskFromSelection(context: Word.RequestContext, maxPoints: number): Promise<void> {
     // Get the current selection
     const range = context.document.getSelection();
 
@@ -129,7 +114,7 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
     // Visually signal content control creation
     cc.cannotDelete = true;
     cc.appearance = Word.ContentControlAppearance.boundingBox;
-    cc.title = "Aufgabe " + (this._tasks.length + 1);
+    cc.title = "Aufgabe " + (this.tasks.length + 1);
     cc.tag = "task";
 
     // Need to load ID property first
@@ -139,13 +124,7 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
 
     const newTask = new Task(uuidv4(), cc.title, maxPoints, cc.id, null);
 
-    this._tasks.push(newTask);
-
-    return this.copy();
-  }
-
-  addTaskFromSelectionAsync(maxPoints: number): Promise<TaskList> {
-    return Word.run(async (context) => this.addTaskFromSelection(context, maxPoints));
+    this.tasks.push(newTask);
   }
 
   async init(loadedTaskList: TaskList, context: Word.RequestContext): Promise<void> {
@@ -154,7 +133,7 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
       const cc = task.getAssociatedContentControl(context);
 
       if (cc == null) {
-        console.error(`Missing content control for ${task.taskId}`);
+        console.error(`Missing content control for ${task.id}`);
       }
     }
   }
@@ -166,7 +145,7 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
     if (key === "") {
       return Object.assign(new TaskList(), value);
     }
-    if (value["_taskId"] != null) {
+    if (value["id"] != null) {
       // @ts-ignore
       return Object.assign(new Task(), value);
     }

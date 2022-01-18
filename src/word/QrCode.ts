@@ -1,6 +1,13 @@
 import WordPersistable from "./WordPersistable";
+import IQrCode from "./IQrCode";
 
-export default class QrCode extends WordPersistable<QrCode> {
+export default class QrCode extends WordPersistable<QrCode> implements IQrCode {
+  async copyAsync(): Promise<QrCode> {
+    const copy = Object.assign(new QrCode(), this) as QrCode;
+    await copy.saveAsync();
+    return copy;
+  }
+
   propertyKey = "qrcode-data";
 
   private _footerCcId: number;
@@ -9,20 +16,18 @@ export default class QrCode extends WordPersistable<QrCode> {
     return this._footerCcId;
   }
 
-  private _titleCcId: number;
+  private _headerCcId: number;
 
-  get titleCcId(): number {
-    return this._titleCcId;
-  }
-
-  async setFooterCcIdAndCopy(value: number): Promise<QrCode> {
+  set footer(value: number) {
     this._footerCcId = value;
-    return await this.copy();
   }
 
-  async setTitleCcIdAndCopy(value: number): Promise<QrCode> {
-    this._titleCcId = value;
-    return await this.copy();
+  set header(value: number) {
+    this._headerCcId = value;
+  }
+
+  get headerCcId(): number {
+    return this._headerCcId;
   }
 
   getFooterContentControl(context: Word.RequestContext): Word.ContentControl {
@@ -30,7 +35,7 @@ export default class QrCode extends WordPersistable<QrCode> {
   }
 
   getTitleContentControl(context: Word.RequestContext): Word.ContentControl {
-    return context.document.contentControls.getByIdOrNullObject(this._titleCcId);
+    return context.document.contentControls.getByIdOrNullObject(this._headerCcId);
   }
 
   footerIsPresent(): boolean {
@@ -38,7 +43,7 @@ export default class QrCode extends WordPersistable<QrCode> {
   }
 
   titleIsPresent(): boolean {
-    return this._titleCcId != null;
+    return this._headerCcId != null;
   }
 
   bothArePresent(): boolean {
@@ -63,7 +68,7 @@ export default class QrCode extends WordPersistable<QrCode> {
   async copy(): Promise<QrCode> {
     const copy = new QrCode();
     copy._footerCcId = this._footerCcId;
-    copy._titleCcId = this._titleCcId;
+    copy._headerCcId = this._headerCcId;
     await copy.saveAsync();
     return copy;
   }
@@ -78,6 +83,6 @@ export default class QrCode extends WordPersistable<QrCode> {
     if (typeof this !== typeof other) {
       return this == other;
     }
-    return this._footerCcId === (other as QrCode)._footerCcId && this._titleCcId === (other as QrCode)._titleCcId;
+    return this._footerCcId === (other as QrCode)._footerCcId && this._headerCcId === (other as QrCode)._headerCcId;
   }
 }

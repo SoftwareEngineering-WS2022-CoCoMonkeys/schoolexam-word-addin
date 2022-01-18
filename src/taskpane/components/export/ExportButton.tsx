@@ -7,6 +7,7 @@ import { useLoggedIn } from "../state/AuthenticationStore";
 import useExams from "../state/ExamsStore";
 import useDocument from "../state/DocumentStore";
 import { useEffect } from "react";
+import TemplateDTO from "../../../dto/TemplateDTO";
 
 export default function ExportButton(_props: unknown): JSX.Element {
   // GLOBAL STATE
@@ -37,7 +38,7 @@ export default function ExportButton(_props: unknown): JSX.Element {
         disabled={
           !loggedIn || !examsState.taskPdf || !examsState.selectedExam || !documentState.qrCode.bothArePresent()
         }
-        onClick={() => examsActions.exportTaskPdf(documentState.taskList.assembleDTO())}
+        onClick={() => examsActions.exportTaskPdf(documentState.taskList)}
         text={examsState.exportStatus !== RequestStatus.WAITING ? "Dokument exportieren" : ""}
       >
         {examsState.exportStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}

@@ -54,6 +54,4 @@ export default abstract class WordPersistable<Type> {
   abstract reviver(key: string, value: unknown): unknown;
 
   abstract newEmpty(): Type;
-
-  abstract copy(): Promise<Type>;
 }

@@ -3,7 +3,7 @@ import AddSubmissionButton from "./AddSubmissionButton";
 import * as React from "react";
 import { Stack } from "@fluentui/react";
 import ExamList from "../export/ExamList";
-import { ExamStatus } from "../../../import_dto/Exam";
+import { ExamStatus } from "../../../model/Exam";
 
 export default function SubmissionsView(_props: unknown): JSX.Element {
   return (

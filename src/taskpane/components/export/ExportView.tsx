@@ -6,7 +6,7 @@ import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
 import BuildButton from "./BuildButton";
 import ConvertButton from "./ConvertButton";
 import { useLoggedIn } from "../state/AuthenticationStore";
-import { ExamStatus } from "../../../import_dto/Exam";
+import { ExamStatus } from "../../../model/Exam";
 
 export default function ExportView(_props: unknown): JSX.Element {
   const [loggedIn] = useLoggedIn();

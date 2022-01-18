@@ -1,13 +1,12 @@
 import { createHook, createStore } from "react-sweet-state";
-import Exam, { ExamStatus } from "../../../import_dto/Exam";
-import Build from "../../../import_dto/Build";
+import Exam, { ExamStatus } from "../../../model/Exam";
+import Build from "../../../model/Build";
 import RequestStatus from "./RequestStatus";
 import PdfService from "../services/PdfService";
 import downloadFileBase64 from "../services/DownloadService";
 import ExamsRepository from "../services/OnlineExamsRepository";
-import TemplateDTO from "../../../export_dto/TemplateDTO";
-import TaskDTO from "../../../export_dto/TaskDTO";
 import IExamsState from "./IExamsState";
+import ITaskList from "../../../word/ITaskList";
 
 // ACTIONS
 const setTaskPdf = (taskPdf: string | null) => {
@@ -103,19 +102,18 @@ const build = () => {
   };
 };
 
-const exportTaskPdf = (tasks: TaskDTO[]) => {
+const exportTaskPdf = (taskList: ITaskList) => {
   return async ({ getState, dispatch }) => {
     dispatch(setExportStatus(RequestStatus.WAITING));
 
-    // If the exam has been built already (is SubmissinReady), we have to clean it first
+    // If the exam has been built already (is SubmissionReady), we have to clean it first
     if (getState().selectedExam.status === ExamStatus.SubmissionReady) {
       console.debug("Cleaning exam before rebuild...");
       await dispatch(clean());
     }
 
-    const exportData = new TemplateDTO(getState().taskPdf, tasks);
     try {
-      await ExamsRepository.setTaskPdf(getState().selectedExam.id, exportData);
+      await ExamsRepository.setTaskPdf(getState().selectedExam.id, getState().taskPdf, taskList);
       dispatch(setExportStatus(RequestStatus.SUCCESS));
 
       // Reload exams to get most recent state

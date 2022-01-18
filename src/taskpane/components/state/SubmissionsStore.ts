@@ -2,10 +2,10 @@ import { createHook, createStore } from "react-sweet-state";
 import ISubmissionsState from "./ISubmissionsState";
 import RequestStatus from "./RequestStatus";
 import SubmissionsRepository from "../services/OnlineSubmissionsRepository";
-import SubmissionDTO from "../../../export_dto/SubmissionDTO";
 import { uploadFileBase64 } from "../services/DownloadService";
+import Submission from "../../../model/Submission";
 
-const setSubmissions = (submissions: string[]) => {
+const setSubmissions = (submissions: Submission[]) => {
   return ({ setState }) => {
     setState({ submissions });
   };
@@ -23,12 +23,12 @@ const setAddSubmissionsStatus = (addSubmissionsStatus: RequestStatus) => {
   };
 };
 
-const addSubmissions = () => {
+const addSubmissions = (examId: string) => {
   return ({ getState, dispatch }) => {
     dispatch(setAddSubmissionsStatus(RequestStatus.WAITING));
     uploadFileBase64(
       (filesBase64) => {
-        dispatch(setSubmissions(getState().submissions.concat(filesBase64)));
+        dispatch(setSubmissions(getState().submissions.concat(filesBase64.map((f) => new Submission(f, examId)))));
         dispatch(setAddSubmissionsStatus(RequestStatus.SUCCESS));
       },
       (error) => {
@@ -39,13 +39,13 @@ const addSubmissions = () => {
   };
 };
 
-const uploadSubmissions = (examId: string) => {
+const uploadSubmissions = () => {
   return async ({ getState, dispatch }) => {
     dispatch(setUploadSubmissionsStatus(RequestStatus.WAITING));
 
     try {
       for (const submission of getState().submissions.slice(0)) {
-        await SubmissionsRepository.uploadSubmission(examId, new SubmissionDTO(submission));
+        await SubmissionsRepository.uploadSubmission(submission);
         dispatch(setSubmissions(getState().submissions.slice(1)));
       }
 
