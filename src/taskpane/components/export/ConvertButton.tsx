@@ -1,28 +1,25 @@
 import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
-import { useState } from "react";
 import "./ConvertButton.scss";
-import useTasks from "../state/TaskStore";
-import usePrep from "../state/PreparationStore";
+import { useTasks } from "../state/DocumentStore";
 import RequestStatus from "../state/RequestStatus";
 import useDocument from "../state/ExamsStore";
 
 export default function ConvertButton(_props: unknown): JSX.Element {
   // GLOBAL STATE
-  const [taskState] = useTasks();
-  const [prepState, prepActions] = usePrep();
+  const [taskList] = useTasks();
   const [examsState, examsActions] = useDocument();
 
   async function convertToPdf() {
     examsActions.setConversionStatus(RequestStatus.WAITING);
 
     // remove and re-insert linkContentControls
-    await taskState.taskList.removeLinkContentControlsAsync();
-    await taskState.taskList.insertLinkContentControlsAsync();
+    await taskList.removeLinkContentControlsAsync();
+    await taskList.insertLinkContentControlsAsync();
 
     await examsActions.convertToPdf();
     // remove link content controls
-    await taskState.taskList.removeLinkContentControlsAsync();
+    await taskList.removeLinkContentControlsAsync();
   }
 
   const errorDialogContentProps = {

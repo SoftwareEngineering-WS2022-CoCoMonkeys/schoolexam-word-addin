@@ -1,12 +1,12 @@
-import usePrep from "../state/PreparationStore";
 import { Icon, Text } from "@fluentui/react";
 import * as React from "react";
 import { useLoggedIn } from "../state/AuthenticationStore";
 import useExams from "../state/ExamsStore";
+import { useQrCode } from "../state/DocumentStore";
 
 export default function ExportChecklist(_props: unknown): JSX.Element {
   const [loggedIn] = useLoggedIn();
-  const [prepState] = usePrep();
+  const [qrCode] = useQrCode();
   const [examsState] = useExams();
 
   function activityIconFromStatus(status: boolean) {
@@ -16,8 +16,8 @@ export default function ExportChecklist(_props: unknown): JSX.Element {
   const loggedInActivityIcon = activityIconFromStatus(loggedIn);
   const convertedDocumentActivityIcon = activityIconFromStatus(examsState.taskPdf != null);
   const selectedExamActivityIcon = activityIconFromStatus(examsState.selectedExam != null);
-  const footerQrCodeActivityIcon = activityIconFromStatus(prepState.qrCode.footerIsPresent());
-  const titleQrCodeActivityIcon = activityIconFromStatus(prepState.qrCode.titleIsPresent());
+  const footerQrCodeActivityIcon = activityIconFromStatus(qrCode.footerIsPresent());
+  const titleQrCodeActivityIcon = activityIconFromStatus(qrCode.titleIsPresent());
 
   return (
     <div>

@@ -2,11 +2,9 @@ import * as React from "react";
 import "./Header.scss";
 import { ActionButton, IIconProps } from "@fluentui/react";
 import BackButton from "../util/BackButton";
-import usePrep from "../state/PreparationStore";
 import useAuth from "../state/AuthenticationStore";
 
 export default function Header(_props: unknown): JSX.Element {
-  const [prepState, prepActions] = usePrep();
   const [authState, authActions] = useAuth();
 
   const userIcon: IIconProps = { iconName: "Contact" };

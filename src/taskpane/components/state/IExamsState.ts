@@ -11,4 +11,5 @@ export default interface IExamsState {
   buildStatus: RequestStatus;
   exportStatus: RequestStatus;
   examsStatus: RequestStatus;
+  cleanStatus: RequestStatus;
 }

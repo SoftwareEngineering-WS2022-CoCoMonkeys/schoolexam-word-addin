@@ -5,9 +5,8 @@ import "./App.scss";
 import Navbar from "./taskpaneDesign/Navbar";
 import LoginForm from "./login/LoginForm";
 import Header from "./taskpaneDesign/Header";
-import useTasks from "./state/TaskStore";
-import usePrep from "./state/PreparationStore";
 import useAuth from "./state/AuthenticationStore";
+import useDocument from "./state/DocumentStore";
 
 /* global Word, require */
 
@@ -17,8 +16,7 @@ export interface AppProps {
 }
 
 export default function App(props: AppProps): JSX.Element {
-  const [prepState, prepActions] = usePrep();
-  const [taskState, taskActions] = useTasks();
+  const [documentState, documentActions] = useDocument();
   const [authState] = useAuth();
 
   const { title, isOfficeInitialized } = props;
@@ -34,8 +32,7 @@ export default function App(props: AppProps): JSX.Element {
   }
 
   useEffect(() => {
-    taskActions.load();
-    prepActions.loadQrCode();
+    documentActions.load();
   }, []);
 
   const mainContent = authState.displayLogin ? <LoginForm /> : <Navbar />;

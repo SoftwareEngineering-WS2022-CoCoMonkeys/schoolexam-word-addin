@@ -1,13 +1,13 @@
 import { PrimaryButton } from "@fluentui/react";
 import * as React from "react";
 import "./PageHeader.scss";
-import usePrep from "../state/PreparationStore";
 import RangeLocation = Word.RangeLocation;
 import ContentControlAppearance = Word.ContentControlAppearance;
 import InsertLocation = Word.InsertLocation;
+import { useQrCode } from "../state/DocumentStore";
 
 export default function PageHeader(): JSX.Element {
-  const [prepState, prepActions] = usePrep();
+  const [qrCodeState, qrCodeActions] = useQrCode();
 
   function createPageHeader(): Promise<void> {
     return Word.run(async (context) => {
@@ -34,7 +34,7 @@ export default function PageHeader(): JSX.Element {
       // persist header QR Code id
       contentControl.load("id");
       await context.sync();
-      await prepActions.setTitleQrCodeCcId(contentControl.id);
+      await qrCodeActions.setTitleQrCodeCcId(contentControl.id);
     });
   }
 

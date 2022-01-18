@@ -2,13 +2,13 @@ import { PrimaryButton, TextField } from "@fluentui/react";
 import * as React from "react";
 import "./PageFooter.scss";
 import { getQrCodeBase64 } from "./StructuralUtil";
-import usePrep from "../state/PreparationStore";
 import RangeLocation = Word.RangeLocation;
 import ContentControlAppearance = Word.ContentControlAppearance;
+import { useQrCode } from "../state/DocumentStore";
 
 export default function PageFooter(_props: unknown): JSX.Element {
   const [footerText, setFooterText] = React.useState("      ");
-  const [prepState, prepActions] = usePrep();
+  const [qrCodeState, qrCodeActions] = useQrCode();
 
   const onChangeFooterTextFieldValue = React.useCallback(
     (_event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
@@ -42,7 +42,7 @@ export default function PageFooter(_props: unknown): JSX.Element {
       // persist footer QR Code id
       contentControl.load("id");
       await context.sync();
-      await prepActions.setFooterQrCodeCcId(contentControl.id);
+      await qrCodeActions.setFooterQrCodeCcId(contentControl.id);
     });
   }
 

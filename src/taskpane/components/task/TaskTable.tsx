@@ -15,7 +15,7 @@ import {
 } from "@fluentui/react";
 import "./TaskTable.scss";
 import Task from "../../../word/Task";
-import useTasks from "../state/TaskStore";
+import { useTasks } from "../state/DocumentStore";
 
 export interface ActiveEdit {
   taskId: string;
@@ -23,16 +23,16 @@ export interface ActiveEdit {
 }
 
 export default function TaskTable(_props: unknown): JSX.Element {
-  const [taskState, taskActions] = useTasks();
+  const [taskList, taskListActions] = useTasks();
   const [activeEdit, setActiveEdit] = useState(null as ActiveEdit);
   const [deleteMode, setDeleteMode] = useState(false);
 
   function editTask(taskId: string, fieldName: string, newValue: string | number): void {
-    taskActions.editTask(taskId, fieldName, newValue);
+    taskListActions.editTask(taskId, fieldName, newValue);
   }
 
   function updateTaskTitles() {
-    taskActions.updateTaskTitles();
+    taskListActions.updateTaskTitles();
   }
 
   function editableColumnRenderer(fieldName: string) {
@@ -68,7 +68,7 @@ export default function TaskTable(_props: unknown): JSX.Element {
 
   function rowCheckBoxRenderer(task: Task): IRenderFunction<IDetailsCheckboxProps> {
     // don't actually render the component, instead return a render function
-    const renderCheckBox = () => <IconButton iconProps={deleteIcon} onClick={() => taskActions.deleteTask(task)} />;
+    const renderCheckBox = () => <IconButton iconProps={deleteIcon} onClick={() => taskListActions.deleteTask(task)} />;
     return renderCheckBox;
   }
 
@@ -108,7 +108,7 @@ export default function TaskTable(_props: unknown): JSX.Element {
       <DetailsList
         selectionMode={deleteMode ? SelectionMode.multiple : SelectionMode.none}
         columns={columns}
-        items={taskState.taskList.tasks}
+        items={taskList.tasks}
         onRenderRow={renderRow}
       />
       <ActionButton iconProps={updateIcon} onClick={updateTaskTitles}>

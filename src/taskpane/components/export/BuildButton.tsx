@@ -11,7 +11,6 @@ import {
 import * as React from "react";
 import { useState } from "react";
 import "./BuildButton.scss";
-import usePrep from "../state/PreparationStore";
 import { ExamStatus } from "../../../import_dto/Exam";
 import ExamsRepository from "../services/OnlineExamsRepository";
 import RequestStatus from "../state/RequestStatus";
@@ -19,14 +18,12 @@ import useExams from "../state/ExamsStore";
 
 export default function BuildButton(_props: unknown): JSX.Element {
   // GLOBAL STATE
-  const [examsState] = useExams();
+  const [examsState, examsActions] = useExams();
 
   // LOCAL STAT
   // TODO clean state
   const [cleanState, setCleanState] = useState(RequestStatus.IDLE);
   const [dialogVisible, setDialogVisible] = useState(false);
-
-  async function triggerBuild() {}
 
   async function triggerClean() {
     setCleanState(RequestStatus.WAITING);
@@ -58,7 +55,7 @@ export default function BuildButton(_props: unknown): JSX.Element {
       >
         <DialogFooter>
           {cleanButton}
-          <DefaultButton className="margin-top1" onClick={triggerBuild}>
+          <DefaultButton className="margin-top1" onClick={() => examsActions.build()}>
             {examsState.buildStatus === RequestStatus.WAITING ? <Spinner /> : "Kompilieren"}
           </DefaultButton>
         </DialogFooter>

@@ -3,19 +3,18 @@ import { useState } from "react";
 import { ActionButton, DefaultButton, Dialog, DialogFooter, DialogType, IIconProps, TextField } from "@fluentui/react";
 import "./NewTaskForm.scss";
 import InstructionList from "./NewTaskFromInstructionList";
-import useTasks from "../state/TaskStore";
+import { useTasks } from "../state/DocumentStore";
 
 export default function NewTaskForm(_props: unknown): JSX.Element {
   const [dialogVisible, setDialogVisible] = useState(false);
   const defaultPointsInput = 1;
-  const [taskState, taskActions] = useTasks();
+  const [taskList, taskListActions] = useTasks();
   const [pointsInput, setPointsInput] = useState(defaultPointsInput);
 
   const addIcon: IIconProps = { iconName: "Add" };
 
   function addTask(): void {
-    console.log(taskState);
-    taskActions.addTask(pointsInput).then(() => setDialogVisible(false));
+    taskListActions.addTask(pointsInput).then(() => setDialogVisible(false));
   }
 
   const newTaskDialogContentProps = {

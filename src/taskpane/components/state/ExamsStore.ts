@@ -52,6 +52,12 @@ const setExamsStatus = (examsStatus: RequestStatus) => {
   };
 };
 
+const setCleanStatus = (cleanStatus: RequestStatus) => {
+  return ({ setState }) => {
+    setState({ cleanStatus });
+  };
+};
+
 const setSelectedExam = (selectedExam: Exam) => {
   return ({ setState }) => {
     setState({ selectedExam });
@@ -126,9 +132,22 @@ const loadExams = () => {
   };
 };
 
+const clean = () => {
+  return async ({ getState, dispatch }) => {
+    dispatch(setCleanStatus(RequestStatus.WAITING));
+    try {
+      await ExamsRepository.clean(getState().selectedExam.id);
+      dispatch(setCleanStatus(RequestStatus.SUCCESS));
+    } catch (e) {
+      console.warn("Cleaning failed with reason:", e);
+      dispatch(setCleanStatus(RequestStatus.ERROR));
+    }
+  };
+};
+
 const rerender = () => {
-  return ({ setState, getState }) => {
-    setState({ exams: [].concat(getState().exams) });
+  return ({ getState, dispatch }) => {
+    dispatch(setExams([].concat(getState().exams)));
   };
 };
 
@@ -143,6 +162,7 @@ const examsStore = createStore({
     buildStatus: RequestStatus.IDLE,
     exportStatus: RequestStatus.IDLE,
     examsStatus: RequestStatus.IDLE,
+    cleanStatus: RequestStatus.IDLE,
   },
   actions: {
     // PUBLIC ACTIONS
@@ -155,6 +175,7 @@ const examsStore = createStore({
     build,
     exportTaskPdf,
     rerender,
+    clean,
   },
   name: "exams-store",
 });
