@@ -3,11 +3,12 @@ import { useEffect } from "react";
 import Progress from "./Progress";
 import "./App.scss";
 import Navbar from "./taskpaneDesign/Navbar";
-import LoginForm from "./login/LoginForm";
+import LoginView from "./login/LoginView";
 import Header from "./taskpaneDesign/Header";
 import useAuth from "./state/AuthenticationStore";
 import useDocument from "./state/DocumentStore";
 import { v4 as uuidv4 } from "uuid";
+import { Stack } from "@fluentui/react";
 
 /* global Word, require */
 
@@ -39,12 +40,12 @@ export default function App(props: AppProps): JSX.Element {
     documentActions.load();
   }, []);
 
-  const mainContent = authState.displayLogin ? <LoginForm /> : <Navbar />;
+  const mainContent = authState.displayLogin ? <LoginView /> : <Navbar />;
 
   return (
-    <div className="center-items column-flex">
+    <Stack horizontal={false} verticalAlign="center" horizontalAlign="center" tokens={{ childrenGap: 20 }}>
       <Header />
       {mainContent}
-    </div>
+    </Stack>
   );
 }

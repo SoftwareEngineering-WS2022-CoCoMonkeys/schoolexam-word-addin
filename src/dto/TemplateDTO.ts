@@ -12,14 +12,14 @@ export default class TemplateDTO implements IDTO<{ taskPdf: string; tasks: ITask
     this.tasks = tasks;
   }
 
-  toModel(): { taskPdf: string; tasks: ITaskList } {
-    throw new Error("Method not implemented.");
-  }
-
   static fromModel(taskPdf: string, model: ITaskList) {
     return new TemplateDTO(
       taskPdf,
       model.tasks.map((t) => TaskDTO.fromModel(t))
     );
+  }
+
+  toModel(): { taskPdf: string; tasks: ITaskList } {
+    throw new Error("Method not implemented.");
   }
 }

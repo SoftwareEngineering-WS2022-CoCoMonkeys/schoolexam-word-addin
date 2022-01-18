@@ -27,6 +27,10 @@
 .selected-exam {
   color: white;
   background-color: $ms-color-sharedCyanBlue10;
+
+  .exam-status {
+    color: white;
+  }
 }
 
 .selected-exam:hover {
@@ -39,6 +43,13 @@
   :hover {
     background-color: inherit;
   }
+
+  .exam-status {
+    color: $ms-color-sharedGray10;
+  }
+}
+.exam-status {
+  color: $ms-color-sharedCyanBlue10;
 }
 
 #exam-list-container {

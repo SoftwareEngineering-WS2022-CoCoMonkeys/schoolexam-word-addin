@@ -1,5 +1,4 @@
 import * as React from "react";
-import "./NewTaskFromInstructionList.scss";
 
 export default function InstructionList(): JSX.Element {
   return (

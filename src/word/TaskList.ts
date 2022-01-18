@@ -5,6 +5,7 @@ import ITaskList from "./ITaskList";
 
 export default class TaskList extends WordPersistable<ITaskList> implements ITaskList {
   propertyKey = "task-data";
+  tasks: Task[];
 
   constructor() {
     super();
@@ -19,8 +20,6 @@ export default class TaskList extends WordPersistable<ITaskList> implements ITas
   async afterConversion(): Promise<void> {
     await this.removeLinkContentControlsAsync();
   }
-
-  tasks: Task[];
 
   getTaskById(id: string): Task {
     return this.tasks.find((task) => task.id === id);

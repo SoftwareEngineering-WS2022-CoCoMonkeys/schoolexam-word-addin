@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import {
-  ActionButton,
+  CommandBarButton,
   DetailsList,
   IColumn,
   IconButton,
@@ -10,12 +10,12 @@ import {
   IIconProps,
   IRenderFunction,
   SelectionMode,
+  Stack,
   TextField,
-  Toggle,
 } from "@fluentui/react";
-import "./TaskTable.scss";
 import Task from "../../../word/Task";
 import { useTasks } from "../state/DocumentStore";
+import NewTaskDialog from "./NewTaskDialog";
 
 export interface ActiveEdit {
   id: string;
@@ -24,8 +24,10 @@ export interface ActiveEdit {
 
 export default function TaskTable(_props: unknown): JSX.Element {
   const [taskList, taskListActions] = useTasks();
+
   const [activeEdit, setActiveEdit] = useState(null as ActiveEdit);
   const [deleteMode, setDeleteMode] = useState(false);
+  const [newTaskDialogVisible, setNewTaskDialogVisible] = useState(false);
 
   function editableColumnRenderer(fieldName: string) {
     // eslint-disable-next-line react/display-name
@@ -69,22 +71,20 @@ export default function TaskTable(_props: unknown): JSX.Element {
       minWidth: 50,
       maxWidth: 100,
       isResizable: true,
+      flexGrow: 3,
       onRender: editableColumnRenderer("title"),
     },
     {
       key: "maxPointsColumn",
-      name: "Max. Punktzahl",
+      name: "Max. Punkte",
       fieldName: "maxPoints",
       minWidth: 100,
       maxWidth: 100,
+      flexGrow: 1,
       isResizable: true,
       onRender: editableColumnRenderer("maxPoints"),
     },
   ];
-
-  const updateIcon: IIconProps = {
-    iconName: "Refresh",
-  };
 
   function renderRow(rowProps: IDetailsRowProps, defaultRender?: IRenderFunction<IDetailsRowProps>): JSX.Element {
     rowProps.onRenderDetailsCheckbox = rowCheckBoxRenderer(rowProps.item);
@@ -92,17 +92,35 @@ export default function TaskTable(_props: unknown): JSX.Element {
   }
 
   return (
-    <div id="task-table-container">
-      <Toggle label="Löschen" onChange={(_event, checked) => setDeleteMode(checked ?? false)} />
+    <>
+      {/* We could not use a CommandBar here because the overflow behaviour was very glitchy.
+       Instead, we simulate a CommandBar with a horizontal Stack and CommandBarButtons*/}
+      <Stack horizontal={true} styles={{ root: { height: 44 } }}>
+        <CommandBarButton
+          text="Neue Aufgabe"
+          onClick={() => setNewTaskDialogVisible(true)}
+          iconProps={{ iconName: "Add" }}
+        />
+        <CommandBarButton
+          toggle={true}
+          checked={deleteMode}
+          text="Löschen"
+          onClick={() => setDeleteMode(!deleteMode)}
+          iconProps={{ iconName: "Delete" }}
+        />
+        <CommandBarButton
+          text="Reihenfolge zurücksetzen"
+          onClick={() => taskListActions.updateTaskTitles()}
+          iconProps={{ iconName: "Refresh" }}
+        />
+      </Stack>
       <DetailsList
         selectionMode={deleteMode ? SelectionMode.multiple : SelectionMode.none}
         columns={columns}
         items={taskList.tasks}
         onRenderRow={renderRow}
       />
-      <ActionButton iconProps={updateIcon} onClick={taskListActions.updateTaskTitles}>
-        Reihenfolge zurücksetzen
-      </ActionButton>
-    </div>
+      <NewTaskDialog isVisible={newTaskDialogVisible} setVisible={setNewTaskDialogVisible} />
+    </>
   );
 }
