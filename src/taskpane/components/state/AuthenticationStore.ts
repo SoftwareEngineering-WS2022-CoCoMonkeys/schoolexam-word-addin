@@ -49,9 +49,9 @@ const authenticationStore = createStore({
     loginStatus: RequestStatus.IDLE,
   },
   actions: {
+    // PUBLIC ACTIONS
     setDisplayLoginPage,
     setLoginStatus,
-    setAuthData,
     login,
   },
   name: "authentication-store",

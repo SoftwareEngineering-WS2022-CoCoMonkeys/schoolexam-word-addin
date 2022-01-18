@@ -10,12 +10,6 @@ import TaskDTO from "../../../export_dto/TaskDTO";
 import IExamsState from "./IExamsState";
 
 // ACTIONS
-const setSelectedExam = (selectedExam: Exam) => {
-  return ({ setState }) => {
-    setState({ selectedExam });
-  };
-};
-
 const setTaskPdf = (taskPdf: string | null) => {
   return ({ setState }) => {
     setState({ taskPdf });
@@ -55,6 +49,12 @@ const setBuildStatus = (buildStatus: RequestStatus) => {
 const setExamsStatus = (examsStatus: RequestStatus) => {
   return ({ setState }) => {
     setState({ examsStatus });
+  };
+};
+
+const setSelectedExam = (selectedExam: Exam) => {
+  return ({ setState }) => {
+    setState({ selectedExam });
   };
 };
 
@@ -126,6 +126,12 @@ const loadExams = () => {
   };
 };
 
+const rerender = () => {
+  return ({ setState, getState }) => {
+    setState({ exams: [].concat(getState().exams) });
+  };
+};
+
 // STORE INITIALIZATION
 const examsStore = createStore({
   initialState: <IExamsState>{
@@ -139,10 +145,8 @@ const examsStore = createStore({
     examsStatus: RequestStatus.IDLE,
   },
   actions: {
+    // PUBLIC ACTIONS
     setSelectedExam,
-    setTaskPdf,
-    setBuild,
-    setExams,
     setConversionStatus,
     setExportStatus,
     setBuildStatus,
@@ -150,8 +154,9 @@ const examsStore = createStore({
     convertToPdf,
     build,
     exportTaskPdf,
+    rerender,
   },
-  name: "authentication-store",
+  name: "exams-store",
 });
 
 // HOOK EXPORT

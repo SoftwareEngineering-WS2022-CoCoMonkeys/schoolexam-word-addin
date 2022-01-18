@@ -38,7 +38,7 @@ export default function ExamList(props: ExamListProps): JSX.Element {
             examsActions.setSelectedExam(exam);
           }
           // force rerender
-          examsActions.setExams([].concat(examsState.exams));
+          examsActions.rerender();
         }}
       >
         <div>
