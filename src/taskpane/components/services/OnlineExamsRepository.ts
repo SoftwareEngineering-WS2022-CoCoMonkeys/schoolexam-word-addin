@@ -3,12 +3,13 @@ import Build from "../../../import_dto/Build";
 import TemplateDTO from "../../../export_dto/TemplateDTO";
 import ApiService, { HttpMethod } from "./ApiService";
 import IExamsRepository from "./IExamsRepository";
+import ExamDTO from "../../../export_dto/ExamDTO";
 
 class OnlineExamsRepository implements IExamsRepository {
   getExams(): Promise<Exam[]> {
     return ApiService.request(HttpMethod.GET, "/Exam/ByTeacher")
       .then((response) => response.json())
-      .then((jsonArr) => jsonArr.map((e) => Exam.fromJson(JSON.stringify(e))));
+      .then((jsonArr) => jsonArr.map((e) => ExamDTO.fromJson(JSON.stringify(e)).toModel()));
   }
 
   getBuild(examId: string): Promise<Build> {

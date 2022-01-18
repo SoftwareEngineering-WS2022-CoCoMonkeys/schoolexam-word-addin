@@ -32,6 +32,7 @@
     "core-js": "^3.9.1",
     "es6-promise": "^4.2.8",
     "graceful-fs": "^4.2.8",
+    "jsdom": "^19.0.0",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
     "react-sweet-state": "^2.5.2",
@@ -89,7 +90,8 @@
     "extensionsToTreatAsEsm": [
       ".ts",
       ".tsx"
-    ]
+    ],
+    "testEnvironment": "jsdom"
   },
   "prettier": "office-addin-prettier-config",
   "browserslist": [

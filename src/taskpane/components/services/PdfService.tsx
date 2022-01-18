@@ -1,11 +1,8 @@
-import FileType = Office.FileType;
-import File = Office.File;
-
 export default class PdfService {
   static async getDocument(): Promise<string> {
     const promises: Promise<any[]>[] = [];
-    const result = await new Promise<Office.AsyncResult<File>>((resolve, reject) => {
-      Office.context.document.getFileAsync(FileType.Pdf, async (result) => {
+    const result = await new Promise<Office.AsyncResult<Office.File>>((resolve, reject) => {
+      Office.context.document.getFileAsync(Office.FileType.Pdf, async (result) => {
         if (result.status === Office.AsyncResultStatus.Succeeded) {
           resolve(result);
         } else {

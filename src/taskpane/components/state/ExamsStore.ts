@@ -161,7 +161,7 @@ const rerender = () => {
 };
 
 // STORE INITIALIZATION
-const examsStore = createStore({
+export const examsStore = createStore({
   initialState: <IExamsState>{
     selectedExam: null,
     taskPdf: null,
@@ -179,6 +179,7 @@ const examsStore = createStore({
     setConversionStatus,
     setExportStatus,
     setBuildStatus,
+    setExamsStatus,
     loadExams,
     convertToPdf,
     build,
