@@ -1,47 +1,44 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { List, MessageBar, MessageBarType, Spinner } from "@fluentui/react";
+import { useEffect } from "react";
+import { List, MessageBar, MessageBarType, Spinner, SpinnerSize } from "@fluentui/react";
 import Exam from "../../../import_dto/Exam";
 import "./ExamList.scss";
-import usePrep from "../state/PreparationStore";
-import ExamsRepository from "../services/OnlineExamsRepository";
 import RequestStatus from "../state/RequestStatus";
+import useExams from "../state/ExamsStore";
 
-export default function ExamList(_props: unknown): JSX.Element {
+interface ExamListProps {
+  unselectableExams: (Exam) => boolean;
+}
+
+export default function ExamList(props: ExamListProps): JSX.Element {
   // GLOBAL STATE
-  const [prepState, prepActions] = usePrep();
-
-  // LOCAL STATE
-  const [exams, setExams] = useState([]);
-  const [examsState, setExamsState] = useState(RequestStatus.IDLE);
+  const [examsState, examsActions] = useExams();
 
   // retrieve Exams from backend
   useEffect(() => {
-    setExamsState(RequestStatus.WAITING);
-    ExamsRepository.getExams()
-      .then((result) => {
-        setExams(result);
-        setExamsState(RequestStatus.SUCCESS);
-      })
-      .catch((reason) => {
-        console.warn("Exams retrieval failed with reason:", reason);
-        setExamsState(RequestStatus.ERROR);
-      });
+    examsActions.loadExams();
   }, []);
 
   // custom render function (anonymous component) for a single exam
   function onRenderExamCell(exam: Exam) {
+    // Only exams in the first two stages are available
+    const unselectable = props.unselectableExams(exam);
     return (
       <div
-        className={`exam-cell ${exam.equals(prepState.selectedExam) ? "selected-exam" : ""}`}
+        className={`exam-cell ${exam.equals(examsState.selectedExam) ? "selected-exam" : ""} ${
+          unselectable ? "unselectable-exam-cell" : "selectable-exam-cell"
+        }`}
         onClick={() => {
-          if (exam.equals(prepState.selectedExam)) {
-            prepActions.setSelectedExam(null);
+          if (unselectable) {
+            return;
+          }
+          if (exam.equals(examsState.selectedExam)) {
+            examsActions.setSelectedExam(null);
           } else {
-            prepActions.setSelectedExam(exam);
+            examsActions.setSelectedExam(exam);
           }
           // force rerender
-          setExams((prevState) => [].concat(prevState));
+          examsActions.rerender();
         }}
       >
         <div>
@@ -53,10 +50,10 @@ export default function ExamList(_props: unknown): JSX.Element {
   }
 
   const examList =
-    examsState !== RequestStatus.WAITING ? (
-      <List id="exam-list" items={exams} onRenderCell={onRenderExamCell} />
+    examsState.examsStatus !== RequestStatus.WAITING ? (
+      <List id="exam-list" items={examsState.exams} onRenderCell={onRenderExamCell} />
     ) : (
-      <Spinner />
+      <Spinner size={SpinnerSize.large} />
     );
 
   return (

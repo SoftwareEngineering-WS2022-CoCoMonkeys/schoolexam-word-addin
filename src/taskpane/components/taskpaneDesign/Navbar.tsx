@@ -4,21 +4,16 @@ import TaskView from "../task/TaskView";
 import ExportView from "../export/ExportView";
 import "./Navbar.scss";
 import StructureNavbar from "../structural/StructureNavbar";
-import useTasks from "../state/TaskStore";
+import { useTasks } from "../state/DocumentStore";
 import SubmissionsView from "../submissions/SubmissionsView";
 
 export default function Navbar(_props: unknown): JSX.Element {
-  const [taskState, taskActions] = useTasks();
+  const [taskList] = useTasks();
 
   return (
     <div id="navbar">
       <Pivot aria-label="NavigationBar">
-        <PivotItem
-          className="pivot-item"
-          headerText="Aufgaben"
-          itemCount={taskState.taskList.getLength()}
-          itemIcon="Dictionary"
-        >
+        <PivotItem className="pivot-item" headerText="Aufgaben" itemCount={taskList.getLength()} itemIcon="Dictionary">
           <TaskView />
         </PivotItem>
         <PivotItem className="pivot-item" headerText="Struktur" itemIcon="BulletedTreeList">

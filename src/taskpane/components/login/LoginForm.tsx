@@ -1,46 +1,26 @@
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MessageBar, MessageBarType, PrimaryButton, Spinner, SpinnerSize, TextField } from "@fluentui/react";
 import "./LoginForm.scss";
-import usePrep from "../state/PreparationStore";
-import AuthentificationRepository from "../services/OnlineAuthenticationRepository";
 import RequestStatus from "../state/RequestStatus";
+import useAuth from "../state/AuthenticationStore";
 
 export default function LoginForm(_props: unknown): JSX.Element {
   // GLOBAL STATE
-  const [prepState, prepActions] = usePrep();
+  const [authState, authActions] = useAuth();
 
   // LOCAL STATE
   const [username, setUsername] = useState(null as string);
   const [password, setPassword] = useState(null as string);
-  const [loginState, setLoginState] = useState(RequestStatus.IDLE);
-
-  async function submitLogin() {
-    setLoginState(RequestStatus.WAITING);
-    try {
-      const authData = await AuthentificationRepository.login(username, password);
-      prepActions.setAuthData(authData);
-      setLoginState(RequestStatus.SUCCESS);
-      setTimeout(() => {
-        // Return to main screen
-        prepActions.setLoggedIn(true);
-        setLoginState(RequestStatus.IDLE);
-        prepActions.setDisplayLogin(false);
-      }, 1000);
-    } catch (e) {
-      console.error(e);
-      setLoginState(RequestStatus.ERROR);
-    }
-  }
 
   let loginMessage: unknown = "";
-  switch (loginState) {
+  switch (authState.loginStatus) {
     case RequestStatus.SUCCESS:
       loginMessage = (
         <MessageBar
           messageBarType={MessageBarType.success}
           isMultiline={true}
-          onDismiss={() => setLoginState(RequestStatus.IDLE)}
+          onDismiss={() => authActions.setLoginStatus(RequestStatus.IDLE)}
           dismissButtonAriaLabel="Close"
         >
           Erfolgreich eingeloggt!
@@ -52,7 +32,7 @@ export default function LoginForm(_props: unknown): JSX.Element {
         <MessageBar
           messageBarType={MessageBarType.error}
           isMultiline={true}
-          onDismiss={() => setLoginState(RequestStatus.IDLE)}
+          onDismiss={() => authActions.setLoginStatus(RequestStatus.IDLE)}
           dismissButtonAriaLabel="Close"
         >
           Ungültige Kombination aus Nutzername und Passwort
@@ -62,6 +42,7 @@ export default function LoginForm(_props: unknown): JSX.Element {
     default:
       loginMessage = "";
   }
+
   return (
     <div id="login-form">
       {loginMessage}
@@ -80,10 +61,10 @@ export default function LoginForm(_props: unknown): JSX.Element {
         <PrimaryButton
           id="submit-login-btn"
           className="margin-top1"
-          onClick={submitLogin}
-          text={loginState !== RequestStatus.WAITING ? "Einloggen" : undefined}
+          onClick={() => authActions.login(username, password)}
+          text={authState.loginStatus !== RequestStatus.WAITING ? "Einloggen" : undefined}
         >
-          {loginState === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
+          {authState.loginStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
         </PrimaryButton>
       </form>
     </div>

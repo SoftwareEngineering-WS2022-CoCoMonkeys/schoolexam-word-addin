@@ -3,16 +3,18 @@ import * as React from "react";
 import "./DocumentTitlePage.scss";
 import { getTitlePlaceHolderBase64 } from "./StructuralUtil";
 import CalendarInlineOverlaidMonth from "./Calendar";
-import usePrep from "../state/PreparationStore";
+import { useQrCode } from "../state/DocumentStore";
 import ContentControlAppearance = Word.ContentControlAppearance;
 
 export default function DocumentTitlePage(_props: unknown): JSX.Element {
   const [examDate, setExamDate] = React.useState(new Date());
+
   const defaultCourseName = "Mathematik Klasse 8a";
   const [courseName, setCourseName] = React.useState(defaultCourseName);
+
   const defaultExamTitle = "1. Schulaufgabe";
   const [examTitle, setExamTitle] = React.useState(defaultExamTitle);
-  const [prepState, prepActions] = usePrep();
+  const [qrCodeState, qrCodeActions] = useQrCode();
 
   const onChangeExamNameTextFieldValue = React.useCallback(
     (_event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
@@ -59,7 +61,6 @@ export default function DocumentTitlePage(_props: unknown): JSX.Element {
         contentControl.title = "title-qr-code";
 
         // Warning: setting cannot edit breaks this content control
-
         contentControl.insertInlinePictureFromBase64(getTitlePlaceHolderBase64(), Word.InsertLocation.start);
         contentControl.inlinePictures.getFirst().hyperlink = "http://studentQrCode";
 
@@ -78,7 +79,7 @@ export default function DocumentTitlePage(_props: unknown): JSX.Element {
         // persist title QR Code id
         contentControl.load("id");
         await context.sync();
-        await prepActions.setTitleQrCodeCcId(contentControl.id);
+        await qrCodeActions.setTitleQrCodeCcId(contentControl.id);
       }
     });
   }

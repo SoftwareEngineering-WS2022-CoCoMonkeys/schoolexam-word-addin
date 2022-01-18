@@ -159,11 +159,11 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
     }
   }
 
-  reviver(_key: string, value: unknown): unknown {
+  reviver(key: string, value: unknown): unknown {
     if (value == null) {
       return null;
     }
-    if (value["_tasks"] != null) {
+    if (key === "") {
       return Object.assign(new TaskList(), value);
     }
     if (value["_taskId"] != null) {
@@ -174,7 +174,6 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
   }
 
   newEmpty(): TaskList {
-    const t = new TaskList();
-    return t;
+    return new TaskList();
   }
 }

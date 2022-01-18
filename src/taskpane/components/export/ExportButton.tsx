@@ -1,68 +1,46 @@
 import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
-import { useState } from "react";
 import "./ExportButton.scss";
-import TemplateDTO from "../../../export_dto/TemplateDTO";
-import useTasks from "../state/TaskStore";
-import usePrep from "../state/PreparationStore";
-import ExamsRepository from "../services/OnlineExamsRepository";
 import ExportChecklist from "./ExportChecklist";
 import RequestStatus from "../state/RequestStatus";
+import { useLoggedIn } from "../state/AuthenticationStore";
+import useExams from "../state/ExamsStore";
+import useDocument from "../state/DocumentStore";
+import { useEffect } from "react";
 
 export default function ExportButton(_props: unknown): JSX.Element {
   // GLOBAL STATE
-  const [taskState] = useTasks();
-  const [prepState] = usePrep();
-
-  // LOCAL STATE
-  const [exportStatus, setExportStatus] = useState(RequestStatus.IDLE);
-
-  async function exportExam() {
-    setExportStatus(RequestStatus.WAITING);
-
-    // remove and re-insert linkContentControls
-    await taskState.taskList.removeLinkContentControlsAsync();
-    await taskState.taskList.insertLinkContentControlsAsync();
-
-    const exportData = new TemplateDTO(prepState.taskPdf, taskState.taskList.assembleDTO());
-    try {
-      await ExamsRepository.setTaskPdf(prepState.selectedExam.id, exportData);
-      setExportStatus(RequestStatus.SUCCESS);
-
-      // TODO reload exams
-    } catch (e) {
-      console.warn("Export failed with reason", e);
-      setExportStatus(RequestStatus.ERROR);
-    }
-  }
+  const [documentState] = useDocument();
+  const [loggedIn] = useLoggedIn();
+  const [examsState, examsActions] = useExams();
 
   const errorDialogContentProps = {
     type: DialogType.normal,
     title: "Export gescheitert",
-    subText: "Der Export ist fehlgeschlagen",
+    subText: "Der Export ist fehlgeschlagen.",
   };
 
   return (
     <div>
       <Dialog
-        hidden={exportStatus !== RequestStatus.ERROR}
-        onDismiss={() => setExportStatus(RequestStatus.IDLE)}
+        hidden={examsState.exportStatus !== RequestStatus.ERROR}
+        onDismiss={() => examsActions.setExportStatus(RequestStatus.IDLE)}
         dialogContentProps={errorDialogContentProps}
       >
         <DialogFooter>
-          <DefaultButton onClick={() => setExportStatus(RequestStatus.IDLE)} text="Ok" />
+          <DefaultButton onClick={() => examsActions.setExportStatus(RequestStatus.IDLE)} text="Ok" />
         </DialogFooter>
       </Dialog>
-      <ExportChecklist></ExportChecklist>
+      <ExportChecklist />
       <PrimaryButton
         id="export-btn"
         disabled={
-          !prepState.loggedIn || !prepState.taskPdf || !prepState.selectedExam || !prepState.qrCode.bothArePresent()
+          !loggedIn || !examsState.taskPdf || !examsState.selectedExam || !documentState.qrCode.bothArePresent()
         }
-        onClick={exportExam}
-        text={exportStatus === RequestStatus.WAITING ? "Dokument exportieren" : ""}
+        onClick={() => examsActions.exportTaskPdf(documentState.taskList.assembleDTO())}
+        text={examsState.exportStatus !== RequestStatus.WAITING ? "Dokument exportieren" : ""}
       >
-        {exportStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
+        {examsState.exportStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
       </PrimaryButton>
     </div>
   );
