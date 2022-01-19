@@ -1,5 +1,5 @@
-import Exam from "../../../model/Exam";
-import Build from "../../../model/Build";
+import Exam from "../model/Exam";
+import Build from "../model/Build";
 import RequestStatus from "./RequestStatus";
 
 /**

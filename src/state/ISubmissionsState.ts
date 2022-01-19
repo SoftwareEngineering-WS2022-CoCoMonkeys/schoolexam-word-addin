@@ -1,5 +1,5 @@
 import RequestStatus from "./RequestStatus";
-import Submission from "../../../model/Submission";
+import Submission from "../model/Submission";
 
 /**
  * Global submissions-related state

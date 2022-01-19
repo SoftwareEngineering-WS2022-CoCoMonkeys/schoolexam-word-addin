@@ -1,8 +1,8 @@
 import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
-import { useTasks } from "../state/DocumentStore";
-import RequestStatus, { isErroneousStatus } from "../state/RequestStatus";
-import useDocument from "../state/ExamsStore";
+import { useTasks } from "../../../store/DocumentStore";
+import RequestStatus, { isErroneousStatus } from "../../../state/RequestStatus";
+import useDocument from "../../../store/ExamsStore";
 
 /**
  * React component that wraps a button that, when clicked, triggers the conversion of the opened Word document via

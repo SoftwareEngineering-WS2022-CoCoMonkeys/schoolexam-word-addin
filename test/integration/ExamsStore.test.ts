@@ -1,14 +1,14 @@
 // MOCK SETUP
 import { mockFetch } from "./MockSetup";
 
-import { examsStore } from "../../src/taskpane/components/state/ExamsStore";
-import RequestStatus from "../../src/taskpane/components/state/RequestStatus";
+import { examsStore } from "../../src/store/ExamsStore";
+import RequestStatus from "../../src/state/RequestStatus";
 import { jest } from "@jest/globals";
 import { v4 as uuidv4 } from "uuid";
 
-import { HttpMethod } from "../../src/taskpane/components/services/ApiService";
+import { HttpMethod } from "../../src/services/ApiService";
 import ExamDTO from "../../src/dto/ExamDTO";
-import IExamsState from "../../src/taskpane/components/state/IExamsState";
+import IExamsState from "../../src/state/IExamsState";
 import Task from "../../src/word/Task";
 import TaskList from "../../src/word/TaskList";
 import Exam, { ExamStatus } from "../../src/model/Exam";
@@ -166,6 +166,7 @@ describe("exportTaskPdf()", () => {
           method: HttpMethod.POST,
           response: {},
           responseStatus: 200,
+          acceptIf: (jsonData: any) => jsonData.taskPdf != null && jsonData.tasks.length === mockTaskList.getLength(),
         },
         {
           url: `https://cocomonkeys-schoolexam.herokuapp.com/exam/byteacher`,

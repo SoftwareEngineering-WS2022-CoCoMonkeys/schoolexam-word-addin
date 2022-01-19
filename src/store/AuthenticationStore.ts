@@ -1,8 +1,8 @@
 import { createHook, createStore } from "react-sweet-state";
-import IAuthenticationState from "./IAuthenticationState";
-import RequestStatus from "./RequestStatus";
-import AuthenticationRepository from "../services/OnlineAuthenticationRepository";
-import Authentication from "../../../model/Authentication";
+import IAuthenticationState from "../state/IAuthenticationState";
+import RequestStatus from "../state/RequestStatus";
+import AuthenticationRepository from "../repository/OnlineAuthenticationRepository";
+import Authentication from "../model/Authentication";
 import ServerError from "../services/ServerError";
 
 // ACTIONS

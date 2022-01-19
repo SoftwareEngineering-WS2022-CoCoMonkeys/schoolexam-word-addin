@@ -1,11 +1,11 @@
 // MOCK SETUP
 import { mockFetch } from "./MockSetup";
-import RequestStatus from "../../src/taskpane/components/state/RequestStatus";
+import RequestStatus from "../../src/state/RequestStatus";
 import { jest } from "@jest/globals";
 
-import { HttpMethod } from "../../src/taskpane/components/services/ApiService";
-import IAuthenticationState from "../../src/taskpane/components/state/IAuthenticationState";
-import { authenticationStore } from "../../src/taskpane/components/state/AuthenticationStore";
+import { HttpMethod } from "../../src/services/ApiService";
+import IAuthenticationState from "../../src/state/IAuthenticationState";
+import { authenticationStore } from "../../src/store/AuthenticationStore";
 import Authentication from "../../src/model/Authentication";
 import User from "../../src/model/User";
 import Person from "../../src/model/Person";

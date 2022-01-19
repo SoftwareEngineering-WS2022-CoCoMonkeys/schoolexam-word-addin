@@ -9,7 +9,7 @@ import { ExamStatus } from "../../../model/Exam";
  * React component that organizes the submissions-related components.
  * @component
  */
-export default function SubmissionsView(_props: unknown): JSX.Element {
+export default function SubmissionsView(): JSX.Element {
   return (
     <Stack horizontal={false} horizontalAlign="center" verticalAlign="center" tokens={{ childrenGap: 20 }}>
       <Stack horizontal={true} styles={{ root: { height: 44 } }} tokens={{ childrenGap: 10 }}>

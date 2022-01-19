@@ -1,12 +1,12 @@
 import { createHook, createStore } from "react-sweet-state";
-import Exam, { ExamStatus } from "../../../model/Exam";
-import Build from "../../../model/Build";
-import RequestStatus from "./RequestStatus";
+import Exam, { ExamStatus } from "../model/Exam";
+import Build from "../model/Build";
+import RequestStatus from "../state/RequestStatus";
 import PdfService from "../services/PdfService";
 import downloadFileBase64 from "../services/DownloadService";
-import ExamsRepository from "../services/OnlineExamsRepository";
-import IExamsState from "./IExamsState";
-import ITaskList from "../../../word/ITaskList";
+import ExamsRepository from "../repository/OnlineExamsRepository";
+import IExamsState from "../state/IExamsState";
+import ITaskList from "../word/ITaskList";
 import ServerError from "../services/ServerError";
 
 // ACTIONS

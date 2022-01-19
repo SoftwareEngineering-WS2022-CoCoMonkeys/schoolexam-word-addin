@@ -16,13 +16,21 @@ export default class TemplateDTO implements IDTO<{ taskPdf: string; tasks: ITask
     this.tasks = tasks;
   }
 
-  static fromModel(taskPdf: string, model: ITaskList) {
+  /**
+   * Create DTO from model object
+   * @param taskPdf The PDF document to set for this template.
+   * @param model The tasks to be associated with this template.
+   */
+  static fromModel(taskPdf: string, model: ITaskList): TemplateDTO {
     return new TemplateDTO(
       taskPdf,
       model.tasks.map((t) => TaskDTO.fromModel(t))
     );
   }
 
+  /**
+   * @inheritDoc
+   */
   toModel(): { taskPdf: string; tasks: ITaskList } {
     throw new Error("Method not implemented.");
   }

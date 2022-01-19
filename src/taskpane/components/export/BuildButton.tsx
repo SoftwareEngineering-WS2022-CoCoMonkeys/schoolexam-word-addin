@@ -10,9 +10,9 @@ import {
 } from "@fluentui/react";
 import * as React from "react";
 import { ExamStatus } from "../../../model/Exam";
-import RequestStatus, { isErroneousStatus } from "../state/RequestStatus";
-import useExams from "../state/ExamsStore";
-import { useLoggedIn } from "../state/AuthenticationStore";
+import RequestStatus, { isErroneousStatus } from "../../../state/RequestStatus";
+import useExams from "../../../store/ExamsStore";
+import { useLoggedIn } from "../../../store/AuthenticationStore";
 import TooltipCheckList, { CheckListItem } from "./TooltipCheckList";
 
 /**

@@ -26,9 +26,15 @@ export function mockFetch(
     for (const route of routes) {
       const { url, method, response, responseStatus, acceptIf } = route;
       // Do not reject if acceptIf is undefined
-      if (acceptIf && !acceptIf(JSON.parse(<string>config.body))) {
+      try {
+        if (acceptIf && !acceptIf(JSON.parse(<string>config.body))) {
+          continue;
+        }
+      } catch (e) {
+        // JSON parse failed
         continue;
       }
+
       if (passedUrl.toLowerCase() === url.toLowerCase() && config.method === method) {
         return Promise.resolve({
           json: () => Promise.resolve(response),

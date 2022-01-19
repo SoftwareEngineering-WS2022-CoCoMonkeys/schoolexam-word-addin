@@ -17,15 +17,26 @@ export default class BuildDTO implements IDTO<Build> {
     this.qrCodePdfFile = qrCodePdfFile;
   }
 
+  /**
+   * Create DTO from JSON string.
+   * @param json The typed object.
+   */
   static fromJson(json: string): BuildDTO {
     // @ts-ignore
     return Object.assign(new BuildDTO(), JSON.parse(json));
   }
 
+  /**
+   * Create DTO from model object
+   * @param model The model object.
+   */
   static fromModel(model: Build): BuildDTO {
     return new BuildDTO(model.count, model.pdfFile, model.qrCodePdfFile);
   }
 
+  /**
+   * @inheritDoc
+   */
   toModel(): Build {
     return new Build(this.count, this.pdfFile, this.qrCodePdfFile);
   }

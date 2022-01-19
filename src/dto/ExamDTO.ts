@@ -21,6 +21,10 @@ export default class ExamDTO {
     this.participants = participants;
   }
 
+  /**
+   * Create DTO from JSON string.
+   * @param json The typed object.
+   */
   static fromJson(json: string): ExamDTO {
     function reviver(key, value) {
       if (key === "") {
@@ -33,6 +37,10 @@ export default class ExamDTO {
     return JSON.parse(json, reviver);
   }
 
+  /**
+   * Create DTO from model object
+   * @param model The model object.
+   */
   static fromModel(model: Exam): ExamDTO {
     return new ExamDTO(
       model.id,
@@ -44,6 +52,9 @@ export default class ExamDTO {
     );
   }
 
+  /**
+   * @inheritDoc
+   */
   toModel(): Exam {
     return new Exam(this.id, this.status as ExamStatus, this.title, new Date(this.date), this.topic, this.participants);
   }

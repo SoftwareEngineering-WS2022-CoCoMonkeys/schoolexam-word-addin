@@ -1,10 +1,10 @@
 import { createHook, createStore } from "react-sweet-state";
-import TaskList from "../../../word/TaskList";
-import Task from "../../../word/Task";
-import IDocumentState from "./IDocumentState";
-import QrCode from "../../../word/QrCode";
-import ITaskList from "../../../word/ITaskList";
-import { getQrCodeBase64, getTitlePlaceHolderBase64 } from "../structural/StructuralUtil";
+import TaskList from "../word/TaskList";
+import Task from "../word/Task";
+import IDocumentState from "../state/IDocumentState";
+import QrCode from "../word/QrCode";
+import ITaskList from "../word/ITaskList";
+import { getQrCodeBase64, getTitlePlaceHolderBase64 } from "../taskpane/components/structural/StructuralUtil";
 
 // ACTIONS
 /**
@@ -231,7 +231,7 @@ const createFooter = () => {
  * This step has to take place before exporting the document because it embeds the student QR-Code placeholder.
  */
 const createHeader = (headerText: string) => {
-  return async ({}) => {
+  return async () => {
     return Word.run(async (context) => {
       const header = context.document.sections.getFirst().getHeader(Word.HeaderFooterType.primary);
       header.clear();

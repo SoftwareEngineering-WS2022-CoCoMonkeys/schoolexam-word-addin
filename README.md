@@ -6,6 +6,7 @@
 ![logo](assets/schoolexam-logo.png)
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 An Add-In for Microsoft Word as part of the Schoolexam system. The Add-In is purposed to:
@@ -22,6 +23,8 @@ An Add-In for Microsoft Word as part of the Schoolexam system. The Add-In is pur
 * [Yeoman Generator](https://github.com/OfficeDev/generator-office)
 * [React.js](https://reactjs.org/) and [react-sweet-state](https://github.com/atlassian/react-sweet-state)
 * [Typescript](https://www.typescriptlang.org/)
+* [Word JavaScript API](https://docs.microsoft.com/de-de/office/dev/add-ins/reference/overview/word-add-ins-reference-overview)
+* [Jest](https://jestjs.io/)
 
 ## Getting Started
 
@@ -43,20 +46,11 @@ to run on Windows 10.
    ```sh
    npm install
    ```
-3. Run in production mode
+3. Run
    ```sh
-   npm build
+   npm start
    ```
-
-**OR**
-
-3. Run in debug mode
-
-   ```sh
-   npm debug
-   ```
-
-**NOTE**: You might be asked to accept a certificate from localhost. This is necessary to load the Add-In.
+**NOTE**: You might be asked to accept a certificate from localhost. This is necessary to load the Add-In. 
 
 ## Usage
 
@@ -92,8 +86,8 @@ The central navigation bar gives a good overlook over what's possible.
 - Support exams (writing tasks) that have a grading scheme different from points
 - Add additional pages dynamically during exams based on demand
 
-See the [open issues](https://github.com/SoftwareEngineering-WS2022-CoCoMonkeys/schoolexam-word-addin/issues) for a full list of proposed features (and
-known issues).
+See the [open issues](https://github.com/SoftwareEngineering-WS2022-CoCoMonkeys/schoolexam-word-addin/issues) for a full
+list of proposed features (and known issues).
 
 <!-- LICENSE -->
 

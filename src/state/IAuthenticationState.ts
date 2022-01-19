@@ -1,5 +1,5 @@
 import RequestStatus from "./RequestStatus";
-import Authentication from "../../../model/Authentication";
+import Authentication from "../model/Authentication";
 
 /**
  * Global authentication-related state.

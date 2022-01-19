@@ -19,7 +19,7 @@ const enum RequestStatus {
   INVALID = "INVALID",
 }
 
-export function isErroneousStatus(status: RequestStatus) {
+export function isErroneousStatus(status: RequestStatus): boolean {
   return (
     status === RequestStatus.SERVER_ERROR ||
     status === RequestStatus.INVALID ||

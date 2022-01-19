@@ -18,10 +18,17 @@ export default class TaskDTO implements IDTO<ITask> {
     this.maxPoints = maxPoints;
   }
 
+  /**
+   * Create DTO from model object
+   * @param model The model object.
+   */
   static fromModel(model: ITask): TaskDTO {
     return new TaskDTO(model.id, model.title, model.maxPoints);
   }
 
+  /**
+   * @inheritDoc
+   */
   toModel(): ITask {
     throw new Error("Method not implemented.");
   }

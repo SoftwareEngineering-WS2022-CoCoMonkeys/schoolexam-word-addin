@@ -1,7 +1,7 @@
 import * as React from "react";
 import "./Header.scss";
 import { ActionButton, IIconProps, Stack } from "@fluentui/react";
-import useAuth from "../state/AuthenticationStore";
+import useAuth from "../../../store/AuthenticationStore";
 
 /**
  * Header row displayed above the main navigation bar.

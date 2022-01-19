@@ -12,10 +12,17 @@ export default class SubmissionDTO implements IDTO<Submission> {
     this.pdf = pdf;
   }
 
+  /**
+   * Create DTO from model object
+   * @param model The model object.
+   */
   static fromModel(model: Submission): SubmissionDTO {
     return new SubmissionDTO(model.pdf);
   }
 
+  /**
+   * @inheritDoc
+   */
   toModel(): Submission {
     throw new Error("Method not implemented.");
   }
