@@ -4,11 +4,19 @@ import RequestStatus from "../state/RequestStatus";
 import { useLoggedIn } from "../state/AuthenticationStore";
 import useExams from "../state/ExamsStore";
 import useDocument from "../state/DocumentStore";
-import { useId } from "@fluentui/react-hooks";
 import { ExamStatus } from "../../../model/Exam";
 import TooltipCheckList, { CheckListItem } from "./TooltipCheckList";
 
-export default function ExportButton(_props: unknown): JSX.Element {
+/**
+ * React component that wraps a button that, when clicked, uploads the latest {@link IExamsState.taskPdf}
+ * of the open Word document as the task pdf for the exam selected in {@link IExamsState.selectedExam} via the exams
+ * MicroStore(see {@link useExams}).
+ * Several conditions have to be fulfilled before the button can be clicked. These conditions
+ * are presented in a {@link TooltipCheckList} format on hover.
+ * If the export fails for whatever reason, an error dialog is displayed.
+ * @component
+ */
+export default function ExportButton(): JSX.Element {
   // GLOBAL STATE
   const [documentState] = useDocument();
   const [loggedIn] = useLoggedIn();
@@ -34,11 +42,13 @@ export default function ExportButton(_props: unknown): JSX.Element {
       'Prüfung ist "Geplant", "Kompilierbereit" oder "Einreichungsbereit"'
     ),
   ];
-  const checkListFullfilled = exportCheckList.map((item) => item.condition).reduce((a, b) => a && b);
+
+  /** Whether the button is enabled */
+  const checkListFulfilled = exportCheckList.map((item) => item.status).reduce((a, b) => a && b);
 
   const exportBtn = (
     <PrimaryButton
-      disabled={!checkListFullfilled}
+      disabled={!checkListFulfilled}
       onClick={() => examsActions.exportTaskPdf(documentState.taskList)}
       text={examsState.exportStatus !== RequestStatus.WAITING ? "Dokument exportieren" : ""}
     >
@@ -49,7 +59,6 @@ export default function ExportButton(_props: unknown): JSX.Element {
   return (
     <>
       <Dialog
-        className="dialog"
         hidden={examsState.exportStatus !== RequestStatus.ERROR}
         onDismiss={() => examsActions.setExportStatus(RequestStatus.IDLE)}
         dialogContentProps={errorDialogContentProps}

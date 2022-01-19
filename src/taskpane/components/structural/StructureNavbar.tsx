@@ -4,7 +4,11 @@ import PageHeader from "./PageHeader";
 import PageFooter from "./PageFooter";
 import DocumentTitlePage from "./DocumentTitlePage";
 
-export default function StructureNavbar(_props: unknown): JSX.Element {
+/**
+ * React component organizes the components associated with document structure (header, front page, footer).
+ * @component
+ */
+export default function StructureNavbar(): JSX.Element {
   return (
     <Pivot
       className="pivot"

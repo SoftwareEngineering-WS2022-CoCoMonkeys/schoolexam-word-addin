@@ -13,10 +13,17 @@ import { ExamStatus } from "../../../model/Exam";
 import RequestStatus from "../state/RequestStatus";
 import useExams from "../state/ExamsStore";
 import { useLoggedIn } from "../state/AuthenticationStore";
-import { useId } from "@fluentui/react-hooks";
 import TooltipCheckList, { CheckListItem } from "./TooltipCheckList";
 
-export default function BuildButton(_props: unknown): JSX.Element {
+/**
+ * React component that wraps a button that, when clicked, triggers the build of the
+ * {@link IExamsState.selectedExam} via the exams MicroStore
+ * ({@link useExams}). Several conditions have to be fulfilled before the button can be clicked. These conditions
+ * are presented in a {@link TooltipCheckList} format on hover.
+ * If the build fails for whatever reason, an error dialog is displayed.
+ * @component
+ */
+export default function BuildButton(): JSX.Element {
   // GLOBAL STATE
   const [examsState, examsActions] = useExams();
   const [loggedIn] = useLoggedIn();
@@ -31,7 +38,8 @@ export default function BuildButton(_props: unknown): JSX.Element {
       'Prüfung ist "Kompilierbereit" oder "Einreichungsbereit"'
     ),
   ];
-  const checkListFullfilled = buildCheckList.map((item) => item.condition).reduce((a, b) => a && b);
+  /** Whether the button is enabled */
+  const checkListFulfilled = buildCheckList.map((item) => item.status).reduce((a, b) => a && b);
 
   const buildDialogContentProps: IDialogContentProps = {
     type: DialogType.normal,
@@ -42,7 +50,7 @@ export default function BuildButton(_props: unknown): JSX.Element {
   const buildBtn = (
     <PrimaryButton
       onClick={examsActions.build}
-      disabled={!checkListFullfilled}
+      disabled={!checkListFulfilled}
       text={examsState.buildStatus !== RequestStatus.WAITING ? "Kompilieren" : ""}
     >
       {examsState.buildStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
@@ -52,7 +60,6 @@ export default function BuildButton(_props: unknown): JSX.Element {
   return (
     <>
       <Dialog
-        className="dialog"
         onDismiss={() => examsActions.setBuildStatus(RequestStatus.IDLE)}
         hidden={examsState.buildStatus !== RequestStatus.ERROR}
         dialogContentProps={buildDialogContentProps}

@@ -1,12 +1,27 @@
 import ITask from "./ITask";
 
+/**
+ * A task that that uses {@link Word.ContentControl} to link to regions in the document.
+ */
 export default class Task implements ITask {
+  /**
+   * @inheritDoc
+   */
   readonly id: string;
+  /**
+   * @inheritDoc
+   */
   title: string;
+  /**
+   * @inheritDoc
+   */
   maxPoints: number;
 
+  /** The ID of the {@link Word.ContentControl} associated with the whole task */
   private readonly _ccId: number;
+  /** The ID of the {@link Word.ContentControl} associated with the start of this task */
   private _startLinkCcId: number | null;
+  /** The ID of the {@link Word.ContentControl} associated with the end of this task */
   private _endLinkCcId: number | null;
 
   constructor(
@@ -29,14 +44,24 @@ export default class Task implements ITask {
     return this._ccId;
   }
 
+  /**
+   * @inheritDoc
+   */
   jumpToAsync(): Promise<void> {
     return Word.run(async (context) => this.jumpTo(context));
   }
 
+  /**
+   * @inheritDoc
+   */
   editAsync(fieldName: string, newValue: string | number): Promise<void> {
     return Word.run(async (context) => this.edit(context, fieldName, newValue));
   }
 
+  /**
+   * Asynchronously jump to the position of this task in the document.
+   * @param context The current Word request context.
+   */
   async jumpTo(context: Word.RequestContext): Promise<void> {
     const contentControl = this.getAssociatedContentControl(context);
     const range = contentControl.getRange(Word.RangeLocation.whole);
@@ -45,6 +70,12 @@ export default class Task implements ITask {
     await context.sync();
   }
 
+  /**
+   * Asynchronously edit this task.
+   * @param context The current Word request context.
+   * @param fieldName The field to edit.
+   * @param newValue The new value of the field.
+   */
   async edit(context: Word.RequestContext, fieldName: string, newValue: string | number): Promise<void> {
     switch (fieldName) {
       case "title": {
@@ -64,6 +95,11 @@ export default class Task implements ITask {
     await context.sync();
   }
 
+  /**
+   * Asynchronously prepare this task for deletion from a collection of tasks by removing its enclosing
+   * {@link Word.ContentControl}.
+   * @param context The current Word request context.
+   */
   async prepareForDeletion(context: Word.RequestContext): Promise<void> {
     // delete associated content control
     const contentControl = this.getAssociatedContentControl(context);
@@ -75,18 +111,34 @@ export default class Task implements ITask {
     await context.sync();
   }
 
+  /**
+   * @param context The current Word request context.
+   * @returns The {@link Word.ContentControl} associated with this whole task
+   */
   getAssociatedContentControl(context: Word.RequestContext): Word.ContentControl | null {
     return context.document.contentControls.getByIdOrNullObject(this._ccId);
   }
 
+  /**
+   * @param context The current Word request context.
+   * @returns The {@link Word.ContentControl} associated with the start of this task
+   */
   getStartLinkContentControl(context: Word.RequestContext): Word.ContentControl | null {
     return context.document.contentControls.getByIdOrNullObject(this._startLinkCcId);
   }
 
+  /**
+   * @param context The current Word request context.
+   * @returns The {@link Word.ContentControl} associated with the end of this task
+   */
   getEndLinkContentControl(context: Word.RequestContext): Word.ContentControl | null {
     return context.document.contentControls.getByIdOrNullObject(this._endLinkCcId);
   }
 
+  /**
+   * Asynchronously remove the link {@link Word.ContentControl} (start/end) from the document.
+   * @param context The current Word request context.
+   */
   async removeLinkContentControls(context: Word.RequestContext): Promise<void> {
     if (this._startLinkCcId != null) {
       const startLinkContentControl = this.getStartLinkContentControl(context);
@@ -109,6 +161,10 @@ export default class Task implements ITask {
     await context.sync();
   }
 
+  /**
+   * Asynchronously insert the link {@link Word.ContentControl} (start/end) int the document.
+   * @param context The current Word request context.
+   */
   async insertLinkContentControls(context: Word.RequestContext): Promise<void> {
     const contentControl = this.getAssociatedContentControl(context);
 

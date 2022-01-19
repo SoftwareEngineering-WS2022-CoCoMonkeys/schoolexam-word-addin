@@ -1,44 +1,38 @@
 import * as React from "react";
 import { useEffect } from "react";
-import Progress from "./Progress";
 import "./App.scss";
 import Navbar from "./taskpaneDesign/Navbar";
 import LoginView from "./login/LoginView";
 import Header from "./taskpaneDesign/Header";
 import useAuth from "./state/AuthenticationStore";
 import useDocument from "./state/DocumentStore";
-import { v4 as uuidv4 } from "uuid";
-import { Stack } from "@fluentui/react";
+import { Spinner, SpinnerSize, Stack } from "@fluentui/react";
 
-/* global Word, require */
-
+/**
+ * Properties of {@link App}
+ */
 export interface AppProps {
-  title: string;
+  /** Whether Office has been initialized */
   isOfficeInitialized: boolean;
 }
 
+/**
+ * Entrypoint to the App.
+ * @component
+ */
 export default function App(props: AppProps): JSX.Element {
-  const [documentState, documentActions] = useDocument();
+  const [, documentActions] = useDocument();
   const [authState] = useAuth();
 
-  const { title, isOfficeInitialized } = props;
-
-  if (!isOfficeInitialized) {
-    return (
-      <Progress
-        title={title}
-        logo={require("../../../assets/logo-filled.png")}
-        message="Please sideload your addin to see app body."
-      />
-    );
-  }
-
+  // Load data persisted in word (tasks, QR-Code)
   useEffect(() => {
-    for (let i = 0; i < 10; i++) {
-      console.log(uuidv4());
-    }
     documentActions.load();
   }, []);
+
+  // Display loading animation until Office is ready
+  if (!props.isOfficeInitialized) {
+    return <Spinner size={SpinnerSize.large} />;
+  }
 
   const mainContent = authState.displayLogin ? <LoginView /> : <Navbar />;
 

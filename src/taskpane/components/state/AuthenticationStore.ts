@@ -5,24 +5,38 @@ import AuthentificationRepository from "../services/OnlineAuthenticationReposito
 import Authentication from "../../../model/Authentication";
 
 // ACTIONS
+/**
+ * @param displayLogin Whether to display the login form..
+ */
 const setDisplayLoginPage = (displayLogin: boolean) => {
   return ({ setState }) => {
     setState({ displayLogin });
   };
 };
 
+/**
+ * @param loginStatus The new login status.
+ */
 const setLoginStatus = (loginStatus: RequestStatus) => {
   return ({ setState }) => {
     setState({ loginStatus });
   };
 };
 
+/**
+ * @param authData The new authentication data.
+ */
 const setAuthData = (authData: Authentication) => {
   return ({ setState }) => {
     setState({ authData });
   };
 };
 
+/**
+ * Attempt a login with the supplied username and password.
+ * @param username
+ * @param password
+ */
 const login = (username: string, password: string) => {
   return async ({ dispatch }) => {
     dispatch(setLoginStatus(RequestStatus.WAITING));
@@ -42,14 +56,17 @@ const login = (username: string, password: string) => {
 };
 
 // STORE INITIALIZATION
-const authenticationStore = createStore({
+/**
+ * The authentication MicroStore.
+ */
+export const authenticationStore = createStore({
   initialState: <IAuthenticationState>{
     displayLogin: false,
     authData: null,
     loginStatus: RequestStatus.IDLE,
   },
+  // PUBLIC ACTIONS
   actions: {
-    // PUBLIC ACTIONS
     setDisplayLoginPage,
     setLoginStatus,
     login,
@@ -58,11 +75,21 @@ const authenticationStore = createStore({
 });
 
 // HOOK EXPORT
+
+/**
+ * Custom React Hook that grants access to the authentication MicroStore.
+ * In particular, exposes the {@link IAuthenticationState} and login-related actions.
+ */
 const useAuth = createHook(authenticationStore);
 export default useAuth;
 
 // SELECTORS
+
 const isLoggedIn = (state: IAuthenticationState) => state.authData != null;
+/**
+ * Custom React Hook that signals whether the user is currently logged in.
+ * Also exposes the store's actions.
+ */
 export const useLoggedIn = createHook(authenticationStore, {
   selector: isLoggedIn,
 });

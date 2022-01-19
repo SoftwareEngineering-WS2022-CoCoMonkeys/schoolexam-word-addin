@@ -7,6 +7,9 @@ import ITaskList from "../../../word/ITaskList";
 import { getQrCodeBase64, getTitlePlaceHolderBase64 } from "../structural/StructuralUtil";
 
 // ACTIONS
+/**
+ * @param taskList The new TaskList.
+ */
 const setTaskList = (taskList: ITaskList) => {
   return async ({ setState }) => {
     console.log("set tasklist to", taskList);
@@ -16,6 +19,9 @@ const setTaskList = (taskList: ITaskList) => {
   };
 };
 
+/**
+ * @param qrCode The new QrCode object.
+ */
 const setQrCode = (qrCode: QrCode) => {
   return async ({ setState }) => {
     setState({
@@ -24,6 +30,9 @@ const setQrCode = (qrCode: QrCode) => {
   };
 };
 
+/**
+ * Asynchronously load {@link ITaskList} and {@link QrCode} data persisted in the Word document.
+ */
 const load = () => {
   return async ({ getState, dispatch }) => {
     dispatch(setTaskList(await getState().taskList.load()));
@@ -31,6 +40,10 @@ const load = () => {
   };
 };
 
+/**
+ * Asynchronously add a new task (from the current selection) to the {@link IDocumentState.taskList}.
+ * @param maxPoints The maximum points achievable.
+ */
 const addTask = (maxPoints: number) => {
   return async ({ getState, dispatch }) => {
     await getState().taskList.addTaskFromSelectionAsync(maxPoints);
@@ -38,6 +51,12 @@ const addTask = (maxPoints: number) => {
   };
 };
 
+/**
+ * Asynchronously edit a task.
+ * @param id The unique ID of the task to edit.
+ * @param fieldName The name of the field to modify.
+ * @param newValue The new value of the field.
+ */
 const editTask = (id: string, fieldName: string, newValue: string | number) => {
   return async ({ getState, dispatch }) => {
     const taskToEdit = getState().taskList.getTaskById(id);
@@ -46,6 +65,10 @@ const editTask = (id: string, fieldName: string, newValue: string | number) => {
   };
 };
 
+/**
+ * Asynchronously delete a task from the {@link IDocumentState.taskList}.
+ * @param taskToDelete The task to delete.
+ */
 const deleteTask = (taskToDelete: Task) => {
   return async ({ getState, dispatch }) => {
     await getState().taskList.deleteTaskAsync(taskToDelete);
@@ -53,6 +76,10 @@ const deleteTask = (taskToDelete: Task) => {
   };
 };
 
+/**
+ * Asynchronously update the titles of all tasks from the {@link IDocumentState.taskList} so they are indexed in the
+ * order they appear in the document.
+ */
 const updateTaskTitles = () => {
   return async ({ getState, dispatch }) => {
     await getState().taskList.updateTaskTitlesAsync();
@@ -60,6 +87,9 @@ const updateTaskTitles = () => {
   };
 };
 
+/**
+ * @param footerCcId The ID of the {@link Word.ContentControl} to associate with the page QR-Code.
+ */
 const setFooterQrCode = (footerCcId: number) => {
   return async ({ getState, dispatch }) => {
     getState().qrCode.footer = footerCcId;
@@ -67,6 +97,9 @@ const setFooterQrCode = (footerCcId: number) => {
   };
 };
 
+/**
+ * @param headerCcId The ID of the {@link Word.ContentControl} to associate with the student QR-Code.
+ */
 const setHeaderQrCode = (headerCcId: number) => {
   return async ({ getState, dispatch }) => {
     getState().qrCode.header = headerCcId;
@@ -74,21 +107,33 @@ const setHeaderQrCode = (headerCcId: number) => {
   };
 };
 
+/**
+ * Prepare for conversion to PDF.
+ */
 const prepareForConversion = () => {
   return async ({ getState }) => {
     await getState().taskList.prepareForConversion();
   };
 };
 
+/**
+ * Tear down artifacts from PDF conversion.
+ */
 const afterConversion = () => {
   return async ({ getState }) => {
     await getState().taskList.afterConversion();
   };
 };
 
+/**
+ * Asynchronously create an exemplary front page for the {@link Exam} represented by the current document.
+ * @param examTitle The exam title.
+ * @param examDate The exam date.
+ * @param courseName The name of the course.
+ */
 const createFrontPage = (examTitle: string, examDate: Date, courseName: string) => {
   return async ({ dispatch }) => {
-    const headerHtml =
+    const frontPageHtml =
       "<br> <div style='text-align:center'> <div style='font-size: x-large'>" +
       examTitle +
       " </div> <br> <br> " +
@@ -106,13 +151,15 @@ const createFrontPage = (examTitle: string, examDate: Date, courseName: string) 
       } catch (e) {
         console.debug(e);
       } finally {
+        // 1. Create table
         tableParagraph = context.document.body.paragraphs.getFirst();
         const table = tableParagraph.insertTable(1, 2, Word.InsertLocation.before, null);
         table.getBorder(Word.BorderLocation.all).type = "None";
-
         const leftSide = table.getCell(0, 0);
         leftSide.columnWidth = 30;
         leftSide.setCellPadding(Word.CellPaddingLocation.bottom, 1);
+
+        // 2. Insert content control
         const contentControl = leftSide.body.insertContentControl();
         contentControl.appearance = Word.ContentControlAppearance.boundingBox;
         contentControl.tag = "title-qr-code";
@@ -122,11 +169,10 @@ const createFrontPage = (examTitle: string, examDate: Date, courseName: string) 
         contentControl.insertInlinePictureFromBase64(getTitlePlaceHolderBase64(), Word.InsertLocation.start);
         contentControl.inlinePictures.getFirst().hyperlink = "http://studentQrCode";
 
+        // 3. Insert front page text
         const rightSide = table.getCell(0, 1);
         rightSide.columnWidth = 400;
-
-        rightSide.body.insertHtml(headerHtml, Word.InsertLocation.start);
-
+        rightSide.body.insertHtml(frontPageHtml, Word.InsertLocation.start);
         rightSide.body.font.set({
           bold: true,
           size: 15,
@@ -143,6 +189,11 @@ const createFrontPage = (examTitle: string, examDate: Date, courseName: string) 
   };
 };
 
+/**
+ * Asynchronously create the footer for the current document.
+ *
+ * This step has to take place before exporting the document because it embeds the vital page QR-Code.
+ */
 const createFooter = () => {
   return async ({ dispatch }) => {
     return Word.run(async (context) => {
@@ -173,6 +224,11 @@ const createFooter = () => {
   };
 };
 
+/**
+ * Asynchronously create the header for the current document.
+ *
+ * This step has to take place before exporting the document because it embeds the student QR-Code placeholder.
+ */
 const createHeader = () => {
   return async ({ dispatch }) => {
     return Word.run(async (context) => {
@@ -205,6 +261,9 @@ const createHeader = () => {
 };
 
 // STORE INITIALIZATION
+/**
+ * The document MicroStore.
+ */
 const documentStore = createStore({
   initialState: <IDocumentState>{
     taskList: new TaskList(),
@@ -228,15 +287,24 @@ const documentStore = createStore({
   name: "document-store",
 });
 
+/**
+ * Custom React Hook that grants access to the document MicroStore.
+ * In particular, exposes the {@link IDocumentState} and document-related actions.
+ */
 const useDocument = createHook(documentStore);
 export default useDocument;
 
 // SELECTORS
 const tasks = (state: IDocumentState) => state.taskList;
+/**
+ * Custom React Hook that only exposes the task-related state and document-related actions.
+ */
 export const useTasks = createHook(documentStore, {
   selector: tasks,
 });
-
+/**
+ * Custom React Hook that only exposes the QR-Code-related state and document-related actions.
+ */
 const qrCode = (state: IDocumentState) => state.qrCode;
 export const useQrCode = createHook(documentStore, {
   selector: qrCode,

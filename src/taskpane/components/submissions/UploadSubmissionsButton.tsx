@@ -14,6 +14,14 @@ import RequestStatus from "../state/RequestStatus";
 import TooltipCheckList, { CheckListItem } from "../export/TooltipCheckList";
 import { useLoggedIn } from "../state/AuthenticationStore";
 
+/**
+ * React component that wraps a button that, when clicked, triggers the {@link Submission} upload via the submissions
+ * MicroStore ({@link useSubmissions}).
+ *
+ * Some conditions have to be fulfilled before the button can be clicked. These conditions
+ * are presented in a {@link TooltipCheckList} format on hover.
+ * @component
+ */
 export default function UploadSubmissionsButton(_props: unknown): JSX.Element {
   // GLOBAL STATE
   const [submissionsState, submissionsActions] = useSubmissions();
@@ -23,12 +31,13 @@ export default function UploadSubmissionsButton(_props: unknown): JSX.Element {
     new CheckListItem(loggedIn, "Eingeloggt"),
     new CheckListItem(submissionsState.submissions.length > 0, "Es wurden Einreichungen hinzugefügt"),
   ];
-  const checkListFullfilled = uploadSubmissionsCheckList.map((item) => item.condition).reduce((a, b) => a && b);
+  /** Wether the button is enabled */
+  const checkListFulfilled = uploadSubmissionsCheckList.map((item) => item.status).reduce((a, b) => a && b);
 
   const uploadSubmissionBtn = (
     <PrimaryButton
       onClick={() => submissionsActions.uploadSubmissions()}
-      disabled={!checkListFullfilled}
+      disabled={!checkListFulfilled}
       text={
         (submissionsState.uploadSubmissionsStatus !== RequestStatus.WAITING ? "Einreichungen hochladen " : "") +
         `(${submissionsState.submissions.length})`

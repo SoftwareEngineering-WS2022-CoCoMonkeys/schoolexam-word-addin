@@ -4,22 +4,28 @@ import { DefaultButton, Dialog, DialogFooter, DialogType, TextField } from "@flu
 import InstructionList from "./NewTaskFromInstructionList";
 import { useTasks } from "../state/DocumentStore";
 
+/**
+ * Properties for {@link NewTaskDialog}
+ */
 interface NewTaskDialogProps {
+  /** Wether the dialog is visible at all */
   isVisible: boolean;
+  /** Set if the dialog is visible */
   setVisible: (boolean) => void;
 }
 
+/**
+ * A dialog that gives instructions for the creation of a new {@link ITask} in the document.
+ * Also handles the input of the maximum points for the new task.
+ * @component
+ */
 export default function NewTaskDialog(props: NewTaskDialogProps): JSX.Element {
   // GLOBAL STATE
-  const [taskList, taskListActions] = useTasks();
+  const [, taskListActions] = useTasks();
 
   // LOCAL STATE
   const defaultPointsInput = 1;
   const [pointsInput, setPointsInput] = useState(defaultPointsInput);
-
-  function addTask(): void {
-    taskListActions.addTask(pointsInput).then(() => props.setVisible(false));
-  }
 
   const newTaskDialogContentProps = {
     type: DialogType.normal,
@@ -43,7 +49,7 @@ export default function NewTaskDialog(props: NewTaskDialogProps): JSX.Element {
       />
       <DialogFooter>
         <DefaultButton
-          onClick={addTask}
+          onClick={() => taskListActions.addTask(pointsInput).then(() => props.setVisible(false))}
           disabled={pointsInput == null || isNaN(pointsInput) || pointsInput <= 0}
           text="Aufgabe hinzufügen"
         />

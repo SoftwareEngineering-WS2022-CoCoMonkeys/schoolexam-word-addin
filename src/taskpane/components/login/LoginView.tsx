@@ -1,11 +1,16 @@
 import * as React from "react";
 import { useState } from "react";
 import { MessageBar, MessageBarType, PrimaryButton, Spinner, SpinnerSize, Stack, TextField } from "@fluentui/react";
-import "./LoginForm.scss";
+import "./LoginView.scss";
 import RequestStatus from "../state/RequestStatus";
 import useAuth from "../state/AuthenticationStore";
 
-export default function LoginView(_props: unknown): JSX.Element {
+/**
+ * React component to handle the user login.
+ * The state is handled in the global authentication MicroStore ({@link useAuth}).
+ * @component
+ */
+export default function LoginView(): JSX.Element {
   // GLOBAL STATE
   const [authState, authActions] = useAuth();
 
@@ -13,39 +18,40 @@ export default function LoginView(_props: unknown): JSX.Element {
   const [username, setUsername] = useState(null as string);
   const [password, setPassword] = useState(null as string);
 
-  let loginMessage: unknown = "";
+  /** What message to display, success or failure */
+  let statusMessage: unknown;
   switch (authState.loginStatus) {
     case RequestStatus.SUCCESS:
-      loginMessage = (
+      statusMessage = (
         <MessageBar
           messageBarType={MessageBarType.success}
           isMultiline={true}
           onDismiss={() => authActions.setLoginStatus(RequestStatus.IDLE)}
-          dismissButtonAriaLabel="Close"
+          className="msg"
         >
           Erfolgreich eingeloggt!
         </MessageBar>
       );
       break;
     case RequestStatus.ERROR:
-      loginMessage = (
+      statusMessage = (
         <MessageBar
           messageBarType={MessageBarType.error}
           isMultiline={true}
           onDismiss={() => authActions.setLoginStatus(RequestStatus.IDLE)}
-          dismissButtonAriaLabel="Close"
+          className="msg"
         >
           Ungültige Kombination aus Nutzername und Passwort
         </MessageBar>
       );
       break;
     default:
-      loginMessage = "";
+      statusMessage = "";
   }
 
   return (
     <Stack id="login-form" horizontal={false} horizontalAlign="center" verticalAlign="center">
-      {loginMessage}
+      {statusMessage}
       <TextField
         className="stretch"
         placeholder="Nutzername"
@@ -55,6 +61,7 @@ export default function LoginView(_props: unknown): JSX.Element {
       <TextField
         className="stretch"
         placeholder="Passwort"
+        // Passwords are treated specially
         type="password"
         label="Passwort"
         onChange={(event) => setPassword(event.currentTarget.value)}
