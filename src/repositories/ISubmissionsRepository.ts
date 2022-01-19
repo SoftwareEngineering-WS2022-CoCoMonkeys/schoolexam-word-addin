@@ -1,4 +1,4 @@
-import Submission from "../../../model/Submission";
+import Submission from "../model/Submission";
 
 /**
  * Repository that grants access to {@link Submission}-related functions.

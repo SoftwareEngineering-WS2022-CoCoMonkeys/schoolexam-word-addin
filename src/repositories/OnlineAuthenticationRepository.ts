@@ -1,7 +1,7 @@
-import AuthenticationDTO from "../../../dto/AuthenticationDTO";
+import AuthenticationDTO from "../dto/AuthenticationDTO";
 import IAuthenticationRepository from "./IAuthenticationRepository";
-import ApiService, { HttpMethod } from "./ApiService";
-import Authentication from "../../../model/Authentication";
+import ApiService, { HttpMethod } from "../services/ApiService";
+import Authentication from "../model/Authentication";
 
 /**
  * Authentication repository that uses the deployed SchoolExam backend.

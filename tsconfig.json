@@ -26,7 +26,7 @@
   ],
   "compileOnSave": false,
   "buildOnSave": false,
-  "ts-node": { 
-    "files": true 
+  "ts-node": {
+    "files": true
   }
 }

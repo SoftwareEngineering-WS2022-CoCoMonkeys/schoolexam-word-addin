@@ -1,5 +1,5 @@
 import * as React from "react";
-import ExamList from "./ExamList";
+import ExamList from "../util/ExamList";
 import ExportButton from "./ExportButton";
 import { Stack } from "@fluentui/react";
 import BuildButton from "./BuildButton";

@@ -40,6 +40,11 @@ export default function ExamList(props: ExamListProps): JSX.Element {
     }
   }, [loggedIn]);
 
+  // Reset exam to prevent unwanted builds and exports
+  useEffect(() => {
+    examsActions.setSelectedExam(null);
+  }, []);
+
   /**
    * Custom render function (anonymous component) for a single exam in the list.
    * @param exam The exam to be rendered.

@@ -92,7 +92,9 @@
       ".tsx"
     ],
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["./test/jest.setup.js"]
+    "setupFilesAfterEnv": [
+      "./test/jest.setup.js"
+    ]
   },
   "prettier": "office-addin-prettier-config",
   "browserslist": [

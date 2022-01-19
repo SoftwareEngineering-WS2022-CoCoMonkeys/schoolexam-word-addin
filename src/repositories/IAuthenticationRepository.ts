@@ -1,4 +1,4 @@
-import Authentication from "../../../model/Authentication";
+import Authentication from "../model/Authentication";
 
 /**
  * Common interface for repositories that handle the login and authentication process.
