@@ -1,5 +1,8 @@
 import AuthentificationRepository from "./OnlineAuthenticationRepository";
 
+/**
+ * Important HTTP methods
+ */
 export enum HttpMethod {
   POST = "POST",
   GET = "GET",
@@ -7,11 +10,20 @@ export enum HttpMethod {
   DELETE = "DELETE",
 }
 
+/**
+ * Service for HTTP requests to the SchoolExam API endpoint.
+ */
 export default class ApiService {
   private static readonly BASE_URL = "https://cocomonkeys-schoolexam.herokuapp.com";
-  static;
 
-  static request(method: HttpMethod, url: string, data?: unknown): Promise<Response> {
+  /**
+   * Send a request to the backend.
+   * @param method The HTTP method to use.
+   * @param path The path (URL suffix) to use.
+   * @param data The (optional) data to supply in JSON format in the request body.
+   * @returns The HTTP response wrapped in a Promise.
+   */
+  static request(method: HttpMethod, path: string, data?: unknown): Promise<Response> {
     const config: RequestInit = {
       method: method.toString(),
       // includes JWT for authentication
@@ -22,24 +34,27 @@ export default class ApiService {
       // default to JSON
       config.headers = { ...config.headers, "Content-Type": "application/json" };
     }
-    return fetch(this.BASE_URL + url, config)
+    return fetch(this.BASE_URL + path, config)
       .catch((reason) => {
-        return Promise.reject(`${method} ${url} failed\nreason: ${reason}\nrequest body: ${JSON.stringify(data)}`);
+        return Promise.reject(`${method} ${path} failed\nreason: ${reason}\nrequest body: ${JSON.stringify(data)}`);
       })
       .then((response) => {
         switch (response.status) {
           case 200:
           case 201:
           case 204: {
-            console.debug(`${method} ${url} returned code ${response.status}-${response.statusText}`);
+            // Accepted
+            console.debug(`${method} ${path} returned code ${response.status}-${response.statusText}`);
             return response;
           }
           default:
+            // Indicates error / unexpected behaviour
+            // Check for error message in JSON
             response
               .json()
               .then((json) => {
                 console.error(
-                  `${method} ${url} returned code ${response.status}-${response.statusText}, body:`,
+                  `${method} ${path} returned code ${response.status}-${response.statusText}, body:`,
                   json,
                   "\nrequest body: ",
                   data
@@ -47,9 +62,8 @@ export default class ApiService {
               })
               .catch();
             return Promise.reject(
-              `${method} ${url} returned code ${response.status}-${response.statusText}\nrequest body: ${JSON.stringify(
-                data
-              )}`
+              `${method} ${path} returned code ${response.status}-${response.statusText}\n` +
+                `request body: ${JSON.stringify(data)}`
             );
         }
       });

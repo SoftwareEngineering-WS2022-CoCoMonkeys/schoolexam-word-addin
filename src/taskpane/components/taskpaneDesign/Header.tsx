@@ -1,17 +1,22 @@
 import * as React from "react";
 import "./Header.scss";
 import { ActionButton, IIconProps, Stack } from "@fluentui/react";
-import BackButton from "../util/BackButton";
 import useAuth from "../state/AuthenticationStore";
 
-export default function Header(_props: unknown): JSX.Element {
+/**
+ * Header row displayed above the main navigation bar.
+ * @component
+ */
+export default function Header(): JSX.Element {
   const [authState, authActions] = useAuth();
 
   const userIcon: IIconProps = { iconName: "Contact" };
   const userIconChecked: IIconProps = {
     iconName: "ReminderPerson",
   };
+  const backIcon: IIconProps = { iconName: "Back" };
 
+  // Depending on the login state, the login button is rendered differently
   const loginButton =
     authState.authData != null ? (
       <ActionButton
@@ -31,7 +36,12 @@ export default function Header(_props: unknown): JSX.Element {
     );
 
   const headerContent = authState.displayLogin ? (
-    <BackButton onBack={() => authActions.setDisplayLoginPage(false)} />
+    <ActionButton
+      iconProps={backIcon}
+      className="margin-top1"
+      text="Zurück"
+      onClick={() => authActions.setDisplayLoginPage(false)}
+    />
   ) : (
     loginButton
   );

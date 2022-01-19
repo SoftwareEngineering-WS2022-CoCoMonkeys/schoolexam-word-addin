@@ -1,11 +1,21 @@
 import { Calendar } from "@fluentui/react";
 import * as React from "react";
 
+/**
+ * Properties of {@link CalendarInlineOverlaidMonth}
+ */
 export interface CalendarProps {
+  /** The  exam date */
   examDate: Date;
-  setExamDate: React.Dispatch<React.SetStateAction<Date>>;
+  /** Set the exam date */
+  setExamDate: (date: Date) => void;
 }
 
+/**
+ * React component that lets the user pick a date using German localization.
+ * @component
+ * @param props The component properties
+ */
 export default function CalendarInlineOverlaidMonth(props: CalendarProps): JSX.Element {
   const germanCalendarStrings = {
     goToToday: "",
@@ -31,12 +41,7 @@ export default function CalendarInlineOverlaidMonth(props: CalendarProps): JSX.E
 
   return (
     <div style={{ height: "360px" }}>
-      <Calendar
-        //showGoToToday
-        onSelectDate={props.setExamDate}
-        value={props.examDate}
-        strings={germanCalendarStrings}
-      />
+      <Calendar onSelectDate={props.setExamDate} value={props.examDate} strings={germanCalendarStrings} />
       <div>Gewähltes Datum: {props.examDate?.toLocaleDateString("de-De") || "Not set"}</div>
     </div>
   );

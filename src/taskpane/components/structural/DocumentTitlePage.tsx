@@ -3,7 +3,11 @@ import * as React from "react";
 import CalendarInlineOverlaidMonth from "./Calendar";
 import { useQrCode } from "../state/DocumentStore";
 
-export default function DocumentTitlePage(_props: unknown): JSX.Element {
+/**
+ * React component that lets the user create a title page for the document.
+ * @component
+ */
+export default function DocumentTitlePage(): JSX.Element {
   const [examDate, setExamDate] = React.useState(new Date());
 
   const defaultCourseName = "Mathematik Klasse 8a";
@@ -11,7 +15,7 @@ export default function DocumentTitlePage(_props: unknown): JSX.Element {
 
   const defaultExamTitle = "1. Schulaufgabe";
   const [examTitle, setExamTitle] = React.useState(defaultExamTitle);
-  const [qrCodeState, qrCodeActions] = useQrCode();
+  const [, qrCodeActions] = useQrCode();
 
   const onChangeExamNameTextFieldValue = React.useCallback((_, newValue?: string) => {
     setExamTitle(newValue || "");

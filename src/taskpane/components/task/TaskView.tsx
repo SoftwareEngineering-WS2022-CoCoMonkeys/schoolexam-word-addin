@@ -1,6 +1,10 @@
 import * as React from "react";
 import TaskTable from "./TaskTable";
 
-export default function TaskView(_props: unknown): JSX.Element {
+/**
+ * Root component that organizes all task-related components.
+ * @component
+ */
+export default function TaskView(): JSX.Element {
   return <TaskTable />;
 }

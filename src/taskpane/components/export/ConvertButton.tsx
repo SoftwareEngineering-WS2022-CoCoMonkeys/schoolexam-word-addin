@@ -4,9 +4,16 @@ import { useTasks } from "../state/DocumentStore";
 import RequestStatus from "../state/RequestStatus";
 import useDocument from "../state/ExamsStore";
 
-export default function ConvertButton(_props: unknown): JSX.Element {
+/**
+ * React component that wraps a button that, when clicked, triggers the conversion of the opened Word document via
+ * the exams MicroStore ({@link useExams}).
+ * Also uses the tasks document MicroStore ({@link useDocument}) to trigger necessary preparation and teardown actions.
+ * If the conversion fails for whatever reason, an error dialog is displayed.
+ * @component
+ */
+export default function ConvertButton(): JSX.Element {
   // GLOBAL STATE
-  const [taskList, taskActions] = useTasks();
+  const [, taskActions] = useTasks();
   const [examsState, examsActions] = useDocument();
 
   async function convertToPdf() {
@@ -29,7 +36,6 @@ export default function ConvertButton(_props: unknown): JSX.Element {
   return (
     <>
       <Dialog
-        className="dialog"
         hidden={examsState.conversionStatus !== RequestStatus.ERROR}
         onDismiss={() => examsActions.setConversionStatus(RequestStatus.IDLE)}
         dialogContentProps={errorDialogContentProps}
@@ -40,7 +46,7 @@ export default function ConvertButton(_props: unknown): JSX.Element {
       </Dialog>
       <PrimaryButton
         onClick={convertToPdf}
-        text={examsState.conversionStatus !== RequestStatus.WAITING ? "Konvertieren" : null}
+        text={examsState.conversionStatus !== RequestStatus.WAITING ? "Konvertieren (PDF)" : null}
       >
         {examsState.conversionStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
       </PrimaryButton>

@@ -6,7 +6,11 @@ import StructureNavbar from "../structural/StructureNavbar";
 import { useTasks } from "../state/DocumentStore";
 import SubmissionsView from "../submissions/SubmissionsView";
 
-export default function Navbar(_props: unknown): JSX.Element {
+/**
+ * The main navigation bar.
+ * @component
+ */
+export default function Navbar(): JSX.Element {
   const [taskList] = useTasks();
 
   return (

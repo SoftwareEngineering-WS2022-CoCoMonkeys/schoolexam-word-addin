@@ -5,6 +5,10 @@ import { Stack } from "@fluentui/react";
 import ExamList from "../export/ExamList";
 import { ExamStatus } from "../../../model/Exam";
 
+/**
+ * React component that organizes the submissions-related components.
+ * @component
+ */
 export default function SubmissionsView(_props: unknown): JSX.Element {
   return (
     <Stack horizontal={false} horizontalAlign="center" verticalAlign="center" tokens={{ childrenGap: 20 }}>

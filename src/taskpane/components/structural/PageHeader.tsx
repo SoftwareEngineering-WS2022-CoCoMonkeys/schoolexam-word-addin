@@ -3,9 +3,13 @@ import * as React from "react";
 import { useState } from "react";
 import { useQrCode } from "../state/DocumentStore";
 
+/**
+ * React component that lets the user create a header for the document.
+ * @component
+ */
 export default function PageHeader(): JSX.Element {
-  const [qrCodeState, qrCodeActions] = useQrCode();
-  const [headerText, setHeaderText] = useState("");
+  const [, qrCodeActions] = useQrCode();
+  const [, setHeaderText] = useState("");
 
   return (
     <Stack

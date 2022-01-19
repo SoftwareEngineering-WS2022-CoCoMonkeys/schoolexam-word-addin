@@ -10,7 +10,6 @@ export default class AuthenticationDTO implements IDTO<Authentication> {
   static fromJson(json: string): AuthenticationDTO {
     function reviver(key, value) {
       if (key === "user") {
-        // TODO ugly but works
         return UserDTO.fromJson(JSON.stringify(value));
       } else if (key === "") {
         return Object.assign(new AuthenticationDTO(), value);
