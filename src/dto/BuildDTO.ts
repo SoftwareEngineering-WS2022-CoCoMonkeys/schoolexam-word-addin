@@ -1,6 +1,9 @@
 import Build from "../model/Build";
 import IDTO from "./IDTO";
 
+/**
+ * DTO for {@link Build}
+ */
 export default class BuildDTO implements IDTO<Build> {
   count: number;
   /** base64 encoded PDF file */

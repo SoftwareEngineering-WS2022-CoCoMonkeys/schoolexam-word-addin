@@ -1,6 +1,9 @@
 import ITask from "../word/ITask";
 import IDTO from "./IDTO";
 
+/**
+ * DTO for {@link ITask}
+ */
 export default class TaskDTO implements IDTO<ITask> {
   /** The unique ID (UUID) of this task */
   id: string;

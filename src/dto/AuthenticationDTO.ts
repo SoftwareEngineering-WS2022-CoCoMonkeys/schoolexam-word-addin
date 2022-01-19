@@ -2,6 +2,9 @@ import { UserDTO } from "./UserDTO";
 import IDTO from "./IDTO";
 import Authentication from "../model/Authentication";
 
+/**
+ * DTO for {@link Authentication}
+ */
 export default class AuthenticationDTO implements IDTO<Authentication> {
   token: string;
   role: string;

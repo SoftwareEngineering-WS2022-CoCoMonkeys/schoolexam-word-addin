@@ -1,6 +1,9 @@
 import IDTO from "./IDTO";
 import Submission from "../model/Submission";
 
+/**
+ * DTO for {@link Submission}
+ */
 export default class SubmissionDTO implements IDTO<Submission> {
   /** base64 encoded PDF file of the submission scan */
   pdf: string;

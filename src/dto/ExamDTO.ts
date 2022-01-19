@@ -1,6 +1,9 @@
 import Exam, { ExamStatus } from "../model/Exam";
 import ParticipantDTO from "./ParticipantDTO";
 
+/**
+ * DTO for {@link Exam}
+ */
 export default class ExamDTO {
   readonly id: string;
   readonly status: string;
