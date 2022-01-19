@@ -92,7 +92,7 @@ The central navigation bar gives a good overlook over what's possible.
 - Support exams (writing tasks) that have a grading scheme different from points
 - Add additional pages dynamically during exams based on demand
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and
+See the [open issues](https://github.com/SoftwareEngineering-WS2022-CoCoMonkeys/schoolexam-word-addin/issues) for a full list of proposed features (and
 known issues).
 
 <!-- LICENSE -->
