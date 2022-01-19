@@ -146,7 +146,7 @@ export default function TaskTable(): JSX.Element {
           iconProps={{ iconName: "Delete" }}
         />
         <CommandBarButton
-          text="Zurücksetzen"
+          text="Reihenfolge wiederherstellen"
           onClick={() => taskListActions.updateTaskTitles()}
           iconProps={{ iconName: "Refresh" }}
         />

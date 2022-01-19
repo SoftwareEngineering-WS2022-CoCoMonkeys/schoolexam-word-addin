@@ -89,6 +89,13 @@ The central navigation bar gives a good overlook over what's possible.
 See the [open issues](https://github.com/SoftwareEngineering-WS2022-CoCoMonkeys/schoolexam-word-addin/issues) for a full
 list of proposed features (and known issues).
 
+## Acknowledgments
+
+- []()#wirfuerschule for the insights on the current situation in schools
+- []()Capgemini for the valuable workshops with feedback for the architecture
+- []()ISSE chair at the University of Augsburg for giving us room to implement our idea
+- []()adesso for providing us a productive collaborative workspace
+
 <!-- LICENSE -->
 
 ## License
@@ -96,6 +103,8 @@ list of proposed features (and known issues).
 Distributed under the MIT License. See [LICENSE](LICENSE.txt) for more information.
 
 <!-- CONTACT -->
+
+
 
 ## Contact
 
