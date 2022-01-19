@@ -1,9 +1,9 @@
 import { createHook, createStore } from "react-sweet-state";
-import ISubmissionsState from "./ISubmissionsState";
-import RequestStatus from "./RequestStatus";
-import SubmissionsRepository from "../services/OnlineSubmissionsRepository";
+import ISubmissionsState from "../state/ISubmissionsState";
+import RequestStatus from "../state/RequestStatus";
+import SubmissionsRepository from "../repository/OnlineSubmissionsRepository";
 import { uploadFileBase64 } from "../services/DownloadService";
-import Submission from "../../../model/Submission";
+import Submission from "../model/Submission";
 import ServerError from "../services/ServerError";
 
 // ACTIONS

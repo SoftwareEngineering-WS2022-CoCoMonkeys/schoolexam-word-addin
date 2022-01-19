@@ -1,5 +1,5 @@
-import ITaskList from "../../../word/ITaskList";
-import IQrCode from "../../../word/IQrCode";
+import ITaskList from "../word/ITaskList";
+import IQrCode from "../word/IQrCode";
 
 /**
  * Global document-related state

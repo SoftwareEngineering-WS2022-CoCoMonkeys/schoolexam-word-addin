@@ -1,9 +1,9 @@
 import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
-import RequestStatus, { isErroneousStatus } from "../state/RequestStatus";
-import { useLoggedIn } from "../state/AuthenticationStore";
-import useExams from "../state/ExamsStore";
-import useDocument from "../state/DocumentStore";
+import RequestStatus, { isErroneousStatus } from "../../../state/RequestStatus";
+import { useLoggedIn } from "../../../store/AuthenticationStore";
+import useExams from "../../../store/ExamsStore";
+import useDocument from "../../../store/DocumentStore";
 import { ExamStatus } from "../../../model/Exam";
 import TooltipCheckList, { CheckListItem } from "./TooltipCheckList";
 

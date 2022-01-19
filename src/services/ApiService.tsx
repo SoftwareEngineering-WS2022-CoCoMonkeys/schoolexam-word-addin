@@ -1,4 +1,4 @@
-import AuthentificationRepository from "../repositories/OnlineAuthenticationRepository";
+import AuthentificationRepository from "../repository/OnlineAuthenticationRepository";
 import ServerError from "./ServerError";
 
 /**

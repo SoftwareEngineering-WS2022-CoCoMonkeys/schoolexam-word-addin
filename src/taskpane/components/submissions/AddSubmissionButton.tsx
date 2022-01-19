@@ -9,12 +9,12 @@ import {
   Spinner,
   SpinnerSize,
 } from "@fluentui/react";
-import useSubmissions from "../state/SubmissionsStore";
-import RequestStatus, { isErroneousStatus } from "../state/RequestStatus";
-import useExams from "../state/ExamsStore";
+import useSubmissions from "../../../store/SubmissionsStore";
+import RequestStatus, { isErroneousStatus } from "../../../state/RequestStatus";
+import useExams from "../../../store/ExamsStore";
 import TooltipCheckList, { CheckListItem } from "../export/TooltipCheckList";
 import { ExamStatus } from "../../../model/Exam";
-import { useLoggedIn } from "../state/AuthenticationStore";
+import { useLoggedIn } from "../../../store/AuthenticationStore";
 
 /**
  * React component that wraps a button that, when clicked, opens a file input dialog and adds the selected files
@@ -24,7 +24,7 @@ import { useLoggedIn } from "../state/AuthenticationStore";
  * are presented in a {@link TooltipCheckList} format on hover.
  * @component
  */
-export default function AddSubmissionButton(_props: unknown): JSX.Element {
+export default function AddSubmissionButton(): JSX.Element {
   // GLOBAL STATE
   const [submissionsState, submissionsActions] = useSubmissions();
   const [loggedIn] = useLoggedIn();

@@ -1,4 +1,4 @@
-import useSubmissions from "../state/SubmissionsStore";
+import useSubmissions from "../../../store/SubmissionsStore";
 import {
   DefaultButton,
   Dialog,
@@ -10,9 +10,9 @@ import {
   SpinnerSize,
 } from "@fluentui/react";
 import * as React from "react";
-import RequestStatus, { isErroneousStatus } from "../state/RequestStatus";
+import RequestStatus, { isErroneousStatus } from "../../../state/RequestStatus";
 import TooltipCheckList, { CheckListItem } from "../export/TooltipCheckList";
-import { useLoggedIn } from "../state/AuthenticationStore";
+import { useLoggedIn } from "../../../store/AuthenticationStore";
 
 /**
  * React component that wraps a button that, when clicked, triggers the {@link Submission} upload via the submissions
@@ -22,7 +22,7 @@ import { useLoggedIn } from "../state/AuthenticationStore";
  * are presented in a {@link TooltipCheckList} format on hover.
  * @component
  */
-export default function UploadSubmissionsButton(_props: unknown): JSX.Element {
+export default function UploadSubmissionsButton(): JSX.Element {
   // GLOBAL STATE
   const [submissionsState, submissionsActions] = useSubmissions();
   const [loggedIn] = useLoggedIn();

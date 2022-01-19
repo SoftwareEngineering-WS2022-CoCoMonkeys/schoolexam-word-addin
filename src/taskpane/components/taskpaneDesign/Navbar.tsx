@@ -3,7 +3,7 @@ import { Pivot, PivotItem } from "@fluentui/react";
 import TaskView from "../task/TaskView";
 import ExportView from "../export/ExportView";
 import StructureNavbar from "../structural/StructureNavbar";
-import { useTasks } from "../state/DocumentStore";
+import { useTasks } from "../../../store/DocumentStore";
 import SubmissionsView from "../submissions/SubmissionsView";
 
 /**

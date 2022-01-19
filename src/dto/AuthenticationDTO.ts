@@ -10,6 +10,10 @@ export default class AuthenticationDTO implements IDTO<Authentication> {
   role: string;
   user: UserDTO;
 
+  /**
+   * Create DTO from JSON string.
+   * @param json The typed object.
+   */
   static fromJson(json: string): AuthenticationDTO {
     function reviver(key, value) {
       if (key === "user") {
@@ -23,6 +27,9 @@ export default class AuthenticationDTO implements IDTO<Authentication> {
     return JSON.parse(json, reviver);
   }
 
+  /**
+   * @inheritDoc
+   */
   toModel(): Authentication {
     return new Authentication(this.token, this.role, this.user.toModel());
   }

@@ -1,7 +1,7 @@
 import { PrimaryButton, Stack, TextField } from "@fluentui/react";
 import * as React from "react";
 import { useState } from "react";
-import { useQrCode } from "../state/DocumentStore";
+import { useQrCode } from "../../../store/DocumentStore";
 
 /**
  * React component that lets the user create a header for the document.

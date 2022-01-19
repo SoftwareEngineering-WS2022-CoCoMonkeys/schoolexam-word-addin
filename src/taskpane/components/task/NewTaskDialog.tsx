@@ -1,8 +1,8 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DefaultButton, Dialog, DialogFooter, DialogType, TextField } from "@fluentui/react";
 import InstructionList from "./NewTaskFromInstructionList";
-import { useTasks } from "../state/DocumentStore";
+import { useTasks } from "../../../store/DocumentStore";
 
 /**
  * Properties for {@link NewTaskDialog}
@@ -21,7 +21,7 @@ interface NewTaskDialogProps {
  */
 export default function NewTaskDialog(props: NewTaskDialogProps): JSX.Element {
   // GLOBAL STATE
-  const [taskList, taskListActions] = useTasks();
+  const [, taskListActions] = useTasks();
 
   // LOCAL STATE
   const defaultPointsInput = 1;
@@ -58,7 +58,7 @@ export default function NewTaskDialog(props: NewTaskDialogProps): JSX.Element {
       <DialogFooter>
         <DefaultButton
           onClick={() => taskListActions.addTask(titleInput, pointsInput).then(() => props.setVisible(false))}
-          disabled={pointsInput == null || isNaN(pointsInput) || pointsInput <= 0}
+          disabled={isNaN(pointsInput) || pointsInput <= 0}
           text="Aufgabe hinzufügen"
         />
       </DialogFooter>

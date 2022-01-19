@@ -4,8 +4,8 @@ import "./App.scss";
 import Navbar from "./taskpaneDesign/Navbar";
 import LoginView from "./login/LoginView";
 import Header from "./taskpaneDesign/Header";
-import useAuth from "./state/AuthenticationStore";
-import useDocument from "./state/DocumentStore";
+import useAuth from "../../store/AuthenticationStore";
+import useDocument from "../../store/DocumentStore";
 import { Spinner, SpinnerSize, Stack } from "@fluentui/react";
 
 /**

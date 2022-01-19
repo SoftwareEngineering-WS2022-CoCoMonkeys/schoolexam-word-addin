@@ -23,6 +23,9 @@ export class UserDTO implements IDTO<User> {
     return JSON.parse(json, reviver);
   }
 
+  /**
+   * @inheritDoc
+   */
   toModel(): User {
     return new User(this.username, this.person.toModel());
   }

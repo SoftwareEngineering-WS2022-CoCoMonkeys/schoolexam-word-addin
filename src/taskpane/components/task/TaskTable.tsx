@@ -14,7 +14,7 @@ import {
   TextField,
 } from "@fluentui/react";
 import Task from "../../../word/Task";
-import { useTasks } from "../state/DocumentStore";
+import { useTasks } from "../../../store/DocumentStore";
 import NewTaskDialog from "./NewTaskDialog";
 
 /**
@@ -146,7 +146,7 @@ export default function TaskTable(): JSX.Element {
           iconProps={{ iconName: "Delete" }}
         />
         <CommandBarButton
-          text="Reihenfolge zurücksetzen"
+          text="Zurücksetzen"
           onClick={() => taskListActions.updateTaskTitles()}
           iconProps={{ iconName: "Refresh" }}
         />

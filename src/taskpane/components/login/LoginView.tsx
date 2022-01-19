@@ -2,8 +2,8 @@ import * as React from "react";
 import { useState } from "react";
 import { MessageBar, MessageBarType, PrimaryButton, Spinner, SpinnerSize, Stack, TextField } from "@fluentui/react";
 import "./LoginView.scss";
-import RequestStatus from "../state/RequestStatus";
-import useAuth from "../state/AuthenticationStore";
+import RequestStatus from "../../../state/RequestStatus";
+import useAuth from "../../../store/AuthenticationStore";
 
 /**
  * React component to handle the user login.

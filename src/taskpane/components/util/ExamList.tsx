@@ -2,9 +2,9 @@ import * as React from "react";
 import { useEffect } from "react";
 import { List, MessageBar, MessageBarType, Spinner, SpinnerSize, Stack } from "@fluentui/react";
 import Exam, { ExamStatus } from "../../../model/Exam";
-import RequestStatus from "../state/RequestStatus";
-import useExams from "../state/ExamsStore";
-import { useLoggedIn } from "../state/AuthenticationStore";
+import RequestStatus from "../../../state/RequestStatus";
+import useExams from "../../../store/ExamsStore";
+import { useLoggedIn } from "../../../store/AuthenticationStore";
 import "./ExamList.scss";
 
 /**

@@ -1,12 +1,12 @@
 import { PrimaryButton, Stack } from "@fluentui/react";
 import * as React from "react";
-import { useQrCode } from "../state/DocumentStore";
+import { useQrCode } from "../../../store/DocumentStore";
 
 /**
  * React component that lets the user create a footer for the document.
  * @component
  */
-export default function PageFooter(_props: unknown): JSX.Element {
+export default function PageFooter(): JSX.Element {
   const [, qrCodeActions] = useQrCode();
 
   return (

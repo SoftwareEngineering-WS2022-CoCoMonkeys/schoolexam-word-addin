@@ -1,13 +1,13 @@
 // MOCK SETUP
 import { mockFetch } from "./MockSetup";
-import RequestStatus from "../../src/taskpane/components/state/RequestStatus";
+import RequestStatus from "../../src/state/RequestStatus";
 import { jest } from "@jest/globals";
 import { v4 as uuidv4 } from "uuid";
 
-import { HttpMethod } from "../../src/taskpane/components/services/ApiService";
+import { HttpMethod } from "../../src/services/ApiService";
 import Exam, { ExamStatus } from "../../src/model/Exam";
-import ISubmissionsState from "../../src/taskpane/components/state/ISubmissionsState";
-import { submissionsStore } from "../../src/taskpane/components/state/SubmissionsStore";
+import ISubmissionsState from "../../src/state/ISubmissionsState";
+import { submissionsStore } from "../../src/store/SubmissionsStore";
 import Submission from "../../src/model/Submission";
 
 // SET UP MICROSTORE
@@ -50,6 +50,7 @@ describe("uploadSubmissions()", () => {
           method: HttpMethod.POST,
           response: {},
           responseStatus: 200,
+          acceptIf: (jsonData: any) => jsonData.pdf === mockSubmission.pdf,
         },
       ]);
     });
