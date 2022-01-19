@@ -79,7 +79,7 @@ const uploadSubmissions = () => {
 /**
  * The submissions MicroStore
  */
-const submissionsStore = createStore({
+export const submissionsStore = createStore({
   initialState: <ISubmissionsState>{
     submissions: [],
     uploadSubmissionsStatus: RequestStatus.IDLE,

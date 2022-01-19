@@ -12,22 +12,32 @@ const dom = new JSDOM();
 global.document = dom.window.document;
 global.window = dom.window;
 
-export function mockFetch(routes: { url: string; method: string; response: unknown; responseStatus?: number }[]): void {
+export function mockFetch(
+  routes: {
+    url: string;
+    method: string;
+    response: unknown;
+    responseStatus?: number;
+    acceptIf?: (jsonData: unknown) => boolean;
+  }[]
+): void {
   // @ts-ignore
   global.fetch = jest.fn((passedUrl: string, config: RequestInit) => {
     for (const route of routes) {
-      const url = route.url;
-      const method = route.method;
-      const response = route.response;
-      const responseStatus = route.responseStatus;
+      const { url, method, response, responseStatus, acceptIf } = route;
+      // Do not reject if acceptIf is undefined
+      if (acceptIf && !acceptIf(JSON.parse(<string>config.body))) {
+        continue;
+      }
       if (passedUrl.toLowerCase() === url.toLowerCase() && config.method === method) {
         return Promise.resolve({
           json: () => Promise.resolve(response),
           status: responseStatus ?? 200,
-          statusText: "OK",
+          statusText: "",
         });
       }
     }
+    // only accepts DTO objects
     return Promise.reject("Unexpected fetch parameters");
   });
 }

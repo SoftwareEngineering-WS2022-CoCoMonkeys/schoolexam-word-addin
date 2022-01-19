@@ -138,7 +138,7 @@ const build = () => {
       );
 
       // Reload exams to get most recent state
-      dispatch(loadExams());
+      await dispatch(loadExams());
     } catch (e) {
       console.warn("Build failed with reason:", e);
       dispatch(setBuildStatus(RequestStatus.ERROR));
@@ -153,18 +153,18 @@ const exportTaskPdf = (taskList: ITaskList) => {
   return async ({ getState, dispatch }) => {
     dispatch(setExportStatus(RequestStatus.WAITING));
 
-    // If the exam has been built already (is SubmissionReady), we have to clean it first
-    if (getState().selectedExam.status === ExamStatus.SubmissionReady) {
-      console.debug("Cleaning exam before rebuild...");
-      await dispatch(clean());
-    }
-
     try {
+      // If the exam has been built already (is SubmissionReady), we have to clean it first
+      if (getState().selectedExam.status === ExamStatus.SubmissionReady) {
+        console.debug("Cleaning exam before rebuild...");
+        await dispatch(clean());
+      }
+
       await ExamsRepository.setTaskPdf(getState().selectedExam.id, getState().taskPdf, taskList);
       dispatch(setExportStatus(RequestStatus.SUCCESS));
 
       // Reload exams to get most recent state
-      dispatch(loadExams());
+      await dispatch(loadExams());
     } catch (e) {
       console.warn("Export failed with reason", e);
       dispatch(setExportStatus(RequestStatus.ERROR));
@@ -198,6 +198,8 @@ const clean = () => {
     try {
       await ExamsRepository.clean(getState().selectedExam.id);
       dispatch(setCleanStatus(RequestStatus.SUCCESS));
+
+      // Do not need to reload exams as clean is never called explicitly
     } catch (e) {
       console.warn("Cleaning failed with reason:", e);
       dispatch(setCleanStatus(RequestStatus.ERROR));
