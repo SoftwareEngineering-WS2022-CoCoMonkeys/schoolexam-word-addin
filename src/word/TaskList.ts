@@ -60,8 +60,8 @@ export default class TaskList extends WordPersistable<ITaskList> implements ITas
   /**
    * @inheritDoc
    */
-  addTaskFromSelectionAsync(maxPoints: number): Promise<void> {
-    return Word.run(async (context) => this.addTaskFromSelection(context, maxPoints));
+  addTaskFromSelectionAsync(title: string, maxPoints: number): Promise<void> {
+    return Word.run(async (context) => this.addTaskFromSelection(context, title, maxPoints));
   }
 
   /**
@@ -161,8 +161,9 @@ export default class TaskList extends WordPersistable<ITaskList> implements ITas
    * Asynchronously add a new {@link ITask} associated with the currently selected document region.
    * @param context The current Word request context.
    * @param maxPoints The maximum number of points for the new task.
+   * @param title The title of the new task.
    */
-  async addTaskFromSelection(context: Word.RequestContext, maxPoints: number): Promise<void> {
+  async addTaskFromSelection(context: Word.RequestContext, title: string, maxPoints: number): Promise<void> {
     // Get the current selection
     const range = context.document.getSelection();
 
@@ -172,7 +173,7 @@ export default class TaskList extends WordPersistable<ITaskList> implements ITas
     // Visually signal content control creation
     cc.cannotDelete = true;
     cc.appearance = Word.ContentControlAppearance.boundingBox;
-    cc.title = "Aufgabe " + (this.tasks.length + 1);
+    cc.title = title;
     cc.tag = "task";
 
     // Need to load ID property first
@@ -180,7 +181,7 @@ export default class TaskList extends WordPersistable<ITaskList> implements ITas
 
     await context.sync();
 
-    const newTask = new Task(uuidv4(), cc.title, maxPoints, cc.id, null);
+    const newTask = new Task(uuidv4(), cc.title, maxPoints, cc.id);
 
     this.tasks.push(newTask);
   }

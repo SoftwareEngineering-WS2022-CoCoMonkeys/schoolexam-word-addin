@@ -1,6 +1,7 @@
 import Exam from "../../../model/Exam";
 import Build from "../../../model/Build";
 import ITaskList from "../../../word/ITaskList";
+import ServerError from "./ServerError";
 
 /**
  * Repository that grants access to {@link Exam}-related functions.

@@ -6,6 +6,7 @@ import ExamDTO from "../../../dto/ExamDTO";
 import BuildDTO from "../../../dto/BuildDTO";
 import TemplateDTO from "../../../dto/TemplateDTO";
 import ITaskList from "../../../word/ITaskList";
+import ServerError from "./ServerError";
 
 /**
  * Exams repository that uses the deployed SchoolExam backend.

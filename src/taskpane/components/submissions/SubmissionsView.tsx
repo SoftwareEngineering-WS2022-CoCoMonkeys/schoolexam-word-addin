@@ -17,8 +17,11 @@ export default function SubmissionsView(_props: unknown): JSX.Element {
         <UploadSubmissionsButton />
       </Stack>
       <ExamList
+        // Only exams in later three stages are eligible to receive submissions
         unselectableExams={(exam) =>
-          exam.status !== ExamStatus.InCorrection && exam.status !== ExamStatus.SubmissionReady
+          exam.status !== ExamStatus.SubmissionReady &&
+          exam.status !== ExamStatus.InCorrection &&
+          exam.status !== ExamStatus.Corrected
         }
       />
     </Stack>

@@ -33,7 +33,21 @@ export default function LoginView(): JSX.Element {
         </MessageBar>
       );
       break;
+    case RequestStatus.SERVER_ERROR:
+    case RequestStatus.CLIENT_ERROR:
     case RequestStatus.ERROR:
+      statusMessage = (
+        <MessageBar
+          messageBarType={MessageBarType.error}
+          isMultiline={true}
+          onDismiss={() => authActions.setLoginStatus(RequestStatus.IDLE)}
+          className="msg"
+        >
+          Loginversuch fehlgeschlagen. Bitte überprüfen sie ihre Internetverbindung.
+        </MessageBar>
+      );
+      break;
+    case RequestStatus.INVALID:
       statusMessage = (
         <MessageBar
           messageBarType={MessageBarType.error}

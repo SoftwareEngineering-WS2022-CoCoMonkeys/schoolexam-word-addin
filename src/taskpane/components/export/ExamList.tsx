@@ -14,7 +14,7 @@ import {
   Stack,
 } from "@fluentui/react";
 import Exam, { ExamStatus } from "../../../model/Exam";
-import RequestStatus from "../state/RequestStatus";
+import RequestStatus, { isErroneousStatus } from "../state/RequestStatus";
 import useExams from "../state/ExamsStore";
 import { useLoggedIn } from "../state/AuthenticationStore";
 import "./ExamList.scss";
@@ -147,7 +147,7 @@ export default function ExamList(props: ExamListProps): JSX.Element {
       </MessageBar>
       <Dialog
         onDismiss={() => examsActions.setExamsStatus(RequestStatus.IDLE)}
-        hidden={examsState.buildStatus !== RequestStatus.ERROR}
+        hidden={!isErroneousStatus(examsState.examsStatus)}
         dialogContentProps={examsDialogContentProps}
       >
         <DialogFooter>

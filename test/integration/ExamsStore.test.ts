@@ -70,20 +70,20 @@ describe("loadExams()", () => {
     });
   });
 
-  describe("when invalid response", () => {
+  describe("when serverside error", () => {
     beforeAll(() => {
       mockFetch([
         {
           url: "https://cocomonkeys-schoolexam.herokuapp.com/exam/byteacher",
           method: HttpMethod.GET,
-          response: [],
+          response: null,
           responseStatus: 500,
         },
       ]);
     });
-    test("should result in error status", async () => {
+    test("should result in server error status", async () => {
       await loadExamsThunk({ dispatch });
-      expect(getState().examsStatus).toBe(RequestStatus.ERROR);
+      expect(getState().examsStatus).toBe(RequestStatus.SERVER_ERROR);
     });
     test("should not set exams in state", async () => {
       await loadExamsThunk({ dispatch });
@@ -126,21 +126,21 @@ describe("clean()", () => {
     });
   });
 
-  describe("when invalid response", () => {
+  describe("when serverside error", () => {
     beforeAll(() => {
       mockFetch([
         {
           url: `https://cocomonkeys-schoolexam.herokuapp.com/exam/${mockExam.id}/clean`,
           method: HttpMethod.POST,
-          response: {},
-          responseStatus: 404,
+          response: null,
+          responseStatus: 500,
         },
       ]);
     });
 
-    test("should result in error status", async () => {
+    test("should result in server error status", async () => {
       await cleanThunk({ getState, dispatch });
-      expect(getState().cleanStatus).toBe(RequestStatus.ERROR);
+      expect(getState().cleanStatus).toBe(RequestStatus.SERVER_ERROR);
     });
   });
 });
@@ -158,7 +158,7 @@ describe("exportTaskPdf()", () => {
     examsState.taskPdf = mockTaskPdf;
   });
 
-  describe("when successfull", () => {
+  describe("when successfully", () => {
     beforeAll(() => {
       mockFetch([
         {
@@ -186,21 +186,21 @@ describe("exportTaskPdf()", () => {
     });
   });
 
-  describe("when invalid response", () => {
+  describe("when serverside error", () => {
     beforeAll(() => {
       mockFetch([
         {
           url: `https://cocomonkeys-schoolexam.herokuapp.com/exam/${mockExam.id}/uploadtaskpdf`,
           method: HttpMethod.POST,
-          response: {},
-          responseStatus: 404,
+          response: null,
+          responseStatus: 500,
         },
       ]);
     });
 
     test("should result in error status", async () => {
       await exportThunk({ getState, dispatch });
-      expect(getState().exportStatus).toBe(RequestStatus.ERROR);
+      expect(getState().exportStatus).toBe(RequestStatus.SERVER_ERROR);
     });
   });
 });
@@ -216,7 +216,7 @@ describe("build()", () => {
     examsState.selectedExam.status = ExamStatus.BuildReady;
   });
 
-  describe("when successfully", () => {
+  describe("when successfull", () => {
     beforeAll(() => {
       mockFetch([
         {
@@ -248,21 +248,21 @@ describe("build()", () => {
     });
   });
 
-  describe("when invalid response", () => {
+  describe("when serverside error", () => {
     beforeAll(() => {
       mockFetch([
         {
           url: `https://cocomonkeys-schoolexam.herokuapp.com/exam/${mockExam.id}/build`,
           method: HttpMethod.POST,
-          response: BuildDTO.fromModel(mockBuild),
-          responseStatus: 404,
+          response: null,
+          responseStatus: 500,
         },
       ]);
     });
 
     test("should result in error status", async () => {
       await buildThunk({ getState, dispatch });
-      expect(getState().buildStatus).toBe(RequestStatus.ERROR);
+      expect(getState().buildStatus).toBe(RequestStatus.SERVER_ERROR);
     });
   });
 });

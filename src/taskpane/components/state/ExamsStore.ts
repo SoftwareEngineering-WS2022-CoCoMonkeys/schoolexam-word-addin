@@ -7,6 +7,7 @@ import downloadFileBase64 from "../services/DownloadService";
 import ExamsRepository from "../services/OnlineExamsRepository";
 import IExamsState from "./IExamsState";
 import ITaskList from "../../../word/ITaskList";
+import ServerError from "../services/ServerError";
 
 // ACTIONS
 
@@ -104,7 +105,7 @@ const convertToPdf = () => {
       // download PDF
       downloadFileBase64("application/pdf", "exam.pdf", pdfBase64);
     } catch (e) {
-      console.warn("PDF conversion failed with reason:", e);
+      console.warn("PDF conversion failed with reason:", e.toString());
       dispatch(setConversionStatus(RequestStatus.ERROR));
     }
   };
@@ -121,6 +122,7 @@ const build = () => {
       // Be cautious if state changes during method execution
       const currentSelection = getState().selectedExam;
       const build = await ExamsRepository.getBuild(currentSelection.id);
+
       dispatch(setBuild(build));
       dispatch(setBuildStatus(RequestStatus.SUCCESS));
 
@@ -139,8 +141,12 @@ const build = () => {
 
       // Reload exams to get most recent state
       await dispatch(loadExams());
-    } catch (e) {
-      console.warn("Build failed with reason:", e);
+    } catch (error) {
+      console.warn("Build failed with reason:", error.toString());
+      if (error instanceof ServerError) {
+        dispatch(setBuildStatus(RequestStatus.SERVER_ERROR));
+        return;
+      }
       dispatch(setBuildStatus(RequestStatus.ERROR));
     }
   };
@@ -161,12 +167,18 @@ const exportTaskPdf = (taskList: ITaskList) => {
       }
 
       await ExamsRepository.setTaskPdf(getState().selectedExam.id, getState().taskPdf, taskList);
+
       dispatch(setExportStatus(RequestStatus.SUCCESS));
 
       // Reload exams to get most recent state
       await dispatch(loadExams());
-    } catch (e) {
-      console.warn("Export failed with reason", e);
+    } catch (error) {
+      console.warn("Export failed with reason", error.toString());
+      if (error instanceof ServerError) {
+        dispatch(setExportStatus(RequestStatus.SERVER_ERROR));
+        return;
+      }
+
       dispatch(setExportStatus(RequestStatus.ERROR));
     }
   };
@@ -180,10 +192,15 @@ const loadExams = () => {
     dispatch(setExamsStatus(RequestStatus.WAITING));
     try {
       const exams = await ExamsRepository.getExams();
+
       dispatch(setExams(exams));
       dispatch(setExamsStatus(RequestStatus.SUCCESS));
-    } catch (e) {
-      console.warn("Exams retrieval failed with reason:", e);
+    } catch (error) {
+      console.warn("Exams retrieval failed with reason:", error.toString());
+      if (error instanceof ServerError) {
+        dispatch(setExamsStatus(RequestStatus.SERVER_ERROR));
+        return;
+      }
       dispatch(setExamsStatus(RequestStatus.ERROR));
     }
   };
@@ -200,8 +217,13 @@ const clean = () => {
       dispatch(setCleanStatus(RequestStatus.SUCCESS));
 
       // Do not need to reload exams as clean is never called explicitly
-    } catch (e) {
-      console.warn("Cleaning failed with reason:", e);
+    } catch (error) {
+      console.warn("Cleaning failed with reason:", error.toString());
+      if (error instanceof ServerError) {
+        dispatch(setCleanStatus(RequestStatus.SERVER_ERROR));
+        return;
+      }
+
       dispatch(setCleanStatus(RequestStatus.ERROR));
     }
   };

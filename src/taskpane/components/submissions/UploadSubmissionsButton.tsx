@@ -10,7 +10,7 @@ import {
   SpinnerSize,
 } from "@fluentui/react";
 import * as React from "react";
-import RequestStatus from "../state/RequestStatus";
+import RequestStatus, { isErroneousStatus } from "../state/RequestStatus";
 import TooltipCheckList, { CheckListItem } from "../export/TooltipCheckList";
 import { useLoggedIn } from "../state/AuthenticationStore";
 
@@ -34,6 +34,17 @@ export default function UploadSubmissionsButton(_props: unknown): JSX.Element {
   /** Wether the button is enabled */
   const checkListFulfilled = uploadSubmissionsCheckList.map((item) => item.status).reduce((a, b) => a && b);
 
+  const errorDialogContentProps: IDialogContentProps = {
+    type: DialogType.normal,
+    title: "Hochladen gescheitert",
+    subText: "Das Hochladen der Einreichungen ist fehlgeschlagen.",
+  };
+  const successDialogContentProps: IDialogContentProps = {
+    type: DialogType.normal,
+    title: "Hochladen erfolgreich",
+    subText: "Das Hochladen der Einreichungen war erfolgreich.",
+  };
+
   const uploadSubmissionBtn = (
     <PrimaryButton
       onClick={() => submissionsActions.uploadSubmissions()}
@@ -47,19 +58,20 @@ export default function UploadSubmissionsButton(_props: unknown): JSX.Element {
     </PrimaryButton>
   );
 
-  const uploadSubmissionsDialogContentProps: IDialogContentProps = {
-    type: DialogType.normal,
-    title: "Hochladen gescheitert",
-    subText: "Das Hochladen der Einreichungen ist fehlgeschlagen.",
-  };
-
   return (
     <>
       <Dialog
         className="dialog"
         onDismiss={() => submissionsActions.setUploadSubmissionsStatus(RequestStatus.IDLE)}
-        hidden={submissionsState.uploadSubmissionsStatus !== RequestStatus.ERROR}
-        dialogContentProps={uploadSubmissionsDialogContentProps}
+        hidden={
+          !isErroneousStatus(submissionsState.uploadSubmissionsStatus) &&
+          submissionsState.uploadSubmissionsStatus !== RequestStatus.SUCCESS
+        }
+        dialogContentProps={
+          submissionsState.uploadSubmissionsStatus === RequestStatus.SUCCESS
+            ? successDialogContentProps
+            : errorDialogContentProps
+        }
       >
         <DialogFooter>
           <DialogFooter>

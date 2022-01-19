@@ -1,7 +1,7 @@
 import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
 import { useTasks } from "../state/DocumentStore";
-import RequestStatus from "../state/RequestStatus";
+import RequestStatus, { isErroneousStatus } from "../state/RequestStatus";
 import useDocument from "../state/ExamsStore";
 
 /**
@@ -36,7 +36,7 @@ export default function ConvertButton(): JSX.Element {
   return (
     <>
       <Dialog
-        hidden={examsState.conversionStatus !== RequestStatus.ERROR}
+        hidden={!isErroneousStatus(examsState.conversionStatus)}
         onDismiss={() => examsActions.setConversionStatus(RequestStatus.IDLE)}
         dialogContentProps={errorDialogContentProps}
       >

@@ -1,4 +1,5 @@
 import Submission from "../../../model/Submission";
+import ServerError from "./ServerError";
 
 /**
  * Repository that grants access to {@link Submission}-related functions.

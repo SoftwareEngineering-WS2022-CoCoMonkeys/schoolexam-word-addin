@@ -1,4 +1,5 @@
 import AuthentificationRepository from "./OnlineAuthenticationRepository";
+import ServerError from "./ServerError";
 
 /**
  * Important HTTP methods
@@ -38,7 +39,7 @@ export default class ApiService {
       .catch((reason) => {
         return Promise.reject(`${method} ${path} failed\nreason: ${reason}\nrequest body: ${JSON.stringify(data)}`);
       })
-      .then((response) => {
+      .then(async (response) => {
         switch (response.status) {
           case 200:
           case 201:
@@ -47,24 +48,17 @@ export default class ApiService {
             console.debug(`${method} ${path} returned code ${response.status}-${response.statusText}`);
             return response;
           }
-          default:
+          default: {
             // Indicates error / unexpected behaviour
             // Check for error message in JSON
-            response
+            const errorMessage = await response
               .json()
               .then((json) => {
-                console.error(
-                  `${method} ${path} returned code ${response.status}-${response.statusText}, body:`,
-                  json,
-                  "\nrequest body: ",
-                  data
-                );
+                return JSON.stringify(json);
               })
-              .catch();
-            return Promise.reject(
-              `${method} ${path} returned code ${response.status}-${response.statusText}\n` +
-                `request body: ${JSON.stringify(data)}`
-            );
+              .catch(() => "");
+            return Promise.reject(new ServerError(response.status, response.statusText, errorMessage));
+          }
         }
       });
   }

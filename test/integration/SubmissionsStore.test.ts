@@ -70,14 +70,14 @@ describe("uploadSubmissions()", () => {
         {
           url: `https://cocomonkeys-schoolexam.herokuapp.com/submission/upload/${mockExam.id}`,
           method: HttpMethod.POST,
-          response: {},
+          response: null,
           responseStatus: 500,
         },
       ]);
     });
     test("should result in error status", async () => {
       await uploadSubmissionsThunk({ getState, dispatch });
-      expect(getState().uploadSubmissionsStatus).toBe(RequestStatus.ERROR);
+      expect(getState().uploadSubmissionsStatus).toBe(RequestStatus.SERVER_ERROR);
     });
     test("should not remove submissions from state", async () => {
       await uploadSubmissionsThunk({ getState, dispatch });

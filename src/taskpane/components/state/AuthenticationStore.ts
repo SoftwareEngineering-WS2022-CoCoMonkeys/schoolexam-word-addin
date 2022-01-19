@@ -1,8 +1,9 @@
 import { createHook, createStore } from "react-sweet-state";
 import IAuthenticationState from "./IAuthenticationState";
 import RequestStatus from "./RequestStatus";
-import AuthentificationRepository from "../services/OnlineAuthenticationRepository";
+import AuthenticationRepository from "../services/OnlineAuthenticationRepository";
 import Authentication from "../../../model/Authentication";
+import ServerError from "../services/ServerError";
 
 // ACTIONS
 /**
@@ -41,15 +42,24 @@ const login = (username: string, password: string) => {
   return async ({ dispatch }) => {
     dispatch(setLoginStatus(RequestStatus.WAITING));
     try {
-      const authData = await AuthentificationRepository.login(username, password);
+      const authData = await AuthenticationRepository.login(username, password);
       dispatch(setAuthData(authData));
       dispatch(setLoginStatus(RequestStatus.SUCCESS));
       setTimeout(() => {
         dispatch(setLoginStatus(RequestStatus.IDLE));
         dispatch(setDisplayLoginPage(false));
       }, 1000);
-    } catch (e) {
-      console.warn("Login failed with reason:", e);
+    } catch (error) {
+      console.warn("Login failed with reason:", error.toString());
+      if (error instanceof ServerError) {
+        if (error.status === 403) {
+          dispatch(setLoginStatus(RequestStatus.INVALID));
+        } else {
+          dispatch(setLoginStatus(RequestStatus.SERVER_ERROR));
+        }
+        return;
+      }
+
       dispatch(setLoginStatus(RequestStatus.ERROR));
     }
   };
