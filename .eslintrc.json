@@ -3,6 +3,17 @@
     "office-addins"
   ],
   "extends": [
-    "plugin:office-addins/recommended"
-  ]
+    "plugin:office-addins/react",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "indent": [
+      2,
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ]
+  }
 }

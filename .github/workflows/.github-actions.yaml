@@ -1,0 +1,17 @@
+name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install modules
+        run: npm install
+      - name: Run tests
+        run: npm test
+      - name: JSDoc Action
+        uses: andstor/jsdoc-action@v1.2.1
+        with:
+          source_dir: ./src
+          recurse: true
+          output_dir: ./docs

@@ -8,3 +8,11 @@ dist/
 # VSCode
 
 .vscode/
+
+# Jetbrains
+
+.idea/
+
+# Other
+
+TODO.md

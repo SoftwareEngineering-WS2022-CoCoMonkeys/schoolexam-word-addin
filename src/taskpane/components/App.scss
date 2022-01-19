@@ -1,0 +1,25 @@
+/*
+============================
+GLOBAL STYLES
+============================
+ */
+
+.stretch {
+  width: 100%;
+}
+
+.pivot-margin {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#download-anchor {
+  visibility: hidden;
+}
+
+.msg {
+  width: fit-content;
+}

@@ -1,0 +1,53 @@
+@import '~@fluentui/react/dist/sass/References';
+@import '~@fluentui/react/dist/sass/Color';
+
+.exam-cell {
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  width: 100%;
+  padding: 5px;
+}
+
+.selectable-exam-cell:hover {
+  background-color: lightgray;
+  cursor: pointer;
+
+  @include ms-depth-8;
+}
+
+.exam-cell-date {
+  font-style: italic;
+}
+
+.selected-exam {
+  color: white;
+  background-color: $ms-color-sharedCyanBlue10;
+
+  .exam-status {
+    color: white;
+  }
+}
+
+.selected-exam:hover {
+  background-color: $ms-color-sharedCyanBlue10 !important;
+}
+
+.unselectable-exam-cell {
+  color: $ms-color-sharedGray10;
+
+  :hover {
+    background-color: inherit;
+  }
+
+  .exam-status {
+    color: $ms-color-sharedGray10;
+  }
+}
+
+.exam-status {
+  color: $ms-color-sharedCyanBlue10;
+}
+

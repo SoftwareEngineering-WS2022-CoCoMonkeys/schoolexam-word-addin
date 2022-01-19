@@ -1,9 +1,9 @@
 {
-  "name": "office-addin-taskpane",
+  "name": "schoolexam-word-addin",
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/OfficeDev/Office-Addin-TaskPane.git"
+    "url": "https://github.com/SoftwareEngineering-WS2022-CoCoMonkeys/schoolexam-word-addin"
   },
   "license": "MIT",
   "config": {
@@ -23,43 +23,81 @@
     "start:web": "office-addin-debugging start manifest.xml web",
     "stop": "office-addin-debugging stop manifest.xml",
     "validate": "office-addin-manifest validate manifest.xml",
-    "watch": "webpack --mode development --watch"
+    "watch": "webpack --mode development --watch",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --silent"
   },
   "dependencies": {
+    "@fluentui/react": "^8.34.0",
+    "@fluentui/web-components": "^2.2.0",
     "core-js": "^3.9.1",
-    "regenerator-runtime": "^0.13.7"
+    "es6-promise": "^4.2.8",
+    "graceful-fs": "^4.2.8",
+    "jsdom": "^19.0.0",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2",
+    "react-sweet-state": "^2.5.2",
+    "react-transition-group": "^4.4.2",
+    "regenerator-runtime": "^0.13.7",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
     "@babel/preset-typescript": "^7.13.0",
     "@types/find-process": "1.2.0",
-    "@types/office-js": "^1.0.180",
+    "@types/jest": "^27.4.0",
+    "@types/office-js-preview": "^1.0.272",
     "@types/office-runtime": "^1.0.17",
+    "@types/react": "^16.8.22",
+    "@types/react-dom": "^16.8.4",
+    "@types/react-hot-loader": "^4.1.0",
+    "@types/uuid": "^8.3.4",
+    "@types/webpack": "^4.4.34",
+    "@types/webpack-dev-server": "^4.1.0",
     "acorn": "^8.5.0",
     "babel-loader": "^8.2.2",
     "copy-webpack-plugin": "^9.0.1",
+    "css-loader": "^6.5.1",
+    "eslint": "^7.32.0",
     "eslint-plugin-office-addins": "^1.1.0",
+    "eslint-plugin-react": "^7.16.0",
     "file-loader": "^6.2.0",
     "find-process": "^1.4.4",
     "html-loader": "^2.1.2",
     "html-webpack-plugin": "^5.3.2",
+    "jest": "^27.4.7",
+    "less": "^3.9.0",
+    "less-loader": "^10.0.1",
     "office-addin-cli": "^1.3.0",
     "office-addin-debugging": "^4.3.0",
     "office-addin-dev-certs": "^1.7.0",
     "office-addin-lint": "^1.4.0",
     "office-addin-manifest": "^1.7.0",
+    "office-addin-mock": "^1.0.4",
     "office-addin-prettier-config": "^1.1.0",
     "os-browserify": "^0.3.0",
     "process": "^0.11.10",
+    "sass": "^1.45.2",
+    "sass-loader": "^12.4.0",
     "source-map-loader": "^3.0.0",
+    "style-loader": "^3.3.1",
     "ts-loader": "^9.2.5",
     "typescript": "^4.3.5",
-    "webpack": "^5.50.0",
+    "webpack": "^5.65.0",
     "webpack-cli": "^4.8.0",
     "webpack-dev-server": "4.1.1"
   },
+  "jest": {
+    "extensionsToTreatAsEsm": [
+      ".ts",
+      ".tsx"
+    ],
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+      "./test/jest.setup.js"
+    ]
+  },
   "prettier": "office-addin-prettier-config",
   "browserslist": [
-    "ie 11"
+    "IE 11"
   ]
 }
