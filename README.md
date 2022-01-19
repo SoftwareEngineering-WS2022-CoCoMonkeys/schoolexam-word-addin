@@ -1,5 +1,9 @@
 <!-- PROJECT LOGO -->
-![logo](assets/schoolexam-logo.png)
+<div align="center">
+  <a href="https://github.com/SoftwareEngineering-WS2022-CoCoMonkeys/schoolexam">
+    <img src="assets/schoolexam-logo.png" alt="Logo" width="80" height="80">
+  </a>
+</div>
 
 <!-- ABOUT THE PROJECT -->
 
