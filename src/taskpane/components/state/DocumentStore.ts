@@ -12,7 +12,6 @@ import { getQrCodeBase64, getTitlePlaceHolderBase64 } from "../structural/Struct
  */
 const setTaskList = (taskList: ITaskList) => {
   return async ({ setState }) => {
-    console.log("set tasklist to", taskList);
     setState({
       taskList,
     });

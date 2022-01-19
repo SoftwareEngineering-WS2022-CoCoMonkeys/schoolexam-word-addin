@@ -4,6 +4,7 @@ import RequestStatus from "./RequestStatus";
 import SubmissionsRepository from "../services/OnlineSubmissionsRepository";
 import { uploadFileBase64 } from "../services/DownloadService";
 import Submission from "../../../model/Submission";
+import ServerError from "../services/ServerError";
 
 // ACTIONS
 /**
@@ -69,8 +70,12 @@ const uploadSubmissions = () => {
       }
 
       dispatch(setUploadSubmissionsStatus(RequestStatus.SUCCESS));
-    } catch (e) {
-      console.warn("Submission upload failed with reason", e);
+    } catch (error) {
+      console.warn("Submission upload failed with reason", error);
+      if (error instanceof ServerError) {
+        dispatch(setUploadSubmissionsStatus(RequestStatus.SERVER_ERROR));
+        return;
+      }
       dispatch(setUploadSubmissionsStatus(RequestStatus.ERROR));
     }
   };

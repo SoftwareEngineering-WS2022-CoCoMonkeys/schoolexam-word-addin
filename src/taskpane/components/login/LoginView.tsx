@@ -33,6 +33,8 @@ export default function LoginView(): JSX.Element {
         </MessageBar>
       );
       break;
+    case RequestStatus.SERVER_ERROR:
+    case RequestStatus.CLIENT_ERROR:
     case RequestStatus.ERROR:
       statusMessage = (
         <MessageBar
@@ -44,6 +46,7 @@ export default function LoginView(): JSX.Element {
           Loginversuch fehlgeschlagen. Bitte überprüfen sie ihre Internetverbindung.
         </MessageBar>
       );
+      break;
     case RequestStatus.INVALID:
       statusMessage = (
         <MessageBar

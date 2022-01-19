@@ -10,7 +10,7 @@ import {
 } from "@fluentui/react";
 import * as React from "react";
 import { ExamStatus } from "../../../model/Exam";
-import RequestStatus from "../state/RequestStatus";
+import RequestStatus, { isErroneousStatus } from "../state/RequestStatus";
 import useExams from "../state/ExamsStore";
 import { useLoggedIn } from "../state/AuthenticationStore";
 import TooltipCheckList, { CheckListItem } from "./TooltipCheckList";
@@ -66,7 +66,7 @@ export default function BuildButton(): JSX.Element {
     <>
       <Dialog
         onDismiss={() => examsActions.setBuildStatus(RequestStatus.IDLE)}
-        hidden={examsState.buildStatus !== RequestStatus.ERROR && examsState.buildStatus !== RequestStatus.SUCCESS}
+        hidden={!isErroneousStatus(examsState.buildStatus) && examsState.buildStatus !== RequestStatus.SUCCESS}
         dialogContentProps={
           examsState.buildStatus == RequestStatus.SUCCESS ? successDialogContentProps : errorDialogContentProps
         }

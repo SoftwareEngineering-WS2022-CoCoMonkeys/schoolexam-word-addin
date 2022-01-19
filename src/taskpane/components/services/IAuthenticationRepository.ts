@@ -1,4 +1,5 @@
 import Authentication from "../../../model/Authentication";
+import ServerError from "./ServerError";
 
 /**
  * Common interface for repositories that handle the login and authentication process.

@@ -10,7 +10,7 @@ import {
   SpinnerSize,
 } from "@fluentui/react";
 import * as React from "react";
-import RequestStatus from "../state/RequestStatus";
+import RequestStatus, { isErroneousStatus } from "../state/RequestStatus";
 import TooltipCheckList, { CheckListItem } from "../export/TooltipCheckList";
 import { useLoggedIn } from "../state/AuthenticationStore";
 
@@ -64,7 +64,7 @@ export default function UploadSubmissionsButton(_props: unknown): JSX.Element {
         className="dialog"
         onDismiss={() => submissionsActions.setUploadSubmissionsStatus(RequestStatus.IDLE)}
         hidden={
-          submissionsState.uploadSubmissionsStatus !== RequestStatus.ERROR &&
+          !isErroneousStatus(submissionsState.uploadSubmissionsStatus) &&
           submissionsState.uploadSubmissionsStatus !== RequestStatus.SUCCESS
         }
         dialogContentProps={

@@ -10,10 +10,11 @@ import {
   SpinnerSize,
 } from "@fluentui/react";
 import useSubmissions from "../state/SubmissionsStore";
-import RequestStatus from "../state/RequestStatus";
+import RequestStatus, { isErroneousStatus } from "../state/RequestStatus";
 import useExams from "../state/ExamsStore";
 import TooltipCheckList, { CheckListItem } from "../export/TooltipCheckList";
 import { ExamStatus } from "../../../model/Exam";
+import { useLoggedIn } from "../state/AuthenticationStore";
 
 /**
  * React component that wraps a button that, when clicked, opens a file input dialog and adds the selected files
@@ -26,14 +27,17 @@ import { ExamStatus } from "../../../model/Exam";
 export default function AddSubmissionButton(_props: unknown): JSX.Element {
   // GLOBAL STATE
   const [submissionsState, submissionsActions] = useSubmissions();
+  const [loggedIn] = useLoggedIn();
   const [examsState] = useExams();
 
   const addSubmissionsCheckList = [
+    new CheckListItem(loggedIn, "Eingeloggt"),
     new CheckListItem(examsState.selectedExam != null, "Prüfung ausgewählt"),
     new CheckListItem(
-      examsState.selectedExam.status === ExamStatus.SubmissionReady ||
-        examsState.selectedExam.status === ExamStatus.InCorrection ||
-        examsState.selectedExam.status === ExamStatus.Corrected,
+      examsState.selectedExam != null &&
+        (examsState.selectedExam.status === ExamStatus.SubmissionReady ||
+          examsState.selectedExam.status === ExamStatus.InCorrection ||
+          examsState.selectedExam.status === ExamStatus.Corrected),
       'Prüfung ist "Einreichungsbereit", "In Korrektur", oder "Korrigiert"'
     ),
   ];
@@ -61,7 +65,7 @@ export default function AddSubmissionButton(_props: unknown): JSX.Element {
       <Dialog
         className="dialog"
         onDismiss={() => submissionsActions.setAddSubmissionsStatus(RequestStatus.IDLE)}
-        hidden={submissionsState.addSubmissionsStatus !== RequestStatus.ERROR}
+        hidden={!isErroneousStatus(submissionsState.addSubmissionsStatus)}
         dialogContentProps={errorDialogContentProps}
       >
         <DialogFooter>

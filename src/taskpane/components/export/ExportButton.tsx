@@ -1,6 +1,6 @@
 import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
-import RequestStatus from "../state/RequestStatus";
+import RequestStatus, { isErroneousStatus } from "../state/RequestStatus";
 import { useLoggedIn } from "../state/AuthenticationStore";
 import useExams from "../state/ExamsStore";
 import useDocument from "../state/DocumentStore";
@@ -64,7 +64,7 @@ export default function ExportButton(): JSX.Element {
   return (
     <>
       <Dialog
-        hidden={examsState.exportStatus !== RequestStatus.ERROR && examsState.exportStatus !== RequestStatus.SUCCESS}
+        hidden={!isErroneousStatus(examsState.exportStatus) && examsState.exportStatus !== RequestStatus.SUCCESS}
         onDismiss={() => examsActions.setExportStatus(RequestStatus.IDLE)}
         dialogContentProps={
           examsState.exportStatus === RequestStatus.ERROR ? errorDialogContentProps : successDialogContentProps
