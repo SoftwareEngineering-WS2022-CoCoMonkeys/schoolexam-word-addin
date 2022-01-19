@@ -1,57 +1,67 @@
-import TaskDTO from "../export_dto/TaskDTO";
-import ITask from "../model/ITask";
+import ITask from "./ITask";
 
+/**
+ * A task that that uses {@link Word.ContentControl} to link to regions in the document.
+ */
 export default class Task implements ITask {
-  private readonly _taskId: string;
+  /**
+   * @inheritDoc
+   */
+  readonly id: string;
+  /**
+   * @inheritDoc
+   */
+  title: string;
+  /**
+   * @inheritDoc
+   */
+  maxPoints: number;
+
+  /** The ID of the {@link Word.ContentControl} associated with the whole task */
   private readonly _ccId: number;
+  /** The ID of the {@link Word.ContentControl} associated with the start of this task */
   private _startLinkCcId: number | null;
+  /** The ID of the {@link Word.ContentControl} associated with the end of this task */
   private _endLinkCcId: number | null;
 
-  constructor(taskId: string, title: string, maxPoints: number, ccId: number, linkCcId: number | null) {
-    this._taskId = taskId;
-    this._title = title;
-    this._maxPoints = maxPoints;
+  constructor(
+    id: string,
+    title: string,
+    maxPoints: number,
+    ccId: number,
+    startLinkCcId?: number | null,
+    endLinkCcId?: number | null
+  ) {
+    this.id = id;
+    this.title = title;
+    this.maxPoints = maxPoints;
     this._ccId = ccId;
-    this._startLinkCcId = linkCcId;
-  }
-
-  private _title: string;
-
-  get title(): string {
-    return this._title;
-  }
-
-  private _maxPoints: number;
-
-  get maxPoints(): number {
-    return this._maxPoints;
-  }
-
-  get taskId(): string {
-    return this._taskId;
+    this._startLinkCcId = startLinkCcId;
+    this._endLinkCcId = endLinkCcId;
   }
 
   get ccId(): number {
     return this._ccId;
   }
 
-  equals(other: unknown): boolean {
-    if (other == null) {
-      return false;
-    }
-    if (this === other) {
-      return true;
-    }
-    if (typeof this !== typeof other) {
-      return this == other;
-    }
-    return this._taskId === (other as Task).taskId;
+  /**
+   * @inheritDoc
+   */
+  jumpToAsync(): Promise<void> {
+    return Word.run(async (context) => this.jumpTo(context));
   }
 
-  assembleDTO(): TaskDTO {
-    return new TaskDTO(this._taskId, this._title, this._maxPoints);
+  /**
+   * @inheritDoc
+   */
+  editAsync(fieldName: string, newValue: string | number): Promise<void> {
+    return Word.run(async (context) => this.edit(context, fieldName, newValue));
   }
 
+  /**
+   * Asynchronously jump to the position of this task in the document.
+   * @param context The current Word request context.
+   */
   async jumpTo(context: Word.RequestContext): Promise<void> {
     const contentControl = this.getAssociatedContentControl(context);
     const range = contentControl.getRange(Word.RangeLocation.whole);
@@ -60,20 +70,22 @@ export default class Task implements ITask {
     await context.sync();
   }
 
-  jumpToAsync(): Promise<void> {
-    return Word.run(async (context) => this.jumpTo(context));
-  }
-
+  /**
+   * Asynchronously edit this task.
+   * @param context The current Word request context.
+   * @param fieldName The field to edit.
+   * @param newValue The new value of the field.
+   */
   async edit(context: Word.RequestContext, fieldName: string, newValue: string | number): Promise<void> {
     switch (fieldName) {
       case "title": {
-        this._title = newValue as string;
+        this.title = newValue as string;
         const contentControl = this.getAssociatedContentControl(context);
         contentControl.title = newValue.toString();
         break;
       }
       case "maxPoints": {
-        this._maxPoints = newValue as number;
+        this.maxPoints = newValue as number;
         break;
       }
       default:
@@ -83,10 +95,11 @@ export default class Task implements ITask {
     await context.sync();
   }
 
-  async prepareForDeletionAsync(): Promise<void> {
-    return Word.run(async (context) => this.prepareForDeletion(context));
-  }
-
+  /**
+   * Asynchronously prepare this task for deletion from a collection of tasks by removing its enclosing
+   * {@link Word.ContentControl}.
+   * @param context The current Word request context.
+   */
   async prepareForDeletion(context: Word.RequestContext): Promise<void> {
     // delete associated content control
     const contentControl = this.getAssociatedContentControl(context);
@@ -98,22 +111,34 @@ export default class Task implements ITask {
     await context.sync();
   }
 
-  getAssociatedContentControlAsync(): Promise<Word.ContentControl | null> {
-    return Word.run(async (context) => this.getAssociatedContentControl(context));
-  }
-
+  /**
+   * @param context The current Word request context.
+   * @returns The {@link Word.ContentControl} associated with this whole task
+   */
   getAssociatedContentControl(context: Word.RequestContext): Word.ContentControl | null {
     return context.document.contentControls.getByIdOrNullObject(this._ccId);
   }
 
+  /**
+   * @param context The current Word request context.
+   * @returns The {@link Word.ContentControl} associated with the start of this task
+   */
   getStartLinkContentControl(context: Word.RequestContext): Word.ContentControl | null {
     return context.document.contentControls.getByIdOrNullObject(this._startLinkCcId);
   }
 
+  /**
+   * @param context The current Word request context.
+   * @returns The {@link Word.ContentControl} associated with the end of this task
+   */
   getEndLinkContentControl(context: Word.RequestContext): Word.ContentControl | null {
     return context.document.contentControls.getByIdOrNullObject(this._endLinkCcId);
   }
 
+  /**
+   * Asynchronously remove the link {@link Word.ContentControl} (start/end) from the document.
+   * @param context The current Word request context.
+   */
   async removeLinkContentControls(context: Word.RequestContext): Promise<void> {
     if (this._startLinkCcId != null) {
       const startLinkContentControl = this.getStartLinkContentControl(context);
@@ -136,6 +161,10 @@ export default class Task implements ITask {
     await context.sync();
   }
 
+  /**
+   * Asynchronously insert the link {@link Word.ContentControl} (start/end) int the document.
+   * @param context The current Word request context.
+   */
   async insertLinkContentControls(context: Word.RequestContext): Promise<void> {
     const contentControl = this.getAssociatedContentControl(context);
 
@@ -151,11 +180,11 @@ export default class Task implements ITask {
     // 2. Set title and tag accordingly
     startLinkContentControl.appearance = Word.ContentControlAppearance.hidden;
     startLinkContentControl.tag = "task-start-link";
-    startLinkContentControl.title = "task-start-link-" + this._taskId;
+    startLinkContentControl.title = "task-start-link-" + this.id;
 
     endLinkContentControl.appearance = Word.ContentControlAppearance.hidden;
     endLinkContentControl.tag = "task-end-link";
-    endLinkContentControl.title = "task-end-link-" + this._taskId;
+    endLinkContentControl.title = "task-end-link-" + this.id;
 
     /*
      3. Insert anchor element.
@@ -163,12 +192,12 @@ export default class Task implements ITask {
      Bookmarks, although preferable, are not exported properly.
      */
     startLinkContentControl.insertHtml(
-      `<a style="text-decoration: none; font-size:0.01em; transform: translate(-1px)" href="task-start-${this._taskId}">&nbsp;</a>`,
+      `<a style="text-decoration: none; font-size:0.01em; transform: translate(-1px)" href="task-start-${this.id}">&nbsp;</a>`,
       Word.InsertLocation.start
     );
 
     endLinkContentControl.insertHtml(
-      `<a style="text-decoration: none; font-size:0.01em; transform: translate(-1px)" href="task-end-${this._taskId}">&nbsp;</a>`,
+      `<a style="text-decoration: none; font-size:0.01em; transform: translate(-1px)" href="task-end-${this.id}">&nbsp;</a>`,
       Word.InsertLocation.end
     );
 

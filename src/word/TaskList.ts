@@ -1,40 +1,90 @@
 import Task from "./Task";
 import WordPersistable from "./WordPersistable";
 import { v4 as uuidv4 } from "uuid";
-import TaskDTO from "../export_dto/TaskDTO";
-import ITaskList from "../model/ITaskList";
+import ITaskList from "./ITaskList";
 
-export default class TaskList extends WordPersistable<TaskList> implements ITaskList {
+/**
+ * A collection of tasks that use {@link Word.ContentControl} to link to regions in the document.
+ * This collection is persisted inside the Word document using custom properties.
+ */
+export default class TaskList extends WordPersistable<ITaskList> implements ITaskList {
   propertyKey = "task-data";
+  /**
+   * @inheritDoc
+   */
+  tasks: Task[];
 
   constructor() {
     super();
-    this._tasks = [];
+    this.tasks = [];
   }
 
-  private _tasks: Task[];
-
-  get tasks(): Task[] {
-    return this._tasks;
+  /**
+   * @inheritDoc
+   */
+  async prepareForConversion(): Promise<void> {
+    await this.removeLinkContentControlsAsync();
+    await this.insertLinkContentControlsAsync();
   }
 
-  getTaskById(taskId: string): Task {
-    return this._tasks.find((task) => task.taskId === taskId);
+  /**
+   * @inheritDoc
+   */
+  async afterConversion(): Promise<void> {
+    await this.removeLinkContentControlsAsync();
   }
 
+  /**
+   * @inheritDoc
+   */
+  getTaskById(id: string): Task {
+    return this.tasks.find((task) => task.id === id);
+  }
+
+  /**
+   * @inheritDoc
+   */
   getLength(): number {
-    return this._tasks.length;
+    return this.tasks.length;
   }
 
-  async copy(): Promise<TaskList> {
+  /**
+   * @inheritDoc
+   */
+  async copyAsync(): Promise<TaskList> {
     const copy = Object.assign(new TaskList(), this) as TaskList;
     await copy.saveAsync();
     return copy;
   }
 
-  async updateTaskTitles(context: Word.RequestContext): Promise<TaskList> {
+  /**
+   * @inheritDoc
+   */
+  addTaskFromSelectionAsync(maxPoints: number): Promise<void> {
+    return Word.run(async (context) => this.addTaskFromSelection(context, maxPoints));
+  }
+
+  /**
+   * @inheritDoc
+   */
+  deleteTaskAsync(taskToDelete: Task): Promise<void> {
+    return Word.run(async (context) => this.deleteTask(context, taskToDelete));
+  }
+
+  /**
+   * @inheritDoc
+   */
+  updateTaskTitlesAsync(): Promise<void> {
+    return Word.run(async (context) => this.updateTaskTitles(context));
+  }
+
+  /**
+   * Asynchronously update the titles of the tasks in this collection to match the order they appear in the document.
+   * @param context The current Word request context.
+   */
+  async updateTaskTitles(context: Word.RequestContext): Promise<void> {
     const ccIdMap = new Map();
-    for (const task of this._tasks) {
+    for (const task of this.tasks) {
       ccIdMap.set(task.ccId, task);
     }
     context.load(context.document, "contentControls/id");
@@ -50,76 +100,69 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
         orderedTasks.push(task);
       }
     }
-
-    this._tasks = orderedTasks;
-
-    return this.copy();
+    this.tasks = orderedTasks;
   }
 
-  updateTaskTitlesAsync(): Promise<TaskList> {
-    return Word.run<TaskList>(async (context) => this.updateTaskTitles(context));
-  }
-
-  async editTask(
-    context: Word.RequestContext,
-    taskId: string,
-    fieldName: string,
-    newValue: number | string
-  ): Promise<TaskList> {
-    const taskToEdit = this.getTaskById(taskId);
-    await taskToEdit.edit(context, fieldName, newValue);
-    return this.copy();
-  }
-
-  async deleteTask(context: Word.RequestContext, taskToDelete: Task): Promise<TaskList> {
+  /**
+   * Asynchronously delete a task from this collection.
+   * @param taskToDelete The task to delete.
+   * @param context The current Word request context.
+   */
+  async deleteTask(context: Word.RequestContext, taskToDelete: Task): Promise<void> {
     // slightly ugly way to get index
-    const localTask = this.getTaskById(taskToDelete.taskId);
+    const localTask = this.getTaskById(taskToDelete.id);
 
     await localTask.prepareForDeletion(context);
 
-    const index = this._tasks.indexOf(localTask);
+    const index = this.tasks.indexOf(localTask);
     // task could be deleted in the meanwhile
     if (index != -1) {
-      this._tasks.splice(index, 1);
+      this.tasks.splice(index, 1);
     } else {
       console.warn("Possible synchronization issue: Task already deleted locally");
     }
-    return this.copy();
   }
 
-  deleteTaskAsync(taskToDelete: Task): Promise<TaskList> {
-    return Word.run(async (context) => this.deleteTask(context, taskToDelete));
-  }
-
-  editTaskAsync(taskId: string, fieldName: string, newValue: number | string): Promise<TaskList> {
-    return Word.run<TaskList>(async (context) => this.editTask(context, taskId, fieldName, newValue));
-  }
-
-  assembleDTO(): TaskDTO[] {
-    return this._tasks.map((task) => task.assembleDTO());
-  }
-
+  /**
+   * Asynchronously remove the link {@link Word.ContentControl} of all tasks in this collection
+   */
   removeLinkContentControlsAsync(): Promise<void> {
     return Word.run(async (context) => this.removeLinkContentControls(context));
   }
 
+  /**
+   * Asynchronously remove the link {@link Word.ContentControl} of all tasks in this collection
+   * @param context The current Word request context
+   */
   async removeLinkContentControls(context: Word.RequestContext): Promise<void> {
-    for (const task of this._tasks) {
+    for (const task of this.tasks) {
       await task.removeLinkContentControls(context);
     }
   }
 
+  /**
+   * Asynchronously inser the link {@link Word.ContentControl} of all tasks in this collection
+   */
   insertLinkContentControlsAsync(): Promise<void> {
     return Word.run(async (context) => this.insertLinkContentControls(context));
   }
 
+  /**
+   * Asynchronously inser the link {@link Word.ContentControl} of all tasks in this collection.
+   * @param context The current Word request context.
+   */
   async insertLinkContentControls(context: Word.RequestContext): Promise<void> {
-    for (const task of this._tasks) {
+    for (const task of this.tasks) {
       await task.insertLinkContentControls(context);
     }
   }
 
-  async addTaskFromSelection(context: Word.RequestContext, maxPoints: number): Promise<TaskList> {
+  /**
+   * Asynchronously add a new {@link ITask} associated with the currently selected document region.
+   * @param context The current Word request context.
+   * @param maxPoints The maximum number of points for the new task.
+   */
+  async addTaskFromSelection(context: Word.RequestContext, maxPoints: number): Promise<void> {
     // Get the current selection
     const range = context.document.getSelection();
 
@@ -129,7 +172,7 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
     // Visually signal content control creation
     cc.cannotDelete = true;
     cc.appearance = Word.ContentControlAppearance.boundingBox;
-    cc.title = "Aufgabe " + (this._tasks.length + 1);
+    cc.title = "Aufgabe " + (this.tasks.length + 1);
     cc.tag = "task";
 
     // Need to load ID property first
@@ -139,26 +182,26 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
 
     const newTask = new Task(uuidv4(), cc.title, maxPoints, cc.id, null);
 
-    this._tasks.push(newTask);
-
-    return this.copy();
+    this.tasks.push(newTask);
   }
 
-  addTaskFromSelectionAsync(maxPoints: number): Promise<TaskList> {
-    return Word.run(async (context) => this.addTaskFromSelection(context, maxPoints));
-  }
-
+  /**
+   * @inheritDoc
+   */
   async init(loadedTaskList: TaskList, context: Word.RequestContext): Promise<void> {
     // Bind content controls
     for (const task of loadedTaskList.tasks) {
       const cc = task.getAssociatedContentControl(context);
 
       if (cc == null) {
-        console.error(`Missing content control for ${task.taskId}`);
+        console.error(`Missing content control for ${task.id}`);
       }
     }
   }
 
+  /**
+   * @inheritDoc
+   */
   reviver(key: string, value: unknown): unknown {
     if (value == null) {
       return null;
@@ -166,13 +209,16 @@ export default class TaskList extends WordPersistable<TaskList> implements ITask
     if (key === "") {
       return Object.assign(new TaskList(), value);
     }
-    if (value["_taskId"] != null) {
+    if (value["id"] != null) {
       // @ts-ignore
       return Object.assign(new Task(), value);
     }
     return value;
   }
 
+  /**
+   * @inheritDoc
+   */
   newEmpty(): TaskList {
     return new TaskList();
   }

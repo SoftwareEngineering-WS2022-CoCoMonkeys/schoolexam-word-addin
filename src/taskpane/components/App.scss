@@ -1,48 +1,25 @@
-#app-main {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-}
-
 /*
 ============================
 GLOBAL STYLES
 ============================
  */
 
-.margin-top1 {
-  margin-top: 1rem !important;
-}
-
-.margin-right1 {
-  margin-right: 1rem !important;
-}
-
-.center-items {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.row-flex {
-  display: flex;
-  flex-direction: row;
-}
-
-.column-flex {
-  display: flex;
-  flex-direction: column;
-}
-
-.horizontal-separator {
-  width: 100%;
-}
-
 .stretch {
   width: 100%;
 }
 
+.pivot-margin {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 #download-anchor {
   visibility: hidden;
+}
+
+.msg {
+  width: fit-content;
 }

@@ -1,19 +1,43 @@
 import useSubmissions from "../state/SubmissionsStore";
-import { PrimaryButton, Spinner, SpinnerSize } from "@fluentui/react";
+import {
+  DefaultButton,
+  Dialog,
+  DialogFooter,
+  DialogType,
+  IDialogContentProps,
+  PrimaryButton,
+  Spinner,
+  SpinnerSize,
+} from "@fluentui/react";
 import * as React from "react";
 import RequestStatus from "../state/RequestStatus";
-import useExams from "../state/ExamsStore";
+import TooltipCheckList, { CheckListItem } from "../export/TooltipCheckList";
+import { useLoggedIn } from "../state/AuthenticationStore";
 
+/**
+ * React component that wraps a button that, when clicked, triggers the {@link Submission} upload via the submissions
+ * MicroStore ({@link useSubmissions}).
+ *
+ * Some conditions have to be fulfilled before the button can be clicked. These conditions
+ * are presented in a {@link TooltipCheckList} format on hover.
+ * @component
+ */
 export default function UploadSubmissionsButton(_props: unknown): JSX.Element {
   // GLOBAL STATE
   const [submissionsState, submissionsActions] = useSubmissions();
-  const [examsState] = useExams();
+  const [loggedIn] = useLoggedIn();
 
-  return (
+  const uploadSubmissionsCheckList = [
+    new CheckListItem(loggedIn, "Eingeloggt"),
+    new CheckListItem(submissionsState.submissions.length > 0, "Es wurden Einreichungen hinzugefügt"),
+  ];
+  /** Wether the button is enabled */
+  const checkListFulfilled = uploadSubmissionsCheckList.map((item) => item.status).reduce((a, b) => a && b);
+
+  const uploadSubmissionBtn = (
     <PrimaryButton
-      onClick={() => submissionsActions.uploadSubmissions(examsState.selectedExam.id)}
-      className="margin-top1"
-      disabled={submissionsState.submissions.length == 0 || !examsState.selectedExam}
+      onClick={() => submissionsActions.uploadSubmissions()}
+      disabled={!checkListFulfilled}
       text={
         (submissionsState.uploadSubmissionsStatus !== RequestStatus.WAITING ? "Einreichungen hochladen " : "") +
         `(${submissionsState.submissions.length})`
@@ -21,5 +45,32 @@ export default function UploadSubmissionsButton(_props: unknown): JSX.Element {
     >
       {submissionsState.uploadSubmissionsStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
     </PrimaryButton>
+  );
+
+  const uploadSubmissionsDialogContentProps: IDialogContentProps = {
+    type: DialogType.normal,
+    title: "Hochladen gescheitert",
+    subText: "Das Hochladen der Einreichungen ist fehlgeschlagen.",
+  };
+
+  return (
+    <>
+      <Dialog
+        className="dialog"
+        onDismiss={() => submissionsActions.setUploadSubmissionsStatus(RequestStatus.IDLE)}
+        hidden={submissionsState.uploadSubmissionsStatus !== RequestStatus.ERROR}
+        dialogContentProps={uploadSubmissionsDialogContentProps}
+      >
+        <DialogFooter>
+          <DialogFooter>
+            <DefaultButton
+              onClick={() => submissionsActions.setUploadSubmissionsStatus(RequestStatus.IDLE)}
+              text="Ok"
+            />
+          </DialogFooter>
+        </DialogFooter>
+      </Dialog>
+      <TooltipCheckList renderChild={uploadSubmissionBtn} items={uploadSubmissionsCheckList} />{" "}
+    </>
   );
 }

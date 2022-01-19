@@ -9,14 +9,37 @@ import {
   SpinnerSize,
 } from "@fluentui/react";
 import * as React from "react";
-import "./BuildButton.scss";
-import { ExamStatus } from "../../../import_dto/Exam";
+import { ExamStatus } from "../../../model/Exam";
 import RequestStatus from "../state/RequestStatus";
 import useExams from "../state/ExamsStore";
+import { useLoggedIn } from "../state/AuthenticationStore";
+import TooltipCheckList, { CheckListItem } from "./TooltipCheckList";
 
-export default function BuildButton(_props: unknown): JSX.Element {
+/**
+ * React component that wraps a button that, when clicked, triggers the build of the
+ * {@link IExamsState.selectedExam} via the exams MicroStore
+ * ({@link useExams}). Several conditions have to be fulfilled before the button can be clicked. These conditions
+ * are presented in a {@link TooltipCheckList} format on hover.
+ * If the build fails for whatever reason, an error dialog is displayed.
+ * @component
+ */
+export default function BuildButton(): JSX.Element {
   // GLOBAL STATE
   const [examsState, examsActions] = useExams();
+  const [loggedIn] = useLoggedIn();
+
+  const buildCheckList = [
+    new CheckListItem(loggedIn, "Eingeloggt"),
+    new CheckListItem(examsState.selectedExam != null, "Prüfung ausgewählt"),
+    new CheckListItem(
+      examsState.selectedExam != null &&
+        examsState.selectedExam.status !== ExamStatus.BuildReady &&
+        examsState.selectedExam.status !== ExamStatus.SubmissionReady,
+      'Prüfung ist "Kompilierbereit" oder "Einreichungsbereit"'
+    ),
+  ];
+  /** Whether the button is enabled */
+  const checkListFulfilled = buildCheckList.map((item) => item.status).reduce((a, b) => a && b);
 
   const buildDialogContentProps: IDialogContentProps = {
     type: DialogType.normal,
@@ -24,8 +47,18 @@ export default function BuildButton(_props: unknown): JSX.Element {
     subText: "Die Kompilation ist fehlgeschlagen.",
   };
 
+  const buildBtn = (
+    <PrimaryButton
+      onClick={examsActions.build}
+      disabled={!checkListFulfilled}
+      text={examsState.buildStatus !== RequestStatus.WAITING ? "Kompilieren" : ""}
+    >
+      {examsState.buildStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
+    </PrimaryButton>
+  );
+
   return (
-    <div>
+    <>
       <Dialog
         onDismiss={() => examsActions.setBuildStatus(RequestStatus.IDLE)}
         hidden={examsState.buildStatus !== RequestStatus.ERROR}
@@ -37,19 +70,7 @@ export default function BuildButton(_props: unknown): JSX.Element {
           </DialogFooter>
         </DialogFooter>
       </Dialog>
-      <PrimaryButton
-        id="build-dialog-btn"
-        className="margin-right1"
-        onClick={examsActions.build}
-        disabled={
-          (examsState.selectedExam?.status !== ExamStatus.BuildReady &&
-            examsState.selectedExam?.status !== ExamStatus.SubmissionReady) ??
-          true
-        }
-        text={examsState.buildStatus !== RequestStatus.WAITING ? "Kompilieren" : ""}
-      >
-        {examsState.buildStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
-      </PrimaryButton>
-    </div>
+      <TooltipCheckList renderChild={buildBtn} items={buildCheckList} />
+    </>
   );
 }

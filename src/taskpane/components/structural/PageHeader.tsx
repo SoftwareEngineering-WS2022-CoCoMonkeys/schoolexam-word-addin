@@ -1,46 +1,31 @@
-import { PrimaryButton } from "@fluentui/react";
+import { PrimaryButton, Stack, TextField } from "@fluentui/react";
 import * as React from "react";
-import "./PageHeader.scss";
-import RangeLocation = Word.RangeLocation;
-import ContentControlAppearance = Word.ContentControlAppearance;
-import InsertLocation = Word.InsertLocation;
+import { useState } from "react";
 import { useQrCode } from "../state/DocumentStore";
 
+/**
+ * React component that lets the user create a header for the document.
+ * @component
+ */
 export default function PageHeader(): JSX.Element {
-  const [qrCodeState, qrCodeActions] = useQrCode();
-
-  function createPageHeader(): Promise<void> {
-    return Word.run(async (context) => {
-      const header = context.document.sections.getFirst().getHeader(Word.HeaderFooterType.primary);
-      header.clear();
-
-      const contentControl = header.getRange(RangeLocation.start).insertContentControl();
-      contentControl.appearance = ContentControlAppearance.boundingBox;
-      contentControl.tag = "header-qr-code-placeholder";
-      contentControl.title = "header-qr-code-placeholder";
-
-      // Warning: setting cannot edit breaks this content control
-
-      await context.sync();
-
-      const paragraph = contentControl.insertParagraph(">>>Platz für QR-Code<<<", InsertLocation.start);
-      // change color to grey
-      paragraph.font.set({
-        color: "grey",
-      });
-
-      await context.sync();
-
-      // persist header QR Code id
-      contentControl.load("id");
-      await context.sync();
-      await qrCodeActions.setTitleQrCodeCcId(contentControl.id);
-    });
-  }
+  const [, qrCodeActions] = useQrCode();
+  const [, setHeaderText] = useState("");
 
   return (
-    <div className="centerTopPadding">
-      <PrimaryButton text="Kopfzeile erstellen" id="headerCreate" onClick={createPageHeader} />
-    </div>
+    <Stack
+      className="stretch"
+      horizontal={false}
+      horizontalAlign="center"
+      verticalAlign="center"
+      tokens={{ childrenGap: 20 }}
+    >
+      <TextField
+        label="Kopfzeilentext"
+        className="stretch"
+        placeholder="z.B. das Datum"
+        onChange={(_, newValue) => setHeaderText(newValue)}
+      />
+      <PrimaryButton text="Kopfzeile erstellen" id="headerCreate" onClick={() => qrCodeActions.createHeader()} />
+    </Stack>
   );
 }

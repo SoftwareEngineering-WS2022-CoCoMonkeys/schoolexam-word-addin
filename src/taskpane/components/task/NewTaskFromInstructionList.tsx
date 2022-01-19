@@ -1,6 +1,9 @@
 import * as React from "react";
-import "./NewTaskFromInstructionList.scss";
 
+/**
+ * Instructions for the creation of a new task in the document.
+ * @component
+ */
 export default function InstructionList(): JSX.Element {
   return (
     <div>

@@ -1,25 +1,29 @@
 import { DefaultButton, Dialog, DialogFooter, DialogType, PrimaryButton, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
-import "./ConvertButton.scss";
 import { useTasks } from "../state/DocumentStore";
 import RequestStatus from "../state/RequestStatus";
 import useDocument from "../state/ExamsStore";
 
-export default function ConvertButton(_props: unknown): JSX.Element {
+/**
+ * React component that wraps a button that, when clicked, triggers the conversion of the opened Word document via
+ * the exams MicroStore ({@link useExams}).
+ * Also uses the tasks document MicroStore ({@link useDocument}) to trigger necessary preparation and teardown actions.
+ * If the conversion fails for whatever reason, an error dialog is displayed.
+ * @component
+ */
+export default function ConvertButton(): JSX.Element {
   // GLOBAL STATE
-  const [taskList] = useTasks();
+  const [, taskActions] = useTasks();
   const [examsState, examsActions] = useDocument();
 
   async function convertToPdf() {
     examsActions.setConversionStatus(RequestStatus.WAITING);
 
-    // remove and re-insert linkContentControls
-    await taskList.removeLinkContentControlsAsync();
-    await taskList.insertLinkContentControlsAsync();
-
+    // setup conversion
+    await taskActions.prepareForConversion();
     await examsActions.convertToPdf();
-    // remove link content controls
-    await taskList.removeLinkContentControlsAsync();
+    // tear down
+    await taskActions.afterConversion();
   }
 
   const errorDialogContentProps = {
@@ -30,7 +34,7 @@ export default function ConvertButton(_props: unknown): JSX.Element {
   };
 
   return (
-    <div>
+    <>
       <Dialog
         hidden={examsState.conversionStatus !== RequestStatus.ERROR}
         onDismiss={() => examsActions.setConversionStatus(RequestStatus.IDLE)}
@@ -41,13 +45,11 @@ export default function ConvertButton(_props: unknown): JSX.Element {
         </DialogFooter>
       </Dialog>
       <PrimaryButton
-        id="convert-btn"
-        className="margin-right1"
         onClick={convertToPdf}
-        text={examsState.conversionStatus !== RequestStatus.WAITING ? "Konvertieren" : null}
+        text={examsState.conversionStatus !== RequestStatus.WAITING ? "Konvertieren (PDF)" : null}
       >
         {examsState.conversionStatus === RequestStatus.WAITING && <Spinner size={SpinnerSize.small} />}
       </PrimaryButton>
-    </div>
+    </>
   );
 }
