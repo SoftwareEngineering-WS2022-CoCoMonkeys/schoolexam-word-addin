@@ -43,10 +43,11 @@ const load = () => {
 /**
  * Asynchronously add a new task (from the current selection) to the {@link IDocumentState.taskList}.
  * @param maxPoints The maximum points achievable.
+ * @param title The title of the new task.
  */
-const addTask = (maxPoints: number) => {
+const addTask = (title: string, maxPoints: number) => {
   return async ({ getState, dispatch }) => {
-    await getState().taskList.addTaskFromSelectionAsync(maxPoints);
+    await getState().taskList.addTaskFromSelectionAsync(title, maxPoints);
     dispatch(setTaskList(await getState().taskList.copyAsync()));
   };
 };

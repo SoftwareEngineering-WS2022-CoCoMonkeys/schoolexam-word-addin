@@ -21,11 +21,13 @@ interface NewTaskDialogProps {
  */
 export default function NewTaskDialog(props: NewTaskDialogProps): JSX.Element {
   // GLOBAL STATE
-  const [, taskListActions] = useTasks();
+  const [taskList, taskListActions] = useTasks();
 
   // LOCAL STATE
   const defaultPointsInput = 1;
   const [pointsInput, setPointsInput] = useState(defaultPointsInput);
+  const defaultTitleInput = `Aufgabe ${taskList.getLength() + 1}`;
+  const [titleInput, setTitleInput] = useState(defaultTitleInput);
 
   const newTaskDialogContentProps = {
     type: DialogType.normal,
@@ -42,14 +44,21 @@ export default function NewTaskDialog(props: NewTaskDialogProps): JSX.Element {
       <InstructionList />
       <TextField
         required={true}
+        label="Titel"
+        type="text"
+        defaultValue={titleInput.toString()}
+        onChange={(event) => setTitleInput(event.currentTarget.value)}
+      />
+      <TextField
+        required={true}
         label="Punkte"
         type="number"
-        defaultValue={defaultPointsInput.toString()}
+        defaultValue={pointsInput.toString()}
         onChange={(event) => setPointsInput(parseInt(event.currentTarget.value))}
       />
       <DialogFooter>
         <DefaultButton
-          onClick={() => taskListActions.addTask(pointsInput).then(() => props.setVisible(false))}
+          onClick={() => taskListActions.addTask(titleInput, pointsInput).then(() => props.setVisible(false))}
           disabled={pointsInput == null || isNaN(pointsInput) || pointsInput <= 0}
           text="Aufgabe hinzufügen"
         />

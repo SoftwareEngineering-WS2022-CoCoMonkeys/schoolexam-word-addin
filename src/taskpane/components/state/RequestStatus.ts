@@ -11,6 +11,12 @@ const enum RequestStatus {
   SUCCESS,
   /** Failure */
   ERROR,
+  /** Clientside Failure */
+  CLIENT_ERROR,
+  /** ServerSide Failure */
+  SERVER_ERROR,
+  /** Invalid request */
+  INVALID,
 }
 
 export default RequestStatus;

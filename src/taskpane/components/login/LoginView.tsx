@@ -41,6 +41,17 @@ export default function LoginView(): JSX.Element {
           onDismiss={() => authActions.setLoginStatus(RequestStatus.IDLE)}
           className="msg"
         >
+          Loginversuch fehlgeschlagen. Bitte überprüfen sie ihre Internetverbindung.
+        </MessageBar>
+      );
+    case RequestStatus.INVALID:
+      statusMessage = (
+        <MessageBar
+          messageBarType={MessageBarType.error}
+          isMultiline={true}
+          onDismiss={() => authActions.setLoginStatus(RequestStatus.IDLE)}
+          className="msg"
+        >
           Ungültige Kombination aus Nutzername und Passwort
         </MessageBar>
       );

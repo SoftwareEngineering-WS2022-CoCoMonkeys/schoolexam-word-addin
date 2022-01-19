@@ -13,6 +13,7 @@ import useSubmissions from "../state/SubmissionsStore";
 import RequestStatus from "../state/RequestStatus";
 import useExams from "../state/ExamsStore";
 import TooltipCheckList, { CheckListItem } from "../export/TooltipCheckList";
+import { ExamStatus } from "../../../model/Exam";
 
 /**
  * React component that wraps a button that, when clicked, opens a file input dialog and adds the selected files
@@ -27,15 +28,24 @@ export default function AddSubmissionButton(_props: unknown): JSX.Element {
   const [submissionsState, submissionsActions] = useSubmissions();
   const [examsState] = useExams();
 
-  const addSubmissionsCheckList = [new CheckListItem(examsState.selectedExam != null, "Prüfung ausgewählt")];
+  const addSubmissionsCheckList = [
+    new CheckListItem(examsState.selectedExam != null, "Prüfung ausgewählt"),
+    new CheckListItem(
+      examsState.selectedExam.status === ExamStatus.SubmissionReady ||
+        examsState.selectedExam.status === ExamStatus.InCorrection ||
+        examsState.selectedExam.status === ExamStatus.Corrected,
+      'Prüfung ist "Einreichungsbereit", "In Korrektur", oder "Korrigiert"'
+    ),
+  ];
   /** Wether the button is enabled */
   const checkListFulfilled = addSubmissionsCheckList.map((item) => item.status).reduce((a, b) => a && b);
 
-  const addSubmissionsDialogContentProps: IDialogContentProps = {
+  const errorDialogContentProps: IDialogContentProps = {
     type: DialogType.normal,
     title: "Hinzufügen gescheitert",
     subText: "Das Hinzufügen von Einreichungen ist fehlgeschlagen.",
   };
+  // No success dialog as uploadSubmissions counter is incremented
 
   const addSubmissionsBtn = (
     <PrimaryButton
@@ -52,7 +62,7 @@ export default function AddSubmissionButton(_props: unknown): JSX.Element {
         className="dialog"
         onDismiss={() => submissionsActions.setAddSubmissionsStatus(RequestStatus.IDLE)}
         hidden={submissionsState.addSubmissionsStatus !== RequestStatus.ERROR}
-        dialogContentProps={addSubmissionsDialogContentProps}
+        dialogContentProps={errorDialogContentProps}
       >
         <DialogFooter>
           <DialogFooter>

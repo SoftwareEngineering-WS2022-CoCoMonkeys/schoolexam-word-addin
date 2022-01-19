@@ -33,18 +33,23 @@ export default function BuildButton(): JSX.Element {
     new CheckListItem(examsState.selectedExam != null, "Prüfung ausgewählt"),
     new CheckListItem(
       examsState.selectedExam != null &&
-        examsState.selectedExam.status !== ExamStatus.BuildReady &&
-        examsState.selectedExam.status !== ExamStatus.SubmissionReady,
+        (examsState.selectedExam.status === ExamStatus.BuildReady ||
+          examsState.selectedExam.status === ExamStatus.SubmissionReady),
       'Prüfung ist "Kompilierbereit" oder "Einreichungsbereit"'
     ),
   ];
   /** Whether the button is enabled */
   const checkListFulfilled = buildCheckList.map((item) => item.status).reduce((a, b) => a && b);
 
-  const buildDialogContentProps: IDialogContentProps = {
+  const errorDialogContentProps: IDialogContentProps = {
     type: DialogType.normal,
     title: "Kompilation gescheitert",
     subText: "Die Kompilation ist fehlgeschlagen.",
+  };
+  const successDialogContentProps = {
+    type: DialogType.normal,
+    title: "Kompilieren erfolgreich",
+    subText: "Die Kompilation war erfolgreich.",
   };
 
   const buildBtn = (
@@ -61,8 +66,10 @@ export default function BuildButton(): JSX.Element {
     <>
       <Dialog
         onDismiss={() => examsActions.setBuildStatus(RequestStatus.IDLE)}
-        hidden={examsState.buildStatus !== RequestStatus.ERROR}
-        dialogContentProps={buildDialogContentProps}
+        hidden={examsState.buildStatus !== RequestStatus.ERROR && examsState.buildStatus !== RequestStatus.SUCCESS}
+        dialogContentProps={
+          examsState.buildStatus == RequestStatus.SUCCESS ? successDialogContentProps : errorDialogContentProps
+        }
       >
         <DialogFooter>
           <DialogFooter>

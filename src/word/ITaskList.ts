@@ -28,8 +28,9 @@ export default interface ITaskList {
   /**
    * Asynchronously add a new {@link ITask} associated with the currently selected document region.
    * @param maxPoints The maximum number of points for the new task.
+   * @param title The title of the new task.
    */
-  addTaskFromSelectionAsync(maxPoints: number): Promise<void>;
+  addTaskFromSelectionAsync(title: string, maxPoints: number): Promise<void>;
 
   /**
    * Asynchronously delete a task from this collection.
