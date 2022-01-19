@@ -52,6 +52,11 @@ export default function ExamList(props: ExamListProps): JSX.Element {
     }
   }, [loggedIn]);
 
+  // Reset exam selection on load to prevent unwanted builds and exports
+  useEffect(() => {
+    examsActions.setSelectedExam(null);
+  });
+
   /**
    * Custom render function (anonymous component) for a single exam in the list.
    * @param exam The exam to be rendered.
@@ -60,11 +65,6 @@ export default function ExamList(props: ExamListProps): JSX.Element {
     // Only exams in the first two stages are available
     const unselectable = props.unselectableExams(exam);
     const isSelected = exam.equals(examsState.selectedExam);
-
-    if (unselectable && isSelected) {
-      // Must reset the selected exam
-      examsActions.setSelectedExam(null);
-    }
 
     // Get German localization of the exam status
     let examStatusText: string;

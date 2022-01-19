@@ -26,8 +26,7 @@ export default function ExportButton(): JSX.Element {
     new CheckListItem(loggedIn, "Eingeloggt"),
     new CheckListItem(examsState.taskPdf != null, "Dokument konvertiert"),
     new CheckListItem(examsState.selectedExam != null, "Prüfung ausgewählt"),
-    new CheckListItem(documentState.qrCode.footerIsPresent(), "QR-Code in Fußzeile"),
-    new CheckListItem(documentState.qrCode.titleIsPresent(), "QR-Code-(Platzhalter) auf Titelseite"),
+    new CheckListItem(documentState.qrCode.pageQrCodeIsPresent(), "QR-Code in Fußzeile"),
     new CheckListItem(
       examsState.selectedExam != null &&
         (examsState.selectedExam.status === ExamStatus.Planned ||

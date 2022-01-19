@@ -8,25 +8,25 @@ export default class QrCode extends WordPersistable<QrCode> implements IQrCode {
   propertyKey = "qrcode-data";
 
   /** The ID of the {@link Word.ContentControl} associated with the page QR-Code */
-  private _footerCcId: number;
+  private _pageQrCodeCcId: number;
 
   /** The ID of the {@link Word.ContentControl} associated with the student QR-Code */
-  private _headerCcId: number;
+  private _studentQrCodeCcId: number;
 
   /**
    * @inheritDoc
    * @param value The new ID of the {@link Word.ContentControl} associated with the page QR-Code
    */
-  set footer(value: number) {
-    this._footerCcId = value;
+  set pageQrCode(value: number) {
+    this._pageQrCodeCcId = value;
   }
 
   /**
    * @inheritDoc
    * @param value The new ID of the {@link Word.ContentControl} associated with the student QR-Code
    */
-  set header(value: number) {
-    this._headerCcId = value;
+  set studentQrCode(value: number) {
+    this._studentQrCodeCcId = value;
   }
 
   /**
@@ -41,22 +41,22 @@ export default class QrCode extends WordPersistable<QrCode> implements IQrCode {
   /**
    * @inheritDoc
    */
-  footerIsPresent(): boolean {
-    return this._footerCcId != null;
+  pageQrCodeIsPresent(): boolean {
+    return this._pageQrCodeCcId != null;
   }
 
   /**
    * @inheritDoc
    */
-  titleIsPresent(): boolean {
-    return this._headerCcId != null;
+  studentQrCodeIsPresent(): boolean {
+    return this._studentQrCodeCcId != null;
   }
 
   /**
    * @inheritDoc
    */
   bothArePresent(): boolean {
-    return this.titleIsPresent() && this.footerIsPresent();
+    return this.studentQrCodeIsPresent() && this.pageQrCodeIsPresent();
   }
 
   /**

@@ -53,7 +53,7 @@ export default class TaskList extends WordPersistable<ITaskList> implements ITas
    */
   async copyAsync(): Promise<TaskList> {
     const copy = Object.assign(new TaskList(), this) as TaskList;
-    await copy.saveAsync();
+    //await copy.saveAsync();
     return copy;
   }
 

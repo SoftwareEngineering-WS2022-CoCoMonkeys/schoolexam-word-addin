@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DefaultButton, Dialog, DialogFooter, DialogType, TextField } from "@fluentui/react";
 import InstructionList from "./NewTaskFromInstructionList";
 import { useTasks } from "../state/DocumentStore";
@@ -26,8 +26,11 @@ export default function NewTaskDialog(props: NewTaskDialogProps): JSX.Element {
   // LOCAL STATE
   const defaultPointsInput = 1;
   const [pointsInput, setPointsInput] = useState(defaultPointsInput);
-  const defaultTitleInput = `Aufgabe ${taskList.getLength() + 1}`;
-  const [titleInput, setTitleInput] = useState(defaultTitleInput);
+  const [titleInput, setTitleInput] = useState("");
+
+  useEffect(() => {
+    setTitleInput(`Aufgabe ${taskList.getLength() + 1}`);
+  });
 
   const newTaskDialogContentProps = {
     type: DialogType.normal,
@@ -46,7 +49,7 @@ export default function NewTaskDialog(props: NewTaskDialogProps): JSX.Element {
         required={true}
         label="Titel"
         type="text"
-        defaultValue={titleInput.toString()}
+        defaultValue={titleInput}
         onChange={(event) => setTitleInput(event.currentTarget.value)}
       />
       <TextField

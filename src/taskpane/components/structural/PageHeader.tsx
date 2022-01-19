@@ -9,7 +9,7 @@ import { useQrCode } from "../state/DocumentStore";
  */
 export default function PageHeader(): JSX.Element {
   const [, qrCodeActions] = useQrCode();
-  const [, setHeaderText] = useState("");
+  const [headerText, setHeaderText] = useState("");
 
   return (
     <Stack
@@ -25,7 +25,11 @@ export default function PageHeader(): JSX.Element {
         placeholder="z.B. das Datum"
         onChange={(_, newValue) => setHeaderText(newValue)}
       />
-      <PrimaryButton text="Kopfzeile erstellen" id="headerCreate" onClick={() => qrCodeActions.createHeader()} />
+      <PrimaryButton
+        text="Kopfzeile erstellen"
+        id="headerCreate"
+        onClick={() => qrCodeActions.createHeader(headerText)}
+      />
     </Stack>
   );
 }

@@ -63,11 +63,7 @@ export default function TaskTable(): JSX.Element {
       if (activeEdit && activeEdit.id === task.id && fieldName === activeEdit.fieldName) {
         return <TextField defaultValue={task[fieldName]} onKeyPress={onEnterAfterEdit} />;
       } else {
-        return (
-          <div onClick={() => task.jumpToAsync()} onDoubleClick={() => setActiveEdit({ id: task.id, fieldName })}>
-            {task[fieldName]}
-          </div>
-        );
+        return <div onDoubleClick={() => setActiveEdit({ id: task.id, fieldName })}>{task[fieldName]}</div>;
       }
     };
   }
@@ -75,6 +71,10 @@ export default function TaskTable(): JSX.Element {
   const deleteIcon: IIconProps = {
     iconName: "Delete",
     color: "red",
+  };
+
+  const jumpToIcon: IIconProps = {
+    iconName: "Pin",
   };
 
   /** column definitions */
@@ -107,7 +107,12 @@ export default function TaskTable(): JSX.Element {
    */
   function rowCheckBoxRenderer(task: Task): IRenderFunction<IDetailsCheckboxProps> {
     // don't actually render the component, instead return a render function
-    const renderCheckBox = () => <IconButton iconProps={deleteIcon} onClick={() => taskListActions.deleteTask(task)} />;
+    const renderCheckBox = () =>
+      deleteMode ? (
+        <IconButton iconProps={deleteIcon} onClick={() => taskListActions.deleteTask(task)} />
+      ) : (
+        <IconButton iconProps={jumpToIcon} onClick={() => task.jumpToAsync()} />
+      );
     return renderCheckBox;
   }
 
@@ -147,7 +152,7 @@ export default function TaskTable(): JSX.Element {
         />
       </Stack>
       <DetailsList
-        selectionMode={deleteMode ? SelectionMode.multiple : SelectionMode.none}
+        selectionMode={SelectionMode.single}
         columns={columns}
         items={taskList.tasks}
         onRenderRow={renderRow}
