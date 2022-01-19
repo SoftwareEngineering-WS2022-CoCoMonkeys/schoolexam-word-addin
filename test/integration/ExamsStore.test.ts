@@ -152,6 +152,7 @@ describe("exportTaskPdf()", () => {
     // set selected exam
     examsState.selectedExam = mockExam;
     // Set status to planned
+    // @ts-ignore
     examsState.selectedExam.status = ExamStatus.Planned;
     // set taskPDf
     examsState.taskPdf = mockTaskPdf;
@@ -211,6 +212,7 @@ describe("build()", () => {
     // set selected exam
     examsState.selectedExam = mockExam;
     // Set status to planned
+    // @ts-ignore
     examsState.selectedExam.status = ExamStatus.BuildReady;
   });
 
