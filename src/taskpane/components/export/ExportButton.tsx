@@ -66,7 +66,7 @@ export default function ExportButton(): JSX.Element {
         hidden={!isErroneousStatus(examsState.exportStatus) && examsState.exportStatus !== RequestStatus.SUCCESS}
         onDismiss={() => examsActions.setExportStatus(RequestStatus.IDLE)}
         dialogContentProps={
-          examsState.exportStatus === RequestStatus.ERROR ? errorDialogContentProps : successDialogContentProps
+          isErroneousStatus(examsState.exportStatus) ? errorDialogContentProps : successDialogContentProps
         }
       >
         <DialogFooter>

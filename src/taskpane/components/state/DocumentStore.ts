@@ -214,7 +214,8 @@ const createFooter = () => {
       const qrCodePicture = contentControl.inlinePictures.getFirst();
       await context.sync();
       qrCodePicture.hyperlink = "http://pageQrCode";
-      qrCodePicture.height = 30;
+      // Previous values (30,50) have proven to be too small
+      qrCodePicture.height = 60;
 
       // persist footer QR Code id
       contentControl.load("id");

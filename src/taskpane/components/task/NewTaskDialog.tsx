@@ -28,10 +28,6 @@ export default function NewTaskDialog(props: NewTaskDialogProps): JSX.Element {
   const [pointsInput, setPointsInput] = useState(defaultPointsInput);
   const [titleInput, setTitleInput] = useState("");
 
-  useEffect(() => {
-    setTitleInput(`Aufgabe ${taskList.getLength() + 1}`);
-  });
-
   const newTaskDialogContentProps = {
     type: DialogType.normal,
     title: "Neue Aufgabe",
