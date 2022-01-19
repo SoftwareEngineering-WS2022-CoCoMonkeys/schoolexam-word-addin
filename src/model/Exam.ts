@@ -19,7 +19,7 @@ export default class Exam {
   /** The participants of this exam */
   readonly participants: Participant[];
 
-  constructor(id: string, status: string, title: string, date: Date, topic: string, participants: Participant[]) {
+  constructor(id: string, status: ExamStatus, title: string, date: Date, topic: string, participants: Participant[]) {
     this.id = id;
     this.status = status;
     this.title = title;

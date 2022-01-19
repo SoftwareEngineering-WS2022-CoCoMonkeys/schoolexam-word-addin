@@ -2,7 +2,7 @@ import Exam from "../../../model/Exam";
 import Build from "../../../model/Build";
 import ApiService, { HttpMethod } from "./ApiService";
 import IExamsRepository from "./IExamsRepository";
-import ExamDTO from "../../../export_dto/ExamDTO";
+import ExamDTO from "../../../dto/ExamDTO";
 import BuildDTO from "../../../dto/BuildDTO";
 import TemplateDTO from "../../../dto/TemplateDTO";
 import ITaskList from "../../../word/ITaskList";

@@ -6,7 +6,16 @@ export default class ParticipantDTO implements IDTO<Participant> {
   id: string;
   displayName: string;
 
+  constructor(id: string, displayName: string) {
+    this.id = id;
+    this.displayName = displayName;
+  }
+
   toModel(): Participant {
     throw new Error("Method not implemented");
+  }
+
+  static fromModel(model: Participant) {
+    return new ParticipantDTO(model.id, model.displayName);
   }
 }

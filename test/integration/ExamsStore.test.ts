@@ -7,7 +7,7 @@ import { jest } from "@jest/globals";
 import { v4 as uuidv4 } from "uuid";
 
 import { HttpMethod } from "../../src/taskpane/components/services/ApiService";
-import ExamDTO from "../../src/export_dto/ExamDTO";
+import ExamDTO from "../../src/dto/ExamDTO";
 import IExamsState from "../../src/taskpane/components/state/IExamsState";
 
 // @ts-ignore
@@ -24,7 +24,7 @@ afterEach(() => {
 
 const setState = jest.fn((newState) => Object.assign(examsState, newState));
 const getState = jest.fn(() => examsState);
-const dispatch = jest.fn((thunk) => thunk({ setState, getState, dispatch }));
+const dispatch = jest.fn((thunk: (any) => void) => thunk({ setState, getState, dispatch }));
 
 describe("loadExams()", () => {
   const loadExamsThunk = examsStore.actions.loadExams();
@@ -95,7 +95,7 @@ describe("loadExams()", () => {
 });
 
 describe("rerender()", () => {
-  const rerenderThunk = examsStore.actions.rerender();
+  const rerenderThunk = examsStore.actions.forceRerender();
 
   test("should create new state", async () => {
     await rerenderThunk({ getState, dispatch });

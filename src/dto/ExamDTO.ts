@@ -1,4 +1,5 @@
-import Exam, { ExamStatus } from "../import_dto/Exam";
+import Exam, { ExamStatus } from "../model/Exam";
+import ParticipantDTO from "./ParticipantDTO";
 
 export default class ExamDTO {
   readonly id: string;
@@ -6,9 +7,9 @@ export default class ExamDTO {
   readonly title: string;
   readonly date: string;
   readonly topic: string;
-  readonly participants: Participant[];
+  readonly participants: ParticipantDTO[];
 
-  constructor(id: string, status: string, title: string, date: string, topic: string, participants: Participant[]) {
+  constructor(id: string, status: string, title: string, date: string, topic: string, participants: ParticipantDTO[]) {
     this.id = id;
     this.status = status;
     this.title = title;
@@ -40,7 +41,7 @@ export default class ExamDTO {
       model.title,
       model.date.toUTCString(),
       model.topic,
-      model.participants
+      model.participants.map((p) => ParticipantDTO.fromModel(p))
     );
   }
 }

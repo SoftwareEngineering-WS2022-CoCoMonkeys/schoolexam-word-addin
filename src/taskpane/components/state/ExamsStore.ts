@@ -118,14 +118,24 @@ const build = () => {
   return async ({ getState, dispatch }) => {
     dispatch(setBuildStatus(RequestStatus.WAITING));
     try {
-      const build = await ExamsRepository.getBuild(getState().selectedExam.id);
+      // Be cautious if state changes during method execution
+      const currentSelection = getState().selectedExam;
+      const build = await ExamsRepository.getBuild(currentSelection.id);
       dispatch(setBuild(build));
       dispatch(setBuildStatus(RequestStatus.SUCCESS));
 
       // download build PDF
-      downloadFileBase64("application/pdf", "build.pdf", build.pdfFile);
+      downloadFileBase64(
+        "application/pdf",
+        `${currentSelection.title}-${currentSelection.topic}-build.pdf`,
+        build.pdfFile
+      );
       // download QR code stickers
-      downloadFileBase64("application/pdf", "qrcodes.pdf", build.qrCodePdfFile);
+      downloadFileBase64(
+        "application/pdf",
+        `${currentSelection.title}-${currentSelection.topic}-QR-Code.pdf`,
+        build.qrCodePdfFile
+      );
 
       // Reload exams to get most recent state
       dispatch(loadExams());
