@@ -90,9 +90,9 @@ const updateTaskTitles = () => {
 /**
  * @param footerCcId The ID of the {@link Word.ContentControl} to associate with the page QR-Code.
  */
-const setFooterQrCode = (footerCcId: number) => {
+const setPageQrCode = (footerCcId: number) => {
   return async ({ getState, dispatch }) => {
-    getState().qrCode.footer = footerCcId;
+    getState().qrCode.pageQrCode = footerCcId;
     dispatch(setQrCode(await getState().qrCode.copyAsync()));
   };
 };
@@ -100,9 +100,9 @@ const setFooterQrCode = (footerCcId: number) => {
 /**
  * @param headerCcId The ID of the {@link Word.ContentControl} to associate with the student QR-Code.
  */
-const setHeaderQrCode = (headerCcId: number) => {
+const setStudentQrCode = (headerCcId: number) => {
   return async ({ getState, dispatch }) => {
-    getState().qrCode.header = headerCcId;
+    getState().qrCode.studentQrCode = headerCcId;
     dispatch(setQrCode(await getState().qrCode.copyAsync()));
   };
 };
@@ -183,7 +183,7 @@ const createFrontPage = (examTitle: string, examDate: Date, courseName: string) 
         // persist title QR Code id
         contentControl.load("id");
         await context.sync();
-        dispatch(setHeaderQrCode(contentControl.id));
+        dispatch(setStudentQrCode(contentControl.id));
       }
     });
   };
@@ -214,12 +214,13 @@ const createFooter = () => {
       const qrCodePicture = contentControl.inlinePictures.getFirst();
       await context.sync();
       qrCodePicture.hyperlink = "http://pageQrCode";
-      qrCodePicture.height = 30;
+      // Previous values (30,50) have proven to be too small
+      qrCodePicture.height = 60;
 
       // persist footer QR Code id
       contentControl.load("id");
       await context.sync();
-      await dispatch(setFooterQrCode(contentControl.id));
+      await dispatch(setPageQrCode(contentControl.id));
     });
   };
 };
@@ -229,33 +230,14 @@ const createFooter = () => {
  *
  * This step has to take place before exporting the document because it embeds the student QR-Code placeholder.
  */
-const createHeader = () => {
-  return async ({ dispatch }) => {
+const createHeader = (headerText: string) => {
+  return async ({}) => {
     return Word.run(async (context) => {
       const header = context.document.sections.getFirst().getHeader(Word.HeaderFooterType.primary);
       header.clear();
-
-      const contentControl = header.getRange(Word.RangeLocation.start).insertContentControl();
-      contentControl.appearance = Word.ContentControlAppearance.boundingBox;
-      contentControl.tag = "header-qr-code-placeholder";
-      contentControl.title = "header-qr-code-placeholder";
-
-      // Warning: setting cannot edit breaks this content control
+      header.insertParagraph(headerText, Word.InsertLocation.start);
 
       await context.sync();
-
-      const paragraph = contentControl.insertParagraph(">>>Platz für QR-Code<<<", Word.InsertLocation.start);
-      // change color to grey
-      paragraph.font.set({
-        color: "grey",
-      });
-
-      await context.sync();
-
-      // persist header QR Code id
-      contentControl.load("id");
-      await context.sync();
-      await dispatch(setHeaderQrCode(contentControl.id));
     });
   };
 };
@@ -276,8 +258,8 @@ const documentStore = createStore({
     editTask,
     deleteTask,
     updateTaskTitles,
-    setFooterQrCode,
-    setHeaderQrCode,
+    setPageQrCode,
+    setStudentQrCode,
     prepareForConversion,
     afterConversion,
     createFrontPage,

@@ -23,7 +23,6 @@ export default class TaskList extends WordPersistable<ITaskList> implements ITas
    * @inheritDoc
    */
   async prepareForConversion(): Promise<void> {
-    await this.removeLinkContentControlsAsync();
     await this.insertLinkContentControlsAsync();
   }
 

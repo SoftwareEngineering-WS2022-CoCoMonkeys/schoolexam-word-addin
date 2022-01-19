@@ -2,7 +2,7 @@ import UploadSubmissionsButton from "./UploadSubmissionsButton";
 import AddSubmissionButton from "./AddSubmissionButton";
 import * as React from "react";
 import { Stack } from "@fluentui/react";
-import ExamList from "../export/ExamList";
+import ExamList from "../util/ExamList";
 import { ExamStatus } from "../../../model/Exam";
 
 /**

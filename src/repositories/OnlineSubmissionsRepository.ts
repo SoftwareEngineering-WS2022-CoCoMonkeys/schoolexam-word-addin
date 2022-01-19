@@ -1,7 +1,7 @@
 import ISubmissionsRepository from "./ISubmissionsRepository";
-import ApiService, { HttpMethod } from "./ApiService";
-import SubmissionDTO from "../../../dto/SubmissionDTO";
-import Submission from "../../../model/Submission";
+import ApiService, { HttpMethod } from "../services/ApiService";
+import SubmissionDTO from "../dto/SubmissionDTO";
+import Submission from "../model/Submission";
 
 /**
  * Submissions repository that uses the deployed SchoolExam backend.

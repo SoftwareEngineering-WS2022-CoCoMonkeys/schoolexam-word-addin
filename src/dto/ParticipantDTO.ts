@@ -14,11 +14,11 @@ export default class ParticipantDTO implements IDTO<Participant> {
     this.displayName = displayName;
   }
 
-  toModel(): Participant {
-    throw new Error("Method not implemented");
-  }
-
   static fromModel(model: Participant) {
     return new ParticipantDTO(model.id, model.displayName);
+  }
+
+  toModel(): Participant {
+    throw new Error("Method not implemented");
   }
 }

@@ -1,6 +1,6 @@
-import Exam from "../../../model/Exam";
-import Build from "../../../model/Build";
-import ITaskList from "../../../word/ITaskList";
+import Exam from "../model/Exam";
+import Build from "../model/Build";
+import ITaskList from "../word/ITaskList";
 
 /**
  * Repository that grants access to {@link Exam}-related functions.

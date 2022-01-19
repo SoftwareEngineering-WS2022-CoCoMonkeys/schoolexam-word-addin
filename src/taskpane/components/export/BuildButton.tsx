@@ -46,11 +46,7 @@ export default function BuildButton(): JSX.Element {
     title: "Kompilation gescheitert",
     subText: "Die Kompilation ist fehlgeschlagen.",
   };
-  const successDialogContentProps = {
-    type: DialogType.normal,
-    title: "Kompilieren erfolgreich",
-    subText: "Die Kompilation war erfolgreich.",
-  };
+  // Don't need success dialog as download is initiated
 
   const buildBtn = (
     <PrimaryButton
@@ -66,10 +62,8 @@ export default function BuildButton(): JSX.Element {
     <>
       <Dialog
         onDismiss={() => examsActions.setBuildStatus(RequestStatus.IDLE)}
-        hidden={!isErroneousStatus(examsState.buildStatus) && examsState.buildStatus !== RequestStatus.SUCCESS}
-        dialogContentProps={
-          examsState.buildStatus == RequestStatus.SUCCESS ? successDialogContentProps : errorDialogContentProps
-        }
+        hidden={!isErroneousStatus(examsState.buildStatus)}
+        dialogContentProps={errorDialogContentProps}
       >
         <DialogFooter>
           <DialogFooter>

@@ -1,4 +1,4 @@
-import { PrimaryButton, Stack, TextField } from "@fluentui/react";
+import { PrimaryButton, Stack } from "@fluentui/react";
 import * as React from "react";
 import { useQrCode } from "../state/DocumentStore";
 
@@ -7,10 +7,8 @@ import { useQrCode } from "../state/DocumentStore";
  * @component
  */
 export default function PageFooter(_props: unknown): JSX.Element {
-  const [, setFooterText] = React.useState("      ");
   const [, qrCodeActions] = useQrCode();
 
-  // TODO footer text
   return (
     <Stack
       className="stretch"
@@ -19,14 +17,12 @@ export default function PageFooter(_props: unknown): JSX.Element {
       verticalAlign="center"
       tokens={{ childrenGap: 20 }}
     >
-      <TextField
-        label="Fußzeilentext"
-        className="stretch"
-        placeholder="z.B. das Thema des Tests"
-        onChange={(_, newValue) => setFooterText("      " + newValue)}
+      <PrimaryButton
+        text="Fußzeile erstellen (inkl. QR-Code)"
+        id="footerCreate"
+        onClick={() => qrCodeActions.createFooter()}
       />
-      <br />
-      <PrimaryButton text="Fußzeile erstellen" id="footerCreate" onClick={() => qrCodeActions.createFooter()} />
     </Stack>
   );
 }
+1;

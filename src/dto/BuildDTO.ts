@@ -22,11 +22,11 @@ export default class BuildDTO implements IDTO<Build> {
     return Object.assign(new BuildDTO(), JSON.parse(json));
   }
 
-  toModel(): Build {
-    return new Build(this.count, this.pdfFile, this.qrCodePdfFile);
-  }
-
   static fromModel(model: Build): BuildDTO {
     return new BuildDTO(model.count, model.pdfFile, model.qrCodePdfFile);
+  }
+
+  toModel(): Build {
+    return new Build(this.count, this.pdfFile, this.qrCodePdfFile);
   }
 }

@@ -33,10 +33,6 @@ export default class ExamDTO {
     return JSON.parse(json, reviver);
   }
 
-  toModel(): Exam {
-    return new Exam(this.id, this.status as ExamStatus, this.title, new Date(this.date), this.topic, this.participants);
-  }
-
   static fromModel(model: Exam): ExamDTO {
     return new ExamDTO(
       model.id,
@@ -46,5 +42,9 @@ export default class ExamDTO {
       model.topic,
       model.participants.map((p) => ParticipantDTO.fromModel(p))
     );
+  }
+
+  toModel(): Exam {
+    return new Exam(this.id, this.status as ExamStatus, this.title, new Date(this.date), this.topic, this.participants);
   }
 }
