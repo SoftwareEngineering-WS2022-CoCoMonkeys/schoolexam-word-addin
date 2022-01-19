@@ -13,24 +13,19 @@ export default class Exam {
   readonly title: string;
   /** The date this exam is planned to take place on*/
   readonly date: Date;
+
   /** The topic of this exam. This usually coincides with a school subject or topic within a subject, e.g. 'Mathematik - Integralrechnung' */
   readonly topic: string;
   /** The participants of this exam */
   readonly participants: Participant[];
 
-  static fromJson(json: string): Exam {
-    function reviver(key, value) {
-      if (key === "") {
-        return Object.assign(new Exam(), value);
-      } else if (key === "status") {
-        return value as ExamStatus;
-      } else if (key === "date") {
-        return new Date(value);
-      }
-      return value;
-    }
-
-    return JSON.parse(json, reviver);
+  constructor(id: string, status: ExamStatus, title: string, date: Date, topic: string, participants: Participant[]) {
+    this.id = id;
+    this.status = status;
+    this.title = title;
+    this.date = date;
+    this.topic = topic;
+    this.participants = participants;
   }
 
   equals(other: unknown): boolean {

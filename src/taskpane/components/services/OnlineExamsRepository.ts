@@ -2,6 +2,7 @@ import Exam from "../../../model/Exam";
 import Build from "../../../model/Build";
 import ApiService, { HttpMethod } from "./ApiService";
 import IExamsRepository from "./IExamsRepository";
+import ExamDTO from "../../../dto/ExamDTO";
 import BuildDTO from "../../../dto/BuildDTO";
 import TemplateDTO from "../../../dto/TemplateDTO";
 import ITaskList from "../../../word/ITaskList";
@@ -17,7 +18,7 @@ class OnlineExamsRepository implements IExamsRepository {
   getExams(): Promise<Exam[]> {
     return ApiService.request(HttpMethod.GET, "/Exam/ByTeacher")
       .then((response) => response.json())
-      .then((jsonArr) => jsonArr.map((e) => Exam.fromJson(JSON.stringify(e))));
+      .then((jsonArr) => jsonArr.map((e) => ExamDTO.fromJson(JSON.stringify(e)).toModel()));
   }
 
   /**

@@ -1,6 +1,9 @@
 import IDTO from "./IDTO";
 import Person from "../model/Person";
 
+/**
+ * DTO for {@link Person}
+ */
 export class PersonDTO implements IDTO<Person> {
   dateOfBirth: string;
   emailAddress: string;

@@ -2,6 +2,9 @@ import { PersonDTO } from "./PersonDTO";
 import IDTO from "./IDTO";
 import User from "../model/User";
 
+/**
+ * DTO for {@link User}
+ */
 export class UserDTO implements IDTO<User> {
   /** An arbitrary name chosen by the user or given to him by the system, not their first/last name */
   username: string;

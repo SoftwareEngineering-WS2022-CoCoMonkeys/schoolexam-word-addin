@@ -1,6 +1,18 @@
 import * as React from "react";
 import { useEffect } from "react";
-import { List, MessageBar, MessageBarType, Spinner, SpinnerSize, Stack } from "@fluentui/react";
+import {
+  DefaultButton,
+  Dialog,
+  DialogFooter,
+  DialogType,
+  IDialogContentProps,
+  List,
+  MessageBar,
+  MessageBarType,
+  Spinner,
+  SpinnerSize,
+  Stack,
+} from "@fluentui/react";
 import Exam, { ExamStatus } from "../../../model/Exam";
 import RequestStatus from "../state/RequestStatus";
 import useExams from "../state/ExamsStore";
@@ -122,11 +134,28 @@ export default function ExamList(props: ExamListProps): JSX.Element {
       <Spinner size={SpinnerSize.large} />
     );
 
+  const examsDialogContentProps: IDialogContentProps = {
+    type: DialogType.normal,
+    title: "Beziehen der Prüfungen gescheitert.",
+    subText: "",
+  };
+
   return loggedIn ? (
     <>
       <MessageBar messageBarType={MessageBarType.info} className="msg">
         Wählen Sie die passende Prüfung aus!
       </MessageBar>
+      <Dialog
+        onDismiss={() => examsActions.setExamsStatus(RequestStatus.IDLE)}
+        hidden={examsState.buildStatus !== RequestStatus.ERROR}
+        dialogContentProps={examsDialogContentProps}
+      >
+        <DialogFooter>
+          <DialogFooter>
+            <DefaultButton onClick={() => examsActions.setExamsStatus(RequestStatus.IDLE)} text="Ok" />
+          </DialogFooter>
+        </DialogFooter>
+      </Dialog>
       {examList}
     </>
   ) : (
