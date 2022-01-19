@@ -105,6 +105,8 @@ export default class Task implements ITask {
     const contentControl = this.getAssociatedContentControl(context);
     contentControl.cannotDelete = false;
 
+    await context.sync();
+
     // keep content
     contentControl.delete(true);
 
