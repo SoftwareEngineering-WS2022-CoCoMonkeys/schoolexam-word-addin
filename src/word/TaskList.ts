@@ -89,13 +89,11 @@ export default class TaskList extends WordPersistable<ITaskList> implements ITas
     context.load(context.document, "contentControls/id");
     await context.sync();
 
-    // real world numbering
-    let counter = 1;
+    // actual document order
     const orderedTasks = [];
     for (const cc of context.document.contentControls.items) {
       if (ccIdMap.has(cc.id)) {
         const task = ccIdMap.get(cc.id);
-        await task.edit(context, "title", `Aufgabe ${(counter++).toString()}`);
         orderedTasks.push(task);
       }
     }

@@ -184,11 +184,11 @@ export default class Task implements ITask {
     const endLinkContentControl = contentControl.getRange(Word.RangeLocation.end).insertContentControl();
 
     // 2. Set title and tag accordingly
-    startLinkContentControl.appearance = Word.ContentControlAppearance.hidden;
+    startLinkContentControl.appearance = Word.ContentControlAppearance.boundingBox;
     startLinkContentControl.tag = "task-start-link";
     startLinkContentControl.title = "task-start-link-" + this.id;
 
-    endLinkContentControl.appearance = Word.ContentControlAppearance.hidden;
+    endLinkContentControl.appearance = Word.ContentControlAppearance.boundingBox;
     endLinkContentControl.tag = "task-end-link";
     endLinkContentControl.title = "task-end-link-" + this.id;
 
