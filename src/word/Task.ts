@@ -149,6 +149,7 @@ export default class Task implements ITask {
       } else {
         // Delete with content
         startLinkContentControl.delete(false);
+        this._startLinkCcId = null;
       }
     } else {
       console.warn(`Skipped removing start link content control for task ${this.id}`);
@@ -160,6 +161,7 @@ export default class Task implements ITask {
       } else {
         // Delete with content
         endLinkContentControl.delete(false);
+        this._endLinkCcId = null;
       }
     } else {
       console.warn(`Skipped removing end link content control for task ${this.id}`);

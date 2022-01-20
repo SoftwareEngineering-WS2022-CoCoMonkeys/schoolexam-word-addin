@@ -13,8 +13,6 @@ export default abstract class WordPersistable<Type> {
   async save(context: Word.RequestContext): Promise<void> {
     // Overwrite custom data
     context.document.properties.customProperties.add(this.propertyKey, JSON.stringify(this));
-    // Force saving of document
-    context.document.save();
 
     await context.sync();
 
