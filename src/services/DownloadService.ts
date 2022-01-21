@@ -15,19 +15,19 @@ export default function downloadFileBase64(dataType: string, fileName: string, f
   anchor.click();
 }
 
-/** Constant HTML input for file uploads */
-const fileInput = document.createElement("input");
-
-// Allow multiple file selection
-fileInput.setAttribute("multiple", "multiple");
-fileInput.setAttribute("type", "file");
-
 /**
  * Initiate a file upload.
  * @param callback Function to call once the upload is completed and the files have been converted to base64 strings.
  * @param onError Function to call if the upload or conversion to base64 fails.
  */
 export function uploadFileBase64(callback: (filesBase64: string[]) => void, onError?: (error: Error) => void): void {
+  /** Constant HTML input for file uploads */
+  const fileInput = document.createElement("input");
+
+  // Allow multiple file selection
+  fileInput.setAttribute("multiple", "multiple");
+  fileInput.setAttribute("type", "file");
+
   /**
    * Listens to changes in the file input of the file input element.
    */
