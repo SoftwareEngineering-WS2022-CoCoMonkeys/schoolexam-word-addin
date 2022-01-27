@@ -5,7 +5,7 @@ import { useLoggedIn } from "../../../store/AuthenticationStore";
 import useExams from "../../../store/ExamsStore";
 import useDocument from "../../../store/DocumentStore";
 import { ExamStatus } from "../../../model/Exam";
-import TooltipCheckList, { CheckListItem } from "./TooltipCheckList";
+import TooltipCheckList, { CheckListItem } from "../util/TooltipCheckList";
 
 /**
  * React component that wraps a button that, when clicked, uploads the latest {@link IExamsState.taskPdf}

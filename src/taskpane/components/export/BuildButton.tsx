@@ -13,7 +13,7 @@ import { ExamStatus } from "../../../model/Exam";
 import RequestStatus, { isErroneousStatus } from "../../../state/RequestStatus";
 import useExams from "../../../store/ExamsStore";
 import { useLoggedIn } from "../../../store/AuthenticationStore";
-import TooltipCheckList, { CheckListItem } from "./TooltipCheckList";
+import TooltipCheckList, { CheckListItem } from "../util/TooltipCheckList";
 
 /**
  * React component that wraps a button that, when clicked, triggers the build of the

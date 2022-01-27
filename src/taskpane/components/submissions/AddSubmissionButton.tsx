@@ -12,7 +12,7 @@ import {
 import useSubmissions from "../../../store/SubmissionsStore";
 import RequestStatus, { isErroneousStatus } from "../../../state/RequestStatus";
 import useExams from "../../../store/ExamsStore";
-import TooltipCheckList, { CheckListItem } from "../export/TooltipCheckList";
+import TooltipCheckList, { CheckListItem } from "../util/TooltipCheckList";
 import { ExamStatus } from "../../../model/Exam";
 import { useLoggedIn } from "../../../store/AuthenticationStore";
 

@@ -11,7 +11,7 @@ import {
 } from "@fluentui/react";
 import * as React from "react";
 import RequestStatus, { isErroneousStatus } from "../../../state/RequestStatus";
-import TooltipCheckList, { CheckListItem } from "../export/TooltipCheckList";
+import TooltipCheckList, { CheckListItem } from "../util/TooltipCheckList";
 import { useLoggedIn } from "../../../store/AuthenticationStore";
 
 /**
